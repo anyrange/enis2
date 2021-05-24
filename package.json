@@ -3,20 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "lint": "vue-cli-service lint",
-    "build": "vue-cli-service build",
     "serve": "vue-cli-service serve --port 3004",
-    "server": "nodemon index.js --prefix server",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
     "dev": "concurrently \"npm run serve\" \"npm run server\"",
-    "dist": "npm run build && serve -l 3004 -s dist"
+    "dist": "npm run build && serve -l 3004 -s dist",
+    "server": "nodemon index.js --prefix server"
   },
   "dependencies": {
+    "@quasar/extras": "^1.0.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
+    "js-cookie": "^2.2.1",
+    "quasar": "^2.0.0-beta.1",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",
+    "vue-cookies": "^1.7.4",
     "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0-0"
+    "vuex": "^4.0.0-0",
+    "vuex-persistedstate": "^4.0.0-beta.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -30,7 +35,10 @@
     "concurrently": "^6.0.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "sass": "^1.29.0",
+    "sass-loader": "^10.1.0",
+    "vue-cli-plugin-quasar": "^4.0.0-beta.2"
   },
   "eslintConfig": {
     "root": true,
