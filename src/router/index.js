@@ -6,7 +6,7 @@ const routes = [
     path: "/",
     name: "login",
     meta: {
-      title: "Enis2",
+      title: "Enis",
     },
     component: () => import("@/views/Login.vue"),
     beforeEnter(to, from, next) {

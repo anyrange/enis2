@@ -3,10 +3,11 @@
     <q-card class="lg:w-1/3 xl:w-1/4" flat bordered>
       <q-card-section>
         <div class="q-mb-md flex row items-center z">
-          <enis-icon style="height: 60px;weight: 60px;" />
+          <enis-icon style="height: 70px;weight: 70px;" />
           <div class="flex column items-start q-my-sm q-ml-md">
             <div class="text-h5 text-weight-medium text-grey-8">
-              enis2
+              enis
+              <q-badge align="top" outline color="primary">v2.0</q-badge>
             </div>
             <div class="text-subtitle1">- convenient, fast, adaptive</div>
           </div>
@@ -38,6 +39,7 @@
           <template v-if="captcha">
             <img :src="`data:image/png;base64,${captcha}`" />
             <q-input
+              autofocus
               type="text"
               unelevated
               label="Captcha"
@@ -73,8 +75,8 @@ export default {
   data() {
     return {
       user: {
-        login: "020606550710",
-        password: "arnur123456789!",
+        login: "",
+        password: "",
         captchaInput: "",
       },
       captcha: "",
