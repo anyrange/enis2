@@ -1,56 +1,42 @@
-const express = require("express");
-const app = express();
-const fetch = require("node-fetch");
-const { URLSearchParams } = require("url");
+import fastify from "fastify";
+import autoLoad from "fastify-autoload";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import dotenv from "dotenv";
 
-let port = process.env.PORT || 8887;
+dotenv.config();
+const app = fastify();
 
-app.use(express.json());
-// app.use(express.cookieParser());
+const PORT = process.env.PORT || 8887;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const secret = process.env.SECRET || "secret";
+const FRONTEND_URI = process.env.FRONTEND_URI;
 
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", req.get("origin"));
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header("Access-Control-Request-Method", "POST, GET, OPTIONS, DELETE");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
+app.register(import("fastify-cors"), {
+  origin: FRONTEND_URI,
+  credentials: true,
 });
 
-app.post("/login", async (req, res) => {
-  console.log(JSON.stringify(req.body, "", 2));
-
-  const params = new URLSearchParams();
-  params.append("login", req.body.login);
-  params.append("password", req.body.password);
-  req.body.captchaInput && params.append("captchaInput", req.body.captchaInput);
-
-  const aboba = await fetch("https://sms.pvl.nis.edu.kz/root/Account/LogOn", {
-    method: "POST",
-    body: params,
-    //cookie: 'accessToken=1234abc; userId=1234'
-  }).catch((err) => {
-    console.log(err);
-  });
-  const body = await aboba.json();
-  const cookies = parseCookies(aboba);
-  console.log(JSON.stringify(body, "", 2));
-  console.log(JSON.stringify(cookies, "", 2));
-  res.cookie("cock", cookies, { maxAge: 900000, httpOnly: true });
-  res.json(body);
+app.register(import("fastify-cookie"), {
+  secret, // for cookies signature
+  parseOptions: {}, // options for parsing cookies
 });
 
-function parseCookies(response) {
-  const raw = response.headers.raw()["set-cookie"];
-  return raw
-    .map((entry) => {
-      const parts = entry.split(";");
-      const cookiePart = parts[0];
-      return cookiePart;
-    })
-    .join(";");
-}
+app.register(autoLoad, {
+  dir: join(__dirname, "routes"),
+  routeParams: true,
+});
 
-app.listen(port, () => console.log("Server is listening on port " + port));
+app.all("/*", (request, reply) => {
+  reply.code(404).send({ message: "Service not found" });
+});
+
+process.on("unhandledRejection", (error) => {
+  console.log(error);
+});
+
+app.listen(PORT, "0.0.0.0", (err, address) => {
+  if (err) return console.log(err);
+  console.info(`App listening on: ${address}`);
+});

@@ -30,10 +30,15 @@ export default {
   },
   methods: {
     submit() {
-      axios.post(`http://127.0.0.1:8887/login`, this.user).then((response) => {
-        console.log(response);
-        this.message = response;
-      });
+      axios
+        .post(`http://localhost:8887/login`, this.user, {
+          withCredentials: true,
+        })
+        .then((response) => {
+          console.log(response);
+          this.message = response.data.message;
+          response;
+        });
     },
     toFormData: function(obj) {
       const form_data = new FormData();
