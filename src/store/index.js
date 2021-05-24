@@ -1,6 +1,5 @@
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
-import api from "@/api";
 import router from "@/router";
 
 const getDefaultState = () => {
@@ -25,10 +24,9 @@ export default createStore({
     },
   },
   actions: {
-    login: async ({ commit }, { credentials }) => {
-      const response = await api.login(credentials);
-      console.log(response);
-      commit("SET_USER", response.success);
+    auth: ({ commit }, success) => {
+      commit("SET_USER", success);
+      router.push({ name: "dashboard" });
     },
     logout: ({ commit }) => {
       commit("RESET", "");
