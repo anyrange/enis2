@@ -83,14 +83,23 @@ export default {
   methods: {
     ...mapActions(["auth"]),
     submit() {
-      api.login(this.user).then((response) => {
-        console.log(response);
-        const success = response.success;
-
-        if (response.data.base64img) this.captcha = response.data.base64img;
-
-        success && this.auth({ success });
-      });
+      api
+        .login(this.user)
+        .then((response) => {
+          const success = response.success;
+          this.auth({ success });
+        })
+        .catch((error) => {
+          this.captcha = error.response.data.data.base64img;
+          this.user.captchaInput = "";
+          this.$q.notify({
+            color: "negative",
+            position: "bottom-left",
+            message: error.response.data.message,
+            progress: true,
+            timeout: 1500,
+          });
+        });
     },
   },
 };
