@@ -15,9 +15,7 @@ export default async function(fastify) {
       if (!dates.success)
         return reply.code(400).send({ message: dates.message });
 
-      reply
-        .code(200)
-        .send({ message: dates.data?.find((date) => date.Data.IsActual).Id });
+      reply.code(200).send({ message: dates.data });
     } catch (err) {
       console.log(err);
       reply.code(500).send({ message: "Что-то пошло не так!" });
