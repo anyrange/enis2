@@ -90,8 +90,10 @@ export default {
           this.auth({ success });
         })
         .catch((error) => {
-          this.captcha = error.response.data.data.base64img;
-          this.user.captchaInput = "";
+          if (error.response.data.data) {
+            this.captcha = error.response.data.data.base64img;
+            this.user.captchaInput = "";
+          }
           this.$q.notify({
             color: "negative",
             position: "bottom-left",

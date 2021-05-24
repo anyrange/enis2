@@ -23,19 +23,23 @@ export default async function(fastify) {
       if (req.validationError)
         return reply.code(404).send({ message: "Invalid data" });
 
-      console.log(req.body.login);
-
       const params = new URLSearchParams();
       params.append("login", req.body.login);
       params.append("password", req.body.password);
       params.append("captchaInput", req.body.captchaInput);
+      params.append("twoFactorAuthCode", "");
+      params.append("application2FACode", "");
 
-      console.log(params);
+      const cookie = Object.entries(req.cookies)
+        .map((cookie) => cookie.join("="))
+        .join("; ");
+
       const aboba = await fetch(
         "https://sms.pvl.nis.edu.kz/root/Account/LogOn",
         {
           method: "POST",
           body: params,
+          headers: { cookie },
         }
       ).catch((err) => {
         console.log(err);
@@ -45,6 +49,7 @@ export default async function(fastify) {
       const cookies = parseCookies(aboba);
 
       if (!body.success) return reply.code(403).send(body);
+      console.log(req.body.login + " зашёл");
 
       cookies.forEach((cookie) =>
         reply.setCookie(cookie.name, cookie.value, {
