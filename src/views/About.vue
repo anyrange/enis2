@@ -30,14 +30,10 @@ export default {
   },
   methods: {
     submit() {
-      const formData = this.toFormData(this.user);
-      console.log(formData);
-      axios
-        .post(`http://127.0.0.1:3003/root/Account/LogOn`, formData)
-        .then((response) => {
-          console.log(response);
-          this.message = response;
-        });
+      axios.post(`http://127.0.0.1:3003/root`, this.user).then((response) => {
+        console.log(response);
+        this.message = response;
+      });
     },
     toFormData: function(obj) {
       const form_data = new FormData();
