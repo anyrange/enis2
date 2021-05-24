@@ -89,7 +89,7 @@ export default {
 
         if (response.data.base64img) this.captcha = response.data.base64img;
 
-        this.auth({ success });
+        success && this.auth({ success });
       });
     },
   },

@@ -9,7 +9,7 @@ export default async function(fastify) {
       schema: {
         body: {
           type: "object",
-          required: ["login", "password"],
+          required: ["login", "password", "captchaInput"],
           properties: {
             login: { type: "string", minLength: 12, maxLength: 12 },
             password: { type: "string", minLength: 1 },
@@ -28,10 +28,9 @@ export default async function(fastify) {
       const params = new URLSearchParams();
       params.append("login", req.body.login);
       params.append("password", req.body.password);
+      params.append("captchaInput", req.body.captchaInput);
 
-      req.body.captchaInput &&
-        params.append("captchaInput", req.body.captchaInput);
-
+      console.log(params);
       const aboba = await fetch(
         "https://sms.pvl.nis.edu.kz/root/Account/LogOn",
         {
