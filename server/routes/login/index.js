@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import { parseCookies } from "../../includes/parseCookies.js";
 import { URLSearchParams } from "url";
 
 export default async function(fastify) {
@@ -36,11 +37,11 @@ export default async function(fastify) {
         {
           method: "POST",
           body: params,
-          //cookie: 'accessToken=1234abc; userId=1234'
         }
       ).catch((err) => {
         console.log(err);
       });
+
       const body = await aboba.json();
       const cookies = parseCookies(aboba);
 
@@ -53,17 +54,4 @@ export default async function(fastify) {
       reply.code(200).send(body);
     }
   );
-
-  function parseCookies(res) {
-    const raw = res.headers.raw()["set-cookie"];
-    return raw.map((entry) => {
-      const parts = entry.split(";");
-      const cookiePart = parts[0].split("=");
-
-      return {
-        name: cookiePart[0],
-        value: cookiePart[1],
-      };
-    });
-  }
 }
