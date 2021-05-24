@@ -22,15 +22,15 @@ export default {
   data() {
     return {
       user: {
-        login: "",
-        password: "",
+        login: "020606550710",
+        password: "arnur123456789!",
       },
       message: "",
     };
   },
   methods: {
     submit() {
-      axios.post(`http://127.0.0.1:3003/root`, this.user).then((response) => {
+      axios.post(`http://127.0.0.1:8887/login`, this.user).then((response) => {
         console.log(response);
         this.message = response;
       });
