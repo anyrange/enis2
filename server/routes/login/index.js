@@ -48,15 +48,17 @@ export default async function(fastify) {
       const body = await aboba.json();
       const cookies = parseCookies(aboba);
 
-      if (!body.success) return reply.code(403).send(body);
-      console.log(req.body.login + " зашёл");
-
       cookies.forEach((cookie) =>
         reply.setCookie(cookie.name, cookie.value, {
           path: process.env.FRONTEND_URI,
           httpOnly: true,
         })
       );
+
+      if (!body.success) return reply.code(403).send(body);
+
+      console.log(req.body.login + " зашёл");
+
       reply.code(200).send(body);
     }
   );
