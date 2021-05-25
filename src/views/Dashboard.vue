@@ -1,8 +1,14 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-layout view="lHh lpr lFf" container style="height: 100vh">
     <template v-if="!loading">
-      <q-header reveal>
-        <q-tabs v-model="term" inline-label>
+      <q-header bordered class="bg-white text-primary">
+        <q-tabs
+          v-model="term"
+          class="text-grey"
+          active-color="primary"
+          indicator-color="primary"
+          narrow-indicator
+        >
           <q-tab
             v-for="(term, index) in dash.length"
             :key="index"
@@ -13,43 +19,47 @@
           />
         </q-tabs>
       </q-header>
-      <q-card class="lg:w-1/3 xl:w-1/4" flat>
-        <q-list bordered>
-          <q-item
-            v-for="subject in sortByScore(marks.data)"
-            :key="subject.Id"
-            class="q-my-sm"
-            clickable
-          >
-            <q-item-section>
-              <q-item-label>{{ subject.Name }}</q-item-label>
-              <q-item-label caption lines="1">
-                {{ subject.Score }}
-              </q-item-label>
-              <q-linear-progress
-                :value="subject.Score / 100"
-                rounded
-                :color="getStrengthColor(subject.Score)"
-                class="q-mt-sm"
-              />
-            </q-item-section>
-            <q-item-section side>
-              <q-item-label> {{ subject.Mark }} </q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </q-card>
+      <q-page-container>
+        <q-page class="flex flex-center">
+          <q-card class="lg:w-1/3 xl:w-1/4" flat>
+            <q-list bordered>
+              <q-item
+                v-for="subject in sortByScore(marks.data)"
+                :key="subject.Id"
+                class="q-my-sm"
+                clickable
+              >
+                <q-item-section>
+                  <q-item-label>{{ subject.Name }}</q-item-label>
+                  <q-item-label caption lines="1">
+                    {{ subject.Score }}
+                  </q-item-label>
+                  <q-linear-progress
+                    :value="subject.Score / 100"
+                    rounded
+                    :color="getStrengthColor(subject.Score)"
+                    class="q-mt-sm"
+                  />
+                </q-item-section>
+                <q-item-section side>
+                  <q-item-label> {{ subject.Mark }} </q-item-label>
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-card>
+        </q-page>
+        <q-page-sticky position="bottom" :offset="[18, 18]">
+          <q-btn
+            color="red"
+            icon="logout"
+            label="Logout"
+            rounded
+            @click="disconnect()"
+          />
+        </q-page-sticky>
+      </q-page-container>
     </template>
-    <q-page-sticky position="bottom" :offset="[18, 18]">
-      <q-btn
-        color="red"
-        icon="logout"
-        label="Logout"
-        rounded
-        @click="disconnect()"
-      />
-    </q-page-sticky>
-  </q-page>
+  </q-layout>
 </template>
 
 <script>
