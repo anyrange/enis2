@@ -1,5 +1,5 @@
 <template>
-  <!-- <q-page class="flex flex-center">
+  <q-page class="flex flex-center">
     <q-card class="lg:w-1/3 xl:w-1/4" flat bordered>
       <q-form @submit="submit" greedy>
         <q-card-section>
@@ -74,48 +74,6 @@
         </q-card-actions>
       </q-form>
     </q-card>
-  </q-page> -->
-  <q-page class="window-height window-width row justify-center items-center">
-    <div class="column">
-      <div class="row">
-        <h5 class="text-h5 text-white q-my-md">Company & Co</h5>
-      </div>
-      <div class="row">
-        <q-card square bordered class="q-pa-lg shadow-1">
-          <enis-icon style="height: 70px;weight: 70px;" />
-          <q-card-section>
-            <q-form class="q-gutter-md">
-              <q-input
-                square
-                filled
-                clearable
-                v-model="user.login"
-                type="text"
-                label="username"
-              />
-              <q-input
-                square
-                filled
-                clearable
-                v-model="user.password"
-                type="password"
-                label="password"
-              />
-            </q-form>
-          </q-card-section>
-          <q-card-actions class="q-px-md">
-            <q-btn
-              unelevated
-              color="primary"
-              size="lg"
-              class="full-width"
-              label="Login"
-              @click="submit"
-            />
-          </q-card-actions>
-        </q-card>
-      </div>
-    </div>
   </q-page>
 </template>
 
