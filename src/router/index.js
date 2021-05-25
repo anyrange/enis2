@@ -18,6 +18,10 @@ const routes = [
       store.getters.isLoggedIn ? next() : next({ name: "login" });
     },
   },
+  {
+    path: "/:pathMatch(.*)*",
+    redirect: { name: "login" },
+  },
 ];
 
 const router = createRouter({

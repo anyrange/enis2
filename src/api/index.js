@@ -12,17 +12,22 @@ const getCity = () => {
 };
 
 export default {
-  login(credentials, city) {
+  login(credentials) {
     return api
-      .post(`login?city=${city}`, credentials)
+      .post(`login?city=${getCity()}`, credentials)
       .then((response) => response.data);
   },
-  deshboard() {
+  terms() {
     return api
-      .get(`dashboard/current?city=${getCity()}`)
-      .then((response) => response);
+      .get(`dashboard/terms?city=${getCity()}`)
+      .then((response) => response.data);
   },
-  getSubject(journalId, evalIdSOR, evalIdSOCH) {
+  diary(term) {
+    return api
+      .get(`dashboard/terms/${term}?city=${getCity()}`)
+      .then((response) => response.data);
+  },
+  subject(journalId, evalIdSOR, evalIdSOCH) {
     const fetchedData = (route) => api.get(route);
     const promises = [
       `dashboard/info?journalId=${journalId}&evalId=${evalIdSOR}&city=${getCity()}`,

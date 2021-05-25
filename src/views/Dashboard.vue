@@ -1,23 +1,25 @@
 <template>
   <q-layout view="lHh lpr lFf" container style="height: 100vh">
-    <template v-if="!loading">
+    <template v-if="!loadingTerms">
       <q-header bordered class="bg-white text-primary">
         <q-tabs
-          v-model="term"
+          v-model="current_term"
           class="text-grey"
           active-color="primary"
           indicator-color="primary"
         >
           <q-tab
-            v-for="(term, index) in dash.length"
+            v-for="(term, index) in terms"
             :key="index"
             :label="`${index + 1} Четверть`"
-            :name="`${index + 1}_term`"
+            :name="term.Name"
             :ripple="false"
-            @click="selectTerm(index)"
+            @click="getDiary(term)"
           />
         </q-tabs>
       </q-header>
+    </template>
+    <template v-if="!loading">
       <q-page-container>
         <q-page class="flex flex-center">
           <q-card class="lg:w-1/3 xl:w-1/4" flat>
@@ -136,18 +138,20 @@
 <script>
 import { mapActions } from "vuex";
 import api from "@/api";
-import mock from "@/mock";
 
 export default {
   data() {
     return {
       loading: true,
-      dash: [],
+      loadingTerms: true,
+
       marks: null,
-      term: "",
       modalOpened: false,
       subjectTab: "sor",
       selectedSubject: {},
+      terms: "",
+      current_term: "",
+      diary: [],
     };
   },
   methods: {
@@ -159,11 +163,7 @@ export default {
     selectSubject(subj) {
       this.modalOpened = true;
       api
-        .getSubject(
-          subj.JournalId,
-          subj.Evaluations[0].Id,
-          subj.Evaluations[1].Id
-        )
+        .subject(subj.JournalId, subj.Evaluations[0].Id, subj.Evaluations[1].Id)
         .then((response) => {
           this.selectedSubject.SOR = response[0].data.data;
           this.selectedSubject.SOCH = response[1].data.data;
@@ -197,17 +197,16 @@ export default {
       if (roundedScore >= 65) return "warning";
       return "negative";
     },
-    selectTerm(term) {
-      this.marks = this.dash[term];
+    chooseTerm(termName) {
+      this.marks = this.diary.find((term) => termName === term.termName);
+      this.current_term = termName;
     },
-    fetchData() {
-      this.$q.loading.show();
+    fetchTerms() {
       api
-        .deshboard()
+        .terms()
         .then((response) => {
-          this.dash = response.data;
-          this.term = `${this.dash.length}_term`;
-          this.selectTerm(this.dash.length - 1);
+          this.terms = response;
+          this.getDiary(this.terms[this.terms.length - 1]);
         })
         .catch((error) => {
           this.$q.notify({
@@ -218,22 +217,49 @@ export default {
             timeout: 1500,
           });
           this.disconnect();
-          this.$q.loading.hide();
+        })
+        .finally(() => {
+          this.loadingTerms = false;
+        });
+    },
+    getDiary(term) {
+      const id = term.Id;
+      const termName = term.Name;
+
+      if (this.diary.find((term) => termName === term.termName))
+        return this.chooseTerm(termName);
+
+      this.$q.loading.show();
+      this.loading = true;
+
+      api
+        .diary(id)
+        .then((response) => {
+          this.diary.push({
+            termName: termName,
+            data: response.data,
+          });
+          this.chooseTerm(termName);
+        })
+        .catch((error) => {
+          this.$q.notify({
+            color: "negative",
+            position: "bottom-left",
+            message: error.response.data.message,
+            progress: true,
+            timeout: 1500,
+          });
+          this.disconnect();
         })
         .finally(() => {
           this.loading = false;
           this.$q.loading.hide();
         });
     },
-    fetchMock() {
-      this.dash = mock;
-      this.loading = false;
-      this.term = `${this.dash.length}_term`;
-      this.selectTerm(this.dash.length - 1);
-    },
   },
   created() {
-    this.fetchData();
+    this.$q.loading.show();
+    this.fetchTerms();
   },
 };
 </script>

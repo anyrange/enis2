@@ -50,7 +50,7 @@
             />
           </template>
           <q-select
-            class="q-mt-sm"
+            class="q-my-sm"
             filled
             v-model="city"
             unelevated
