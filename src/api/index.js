@@ -12,4 +12,12 @@ export default {
   deshboard() {
     return api.get("dashboard/current").then((response) => response);
   },
+  getSubject(journalId, evalIdSOR, evalIdSOCH) {
+    const fetchedData = (route) => api.get(route);
+    const promises = [
+      `dashboard/info?journalId=${journalId}&evalId=${evalIdSOR}`,
+      `dashboard/info?journalId=${journalId}&evalId=${evalIdSOCH}`,
+    ].map(fetchedData);
+    return Promise.all(promises).then((response) => response);
+  },
 };

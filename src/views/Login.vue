@@ -10,17 +10,18 @@
                 enis
                 <q-badge align="top" outline color="primary">v2.0</q-badge>
               </div>
-              <div class="text-subtitle1">- convenient, fast, adaptive</div>
+              <div class="text-subtitle1">- удобный, быстрый, адаптивный</div>
             </div>
           </div>
           <q-input
             autofocus
             unelevated
             v-model="user.login"
-            label="Your PIN"
+            label="Ваш ИИН"
             mask="############"
             :rules="[
-              (val) => (val && val.length <= 12) || 'PIN must have 12 symbols',
+              (val) =>
+                (val && val.length <= 12) || 'ИИН должен содержать 12 символов',
             ]"
             :lazy-rules="'ondemand'"
             no-error-icon
@@ -29,9 +30,10 @@
             type="password"
             unelevated
             v-model="user.password"
-            label="Your password"
+            label="Ваш пароль"
             :rules="[
-              (val) => (val && val.length > 0) || 'Please type something',
+              (val) =>
+                (val && val.length > 0) || 'Пароль не можеть быть пустым',
             ]"
             :lazy-rules="'ondemand'"
             no-error-icon
@@ -42,10 +44,9 @@
               autofocus
               type="text"
               unelevated
-              label="Captcha"
+              label="Каптча"
               v-model="user.captchaInput"
               no-error-icon
-              class="q-mb-md"
             />
           </template>
         </q-card-section>
@@ -55,8 +56,8 @@
             unelevated
             color="primary"
             size="md"
-            class="full-width"
-            label="Login"
+            class="full-width q-mb-sm"
+            label="Войти"
             ref="submitBtn"
           />
         </q-card-actions>
