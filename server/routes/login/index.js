@@ -20,51 +20,52 @@ export default async function(fastify) {
       attachValidation: true,
     },
     async (req, reply) => {
-      if (req.validationError)
-        return reply.code(404).send({ message: "Invalid data" });
+      try {
+        if (req.validationError)
+          return reply.code(404).send({ message: "Invalid data" });
 
-      const params = new URLSearchParams();
-      params.append("login", req.body.login);
-      params.append("password", req.body.password);
-      params.append("captchaInput", req.body.captchaInput);
-      params.append("twoFactorAuthCode", "");
-      params.append("application2FACode", "");
+        const params = new URLSearchParams();
+        params.append("login", req.body.login);
+        params.append("password", req.body.password);
+        params.append("captchaInput", req.body.captchaInput);
 
-      const cookie = Object.entries(req.cookies)
-        .map((cookie) => cookie.join("="))
-        .join("; ");
+        const cookie = Object.entries(req.cookies)
+          .map((cookie) => cookie.join("="))
+          .join("; ");
 
-      const response = await fetch(
-        "https://sms.pvl.nis.edu.kz/root/Account/LogOn",
-        {
-          method: "POST",
-          body: params,
-          headers: { cookie },
-        }
-      ).catch((err) => {
-        console.log(err);
-      });
+        const response = await fetch(
+          "https://sms.pvl.nis.edu.kz/root/Account/LogOn",
+          {
+            method: "POST",
+            body: params,
+            headers: { cookie },
+          }
+        );
 
-      const body = await response.json();
-      const cookies = parseCookies(response);
+        const body = await response.json();
+        const cookies = parseCookies(response);
 
-      cookies.forEach((cookie) => {
-        if (cookie.name === "lang") {
+        cookies.forEach((cookie) => {
+          if (cookie.name === "lang") {
+            reply.setCookie(cookie.name, cookie.value, {
+              path: process.env.FRONTEND_URI,
+            });
+          }
           reply.setCookie(cookie.name, cookie.value, {
             path: process.env.FRONTEND_URI,
+            httpOnly: true,
           });
-        }
-        reply.setCookie(cookie.name, cookie.value, {
-          path: process.env.FRONTEND_URI,
-          httpOnly: true,
         });
-      });
 
-      if (!body.success) return reply.code(403).send(body);
+        if (!body.success) return reply.code(403).send(body);
 
-      console.log(req.body.login + " зашёл");
+        console.log(req.body.login + " зашёл");
 
-      reply.code(200).send(body);
+        reply.code(200).send(body);
+      } catch (err) {
+        console.log(err);
+        reply.code(500).send({ message: "Что-то пошло не так!" });
+      }
     }
   );
 }
