@@ -217,6 +217,7 @@ export default {
             timeout: 1500,
           });
           this.disconnect();
+          this.$q.loading.hide();
         })
         .finally(() => {
           this.loadingTerms = false;
@@ -250,6 +251,7 @@ export default {
             timeout: 1500,
           });
           this.disconnect();
+          this.$q.loading.hide();
         })
         .finally(() => {
           this.loading = false;
