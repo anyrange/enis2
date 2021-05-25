@@ -1,0 +1,1 @@
+web: cd server && npm install --silent -no-fund && node .
