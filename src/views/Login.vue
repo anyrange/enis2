@@ -1,5 +1,5 @@
 <template>
-  <q-page class="flex flex-center">
+  <!-- <q-page class="flex flex-center">
     <q-card class="lg:w-1/3 xl:w-1/4" flat bordered>
       <q-form @submit="submit" greedy>
         <q-card-section>
@@ -74,7 +74,38 @@
         </q-card-actions>
       </q-form>
     </q-card>
-  </q-page>
+  </q-page> -->
+
+  <div class="body">
+    <form @submit.prevent="submit()" class="form">
+      <enis-icon class="icon" />
+      <label for="login">Login</label>
+      <input
+        v-model="user.login"
+        id="login"
+        type="number"
+        placeholder="Login"
+      />
+      <label for="password">Password</label>
+      <input
+        id="password"
+        v-model="user.password"
+        type="text"
+        placeholder="Password"
+      />
+      <template v-if="captcha">
+        <img :src="`data:image/png;base64,${captcha}`" />
+        <label for="captcha">Captcha</label>
+        <input
+          id="captcha"
+          v-model="user.captchaInput"
+          type="text"
+          placeholder="Captcha"
+        />
+      </template>
+      <button type="submit">SUBMIT</button>
+    </form>
+  </div>
 </template>
 
 <script>
@@ -152,5 +183,26 @@ export default {
   .xl\:w-1\/4 {
     width: 25%;
   }
+}
+</style>
+
+<style>
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: 50%;
+}
+.form input {
+  margin: 0px 0px 20px 0px;
+}
+.icon {
+  width: 50px;
+  height: 50px;
 }
 </style>
