@@ -49,8 +49,13 @@ const dateAPI = async (cookie) => {
   )
     .then(async (res) => {
       const sessionExpiredText = await res.text();
-      if (sessionExpiredText) return JSON.parse(sessionExpiredText);
-      return res.json();
+      if (
+        sessionExpiredText ===
+        "Сессия пользователя была завершена, перезагрузите страницу"
+      )
+        return sessionExpiredText;
+
+      return JSON.parse(sessionExpiredText);
     })
     .catch((err) => {
       throw err;

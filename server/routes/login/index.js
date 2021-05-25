@@ -46,7 +46,7 @@ export default async function(fastify) {
         const cookies = parseCookies(response);
 
         cookies.forEach((cookie) => {
-          if (cookie.name === "lang") {
+          if (cookie.name == "lang") {
             reply.setCookie(cookie.name, cookie.value, {
               path: process.env.FRONTEND_URI,
             });
