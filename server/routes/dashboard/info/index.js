@@ -40,7 +40,7 @@ export default async function(fastify) {
         );
 
         const body = await response.json();
-        console.log(body);
+
         reply.code(200).send(body);
       } catch (err) {
         console.log(err);

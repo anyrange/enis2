@@ -125,11 +125,14 @@ const periodDateAPI = async (cookie, period, reply) => {
   });
 
   const newCookie = smsCookie.headers.raw()["set-cookie"][0].split(";")[0];
-  cookie = cookie + "; " + newCookie;
 
-  reply.setCookie(newCookie.split("=")[0], newCookie.split("=")[1], {
-    httpOnly: true,
-  });
+  if (newCookie.split("=")[0] === "sms_Pavlodar_jce_SessionID") {
+    cookie = cookie + "; " + newCookie;
+
+    reply.setCookie(newCookie.split("=")[0], newCookie.split("=")[1], {
+      httpOnly: true,
+    });
+  }
 
   const diary = await fetch(
     "https://sms.pvl.nis.edu.kz/Jce/Diary/GetSubjects",
