@@ -47,7 +47,11 @@ const dateAPI = async (cookie) => {
       headers: { cookie },
     }
   )
-    .then((res) => res.json())
+    .then(async (res) => {
+      const sessionExpiredText = await res.text();
+      if (sessionExpiredText) return JSON.parse(sessionExpiredText);
+      return res.json();
+    })
     .catch((err) => {
       throw err;
     });

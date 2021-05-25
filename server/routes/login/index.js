@@ -34,7 +34,7 @@ export default async function(fastify) {
         .map((cookie) => cookie.join("="))
         .join("; ");
 
-      const aboba = await fetch(
+      const response = await fetch(
         "https://sms.pvl.nis.edu.kz/root/Account/LogOn",
         {
           method: "POST",
@@ -45,15 +45,20 @@ export default async function(fastify) {
         console.log(err);
       });
 
-      const body = await aboba.json();
-      const cookies = parseCookies(aboba);
+      const body = await response.json();
+      const cookies = parseCookies(response);
 
-      cookies.forEach((cookie) =>
+      cookies.forEach((cookie) => {
+        if (cookie.name === "lang") {
+          reply.setCookie(cookie.name, cookie.value, {
+            path: process.env.FRONTEND_URI,
+          });
+        }
         reply.setCookie(cookie.name, cookie.value, {
           path: process.env.FRONTEND_URI,
           httpOnly: true,
-        })
-      );
+        });
+      });
 
       if (!body.success) return reply.code(403).send(body);
 
