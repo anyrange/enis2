@@ -1,26 +1,26 @@
 <template>
   <q-page class="flex flex-center">
     <q-card class="lg:w-1/3 xl:w-1/4" flat bordered>
-      <q-card-section>
-        <div class="q-mb-md flex row items-center z">
-          <enis-icon style="height: 70px;weight: 70px;" />
-          <div class="flex column items-start q-my-sm q-ml-md">
-            <div class="text-h5 text-weight-medium text-grey-8">
-              enis
-              <q-badge align="top" outline color="primary">v2.0</q-badge>
+      <q-form @submit="submit" greedy>
+        <q-card-section>
+          <div class="q-mb-md flex row items-center z">
+            <enis-icon style="height: 70px;weight: 70px;" />
+            <div class="flex column items-start q-my-sm q-ml-md">
+              <div class="text-h5 text-weight-medium text-grey-8">
+                enis
+                <q-badge align="top" outline color="primary">v2.0</q-badge>
+              </div>
+              <div class="text-subtitle1">- convenient, fast, adaptive</div>
             </div>
-            <div class="text-subtitle1">- convenient, fast, adaptive</div>
           </div>
-        </div>
-        <q-form @submit="submit" greedy>
           <q-input
             autofocus
             unelevated
             v-model="user.login"
             label="Your PIN"
+            mask="############"
             :rules="[
-              (val) =>
-                (val && val.length === 12) || 'PIN should have 12 symbols',
+              (val) => (val && val.length <= 12) || 'PIN must have 12 symbols',
             ]"
             :lazy-rules="'ondemand'"
             no-error-icon
@@ -48,6 +48,8 @@
               class="q-mb-md"
             />
           </template>
+        </q-card-section>
+        <q-card-actions class="q-px-md">
           <q-btn
             type="submit"
             unelevated
@@ -57,8 +59,8 @@
             label="Login"
             ref="submitBtn"
           />
-        </q-form>
-      </q-card-section>
+        </q-card-actions>
+      </q-form>
     </q-card>
   </q-page>
 </template>
@@ -90,6 +92,7 @@ export default {
         .then((response) => {
           const success = response.success;
           this.auth({ success });
+          this.$router.push({ name: "dashboard" });
         })
         .catch((error) => {
           if (error.response.data.data) {

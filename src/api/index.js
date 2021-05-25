@@ -9,4 +9,7 @@ export default {
   login(credentials) {
     return api.post("login", credentials).then((response) => response.data);
   },
+  deshboard() {
+    return api.get("dashboard/current").then((response) => response);
+  },
 };
