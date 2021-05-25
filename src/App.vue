@@ -5,12 +5,18 @@
         <router-view />
       </q-page-container>
     </q-layout>
+    <update-notification />
   </div>
 </template>
 
 <script>
+import UpdateNotification from "@/components/UpdateNotification";
+
 export default {
   name: "App",
+  components: {
+    UpdateNotification,
+  },
 };
 </script>
 

@@ -12,9 +12,9 @@ const getCity = () => {
 };
 
 export default {
-  login(credentials) {
+  login(credentials, city) {
     return api
-      .post(`login?city=${getCity()}`, credentials)
+      .post(`login?city=${city}`, credentials)
       .then((response) => response.data);
   },
   terms() {
