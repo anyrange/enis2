@@ -75,27 +75,48 @@
       </q-form>
     </q-card>
   </q-page> -->
-
-  <div class="body">
-    <enis-icon class="icon" />
-    <p
-      contenteditable
-      @input="onInputLogin"
-      style="padding: 10px; border: 1px solid black"
-    >
-      {{ user.login }}
-    </p>
-    <p
-      contenteditable
-      @input="onInputPassword"
-      style="padding: 10px; border: 1px solid black"
-    >
-      {{ user.password }}
-    </p>
-    <p @click="submit()">
-      LOGIN
-    </p>
-  </div>
+  <q-page class="window-height window-width row justify-center items-center">
+    <div class="column">
+      <div class="row">
+        <h5 class="text-h5 text-white q-my-md">Company & Co</h5>
+      </div>
+      <div class="row">
+        <q-card square bordered class="q-pa-lg shadow-1">
+          <enis-icon style="height: 70px;weight: 70px;" />
+          <q-card-section>
+            <q-form class="q-gutter-md">
+              <q-input
+                square
+                filled
+                clearable
+                v-model="user.login"
+                type="text"
+                label="username"
+              />
+              <q-input
+                square
+                filled
+                clearable
+                v-model="user.password"
+                type="password"
+                label="password"
+              />
+            </q-form>
+          </q-card-section>
+          <q-card-actions class="q-px-md">
+            <q-btn
+              unelevated
+              color="primary"
+              size="lg"
+              class="full-width"
+              label="Login"
+              @click="submit"
+            />
+          </q-card-actions>
+        </q-card>
+      </div>
+    </div>
+  </q-page>
 </template>
 
 <script>
@@ -132,14 +153,7 @@ export default {
   },
   methods: {
     ...mapActions(["auth", "setCity"]),
-    onInputLogin(e) {
-      this.user.login = e.target.innerText;
-    },
-    onInputPassword(e) {
-      this.user.password = e.target.innerText;
-    },
     submit() {
-      console.log(this.user);
       this.setCity(this.city, this.city.value);
       api
         .login(this.user, this.city.value)
