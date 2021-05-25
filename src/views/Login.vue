@@ -112,7 +112,7 @@ export default {
   methods: {
     ...mapActions(["auth", "setCity"]),
     submit() {
-      this.setCity(this.city);
+      this.setCity(this.city, this.city.value);
       api
         .login(this.user, this.city.value)
         .then((response) => {
