@@ -91,7 +91,7 @@ const periodDateAPI = async (cookie, periodId, reply, city) => {
 
   const newCookie = smsCookie.headers.raw()["set-cookie"][0].split(";")[0];
 
-  if (newCookie.split("=")[0] === "sms_Pavlodar_jce_SessionID") {
+  if (newCookie.split("=")[0] !== "lang") {
     cookie = cookie + "; " + newCookie;
 
     reply.setCookie(newCookie.split("=")[0], newCookie.split("=")[1], {
