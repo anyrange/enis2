@@ -3,10 +3,12 @@ import { parseCookies } from "../../includes/parseCookies.js";
 import { URLSearchParams } from "url";
 
 export default async function(fastify) {
+  const querystring = fastify.getSchema("domain");
   fastify.post(
     "/",
     {
       schema: {
+        querystring,
         body: {
           type: "object",
           required: ["login", "password", "captchaInput"],
@@ -34,7 +36,7 @@ export default async function(fastify) {
           .join("; ");
 
         const response = await fetch(
-          "https://sms.pvl.nis.edu.kz/root/Account/LogOn",
+          `https://${req.query.city}/root/Account/LogOn`,
           {
             method: "POST",
             body: params,

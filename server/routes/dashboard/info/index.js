@@ -8,10 +8,15 @@ export default async function(fastify) {
       schema: {
         querystring: {
           type: "object",
-          required: ["journalId", "evalId"],
+          required: ["journalId", "evalId", "city"],
           properties: {
             journalId: { type: "string", minLength: 36, maxLength: 36 },
             evalId: { type: "string", minLength: 36, maxLength: 36 },
+            city: {
+              type: "string",
+              pattern:
+                "^(sms.akt.nis.edu.kz|sms.akb.nis.edu.kz|sms.fmalm.nis.edu.kz|sms.hbalm.nis.edu.kz|sms.ast.nis.edu.kz|sms.atr.nis.edu.kz|sms.krg.nis.edu.kz|sms.kt.nis.edu.kz|sms.kst.nis.edu.kz|sms.kzl.nis.edu.kz|sms.pvl.nis.edu.kz|sms.ptr.nis.edu.kz|sms.sm.nis.edu.kz|sms.tk.nis.edu.kz|sms.trz.nis.edu.kz|sms.ura.nis.edu.kz|sms.ukk.nis.edu.kz|sms.fmsh.nis.edu.kz|sms.hbsh.nis.edu.kz)$",
+            },
           },
         },
       },
@@ -31,7 +36,7 @@ export default async function(fastify) {
           .join("; ");
 
         const response = await fetch(
-          "https://sms.pvl.nis.edu.kz/Jce/Diary/GetResultByEvalution?_dc=1621922724082",
+          `https://${req.query.city}/Jce/Diary/GetResultByEvalution?_dc=1621922724082`,
           {
             method: "POST",
             body: params,

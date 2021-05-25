@@ -1,28 +1,36 @@
 import fetch from "node-fetch";
 
 export default async function(fastify) {
-  fastify.get("/", async (req, reply) => {
-    try {
-      const cookie = Object.entries(req.cookies)
-        .map((cookie) => cookie.join("="))
-        .join("; ");
+  const querystring = fastify.getSchema("domain");
+  fastify.get(
+    "/",
+    { schema: { querystring }, attachValidation: true },
+    async (req, reply) => {
+      try {
+        if (req.validationError)
+          return reply.code(404).send({ message: "Invalid data" });
 
-      const response = await fetch(
-        "https://sms.pvl.nis.edu.kz/root/Account/RefreshCaptcha",
-        {
-          headers: { cookie },
-        }
-      );
+        const cookie = Object.entries(req.cookies)
+          .map((cookie) => cookie.join("="))
+          .join("; ");
 
-      const body = await response.json();
+        const response = await fetch(
+          `https://${req.query.city}/root/Account/RefreshCaptcha`,
+          {
+            headers: { cookie },
+          }
+        );
 
-      if (!body.data.base64img)
-        return reply.code(400).send({ message: "Что-то пошло не так" });
+        const body = await response.json();
 
-      reply.code(200).send({ base54img: body.data.base64img });
-    } catch (err) {
-      console.log(err);
-      reply.code(500).send({ message: "Что-то пошло не так" });
+        if (!body.data.base64img)
+          return reply.code(400).send({ message: "Что-то пошло не так" });
+
+        reply.code(200).send({ base54img: body.data.base64img });
+      } catch (err) {
+        console.log(err);
+        reply.code(500).send({ message: "Что-то пошло не так" });
+      }
     }
-  });
+  );
 }
