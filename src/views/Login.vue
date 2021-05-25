@@ -78,69 +78,23 @@
 
   <div class="body">
     <enis-icon class="icon" />
-
-    <form action="#" method="post" @submit.prevent="submit()">
-      <h1>Sign in</h1>
-      <section>
-        <label for="login">Login</label>
-        <input
-          id="login"
-          name="login"
-          type="text"
-          placeholder=" "
-          autocomplete="username"
-          required
-          v-model="user.login"
-        />
-      </section>
-      <section>
-        <label for="current-password">Password</label>
-        <input
-          id="current-password"
-          name="current-password"
-          type="password"
-          autocomplete="current-password"
-          aria-describedby="password-constraints"
-          required
-          v-model="user.password"
-        />
-        <div id="password-constraints">
-          Eight or more characters, with at least one&nbsp;lowercase and one
-          uppercase letter.
-        </div>
-      </section>
-
-      <button id="signin">Sign in</button>
-    </form>
-
-    <!-- <form @submit.prevent="submit()" class="form">
-      <enis-icon class="icon" />
-      <label for="login">Login</label>
-      <input
-        v-model="user.login"
-        id="login"
-        type="number"
-        placeholder="Login"
-      />
-      <label for="password">Password</label>
-      <input
-        id="password"
-        v-model="user.password"
-        type="text"
-        placeholder="Password"
-      />
-      <template v-if="captcha">
-        <img :src="`data:image/png;base64,${captcha}`" />
-        <label for="captcha">Captcha</label>
-        <input
-          id="captcha"
-          v-model="user.captchaInput"
-          type="text"
-          placeholder="Captcha"
-        />
-      </template>
-      <button type="submit">SUBMIT</button>
-    </form> -->
+    <p
+      contenteditable
+      @input="onInputLogin"
+      style="padding: 10px; border: 1px solid black"
+    >
+      {{ user.login }}
+    </p>
+    <p
+      contenteditable
+      @input="onInputPassword"
+      style="padding: 10px; border: 1px solid black"
+    >
+      {{ user.password }}
+    </p>
+    <p @click="submit()">
+      LOGIN
+    </p>
   </div>
 </template>
 
@@ -178,7 +132,14 @@ export default {
   },
   methods: {
     ...mapActions(["auth", "setCity"]),
+    onInputLogin(e) {
+      this.user.login = e.target.innerText;
+    },
+    onInputPassword(e) {
+      this.user.password = e.target.innerText;
+    },
     submit() {
+      console.log(this.user);
       this.setCity(this.city, this.city.value);
       api
         .login(this.user, this.city.value)
