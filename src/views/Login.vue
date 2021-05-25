@@ -27,7 +27,7 @@
             no-error-icon
           />
           <q-input
-            type="password"
+            type="text"
             unelevated
             v-model="user.password"
             label="Ваш пароль"
