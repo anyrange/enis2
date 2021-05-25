@@ -27,7 +27,12 @@ export default async function(fastify) {
           .map((cookie) => cookie.join("="))
           .join("; ");
 
-        const periodsData = await periodDateAPI(cookie, req.params.id, city);
+        const periodsData = await periodDateAPI(
+          cookie,
+          req.params.id,
+          reply,
+          city
+        );
 
         reply.code(200).send(periodsData);
       } catch (err) {
@@ -38,7 +43,7 @@ export default async function(fastify) {
   );
 }
 
-const periodDateAPI = async (cookie, periodId, city) => {
+const periodDateAPI = async (cookie, periodId, reply, city) => {
   const params = new URLSearchParams();
   params.append("periodId", periodId);
 
@@ -84,8 +89,15 @@ const periodDateAPI = async (cookie, periodId, city) => {
     body: params,
   });
 
-  cookie =
-    cookie + "; " + smsCookie.headers.raw()["set-cookie"][0].split(";")[0];
+  const newCookie = smsCookie.headers.raw()["set-cookie"][0].split(";")[0];
+
+  if (newCookie.split("=")[0] === "sms_Pavlodar_jce_SessionID") {
+    cookie = cookie + "; " + newCookie;
+
+    reply.setCookie(newCookie.split("=")[0], newCookie.split("=")[1], {
+      httpOnly: true,
+    });
+  }
 
   const diary = await fetch(`https://${city}/Jce/Diary/GetSubjects`, {
     method: "POST",
