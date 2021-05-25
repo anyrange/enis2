@@ -9,12 +9,16 @@ export default async function(fastify) {
         params: {
           type: "object",
           required: ["id"],
-          properties: { id: { type: "string" } },
+          properties: { id: { type: "string", minLength: 36, maxLength: 36 } },
         },
       },
+      attachValidation: true,
     },
     async (req, reply) => {
       try {
+        if (req.validationError)
+          return reply.code(404).send({ message: "Invalid data" });
+
         const cookie = Object.entries(req.cookies)
           .map((cookie) => cookie.join("="))
           .join("; ");

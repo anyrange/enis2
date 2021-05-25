@@ -25,7 +25,7 @@ export default async function(fastify) {
         return reply.code(400).send({ message: periods.message });
 
       const periodsData = await Promise.all(
-        periods.data.map((period) => periodDateAPI(cookie, period))
+        periods.data.map((period) => periodDateAPI(cookie, period, reply))
       );
 
       periodsData.forEach((periodData) => {
@@ -72,7 +72,7 @@ const periodAPI = async (cookie, year) => {
     });
 };
 
-const periodDateAPI = async (cookie, period) => {
+const periodDateAPI = async (cookie, period, reply) => {
   const params = new URLSearchParams();
   params.append("periodId", period.Id);
 
@@ -83,11 +83,7 @@ const periodDateAPI = async (cookie, period) => {
       headers: { cookie },
       body: params,
     }
-  )
-    .then((res) => res.json())
-    .catch((err) => {
-      throw err;
-    });
+  ).then((res) => res.json());
 
   params.append("parallelId", parallel.data[0].Id);
 
@@ -98,11 +94,7 @@ const periodDateAPI = async (cookie, period) => {
       headers: { cookie },
       body: params,
     }
-  )
-    .then((res) => res.json())
-    .catch((err) => {
-      throw err;
-    });
+  ).then((res) => res.json());
 
   params.append("klassId", klasses.data[0].Id);
 
@@ -113,11 +105,7 @@ const periodDateAPI = async (cookie, period) => {
       headers: { cookie },
       body: params,
     }
-  )
-    .then((res) => res.json())
-    .catch((err) => {
-      throw err;
-    });
+  ).then((res) => res.json());
 
   params.append("studentId", student.data[0].Id);
 
@@ -128,22 +116,20 @@ const periodDateAPI = async (cookie, period) => {
       headers: { cookie },
       body: params,
     }
-  )
-    .then((res) => res.json())
-    .catch((err) => {
-      throw err;
-    });
+  ).then((res) => res.json());
 
   const smsCookie = await fetch(diaryLink.data.Url, {
     method: "POST",
     headers: { cookie },
     body: params,
-  }).catch((err) => {
-    throw err;
   });
 
-  cookie =
-    cookie + "; " + smsCookie.headers.raw()["set-cookie"][0].split(";")[0];
+  const newCookie = smsCookie.headers.raw()["set-cookie"][0].split(";")[0];
+  cookie = cookie + "; " + newCookie;
+
+  reply.setCookie(newCookie.split("=")[0], newCookie.split("=")[1], {
+    httpOnly: true,
+  });
 
   const diary = await fetch(
     "https://sms.pvl.nis.edu.kz/Jce/Diary/GetSubjects",
@@ -152,11 +138,7 @@ const periodDateAPI = async (cookie, period) => {
       headers: { cookie },
       body: params,
     }
-  )
-    .then((res) => res.json())
-    .catch((err) => {
-      throw err;
-    });
+  ).then((res) => res.json());
 
   diary.period = period.Name;
 
