@@ -13,12 +13,8 @@ const getCity = () => {
 
 export default {
   login(credentials, city) {
-    console.log(credentials);
-
     return api
-      .get(
-        `login?city=${city}&login=${credentials.login}&password=${credentials.password}&captchaInput=${credentials.captchaInput}`
-      )
+      .post(`login?city=${city}`, credentials)
       .then((response) => response.data);
   },
   terms() {
