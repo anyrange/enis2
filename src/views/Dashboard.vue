@@ -116,9 +116,6 @@
                   </q-list></q-tab-panel
                 >
               </q-tab-panels>
-              <q-card-actions align="left" class="bg-white text-primary">
-                <q-btn flat label="Ок" v-close-popup />
-              </q-card-actions>
             </q-card>
           </q-dialog>
         </q-page>
@@ -139,6 +136,7 @@
 <script>
 import { mapActions } from "vuex";
 import api from "@/api";
+import mock from "@/mock";
 
 export default {
   data() {
@@ -226,6 +224,12 @@ export default {
           this.loading = false;
           this.$q.loading.hide();
         });
+    },
+    fetchMock() {
+      this.dash = mock;
+      this.loading = false;
+      this.term = `${this.dash.length}_term`;
+      this.selectTerm(this.dash.length - 1);
     },
   },
   created() {

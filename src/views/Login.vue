@@ -49,6 +49,14 @@
               no-error-icon
             />
           </template>
+          <q-select
+            filled
+            v-model="city"
+            unelevated
+            :options="citiesList"
+            @input="saveCity()"
+            label="Школа"
+          />
         </q-card-section>
         <q-card-actions class="q-px-md">
           <q-btn
@@ -67,9 +75,12 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 import EnisIcon from "@/components/icons/EnisIcon";
 import api from "@/api";
+import cities from "@/cities.json";
+
+const defaultCity = { value: "sms.pvl.nis.edu.kz", label: "Павлодар ХБН" };
 
 export default {
   components: {
@@ -83,13 +94,24 @@ export default {
         captchaInput: "",
       },
       captcha: "",
+      city: {},
+      citiesList: cities,
     };
   },
+  computed: {
+    ...mapGetters({
+      savedCity: "getCity",
+    }),
+  },
+  created() {
+    this.city = this.savedCity || defaultCity;
+  },
   methods: {
-    ...mapActions(["auth"]),
+    ...mapActions(["auth", "setCity"]),
     submit() {
+      this.setCity(this.city);
       api
-        .login(this.user)
+        .login(this.user, this.city.value)
         .then((response) => {
           const success = response.success;
           this.auth({ success });

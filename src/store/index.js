@@ -1,33 +1,39 @@
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
 
-const getDefaultState = () => {
-  return {
-    user: null,
-  };
-};
-
 export default createStore({
-  state: getDefaultState(),
+  state: {
+    user: null,
+    city: null,
+  },
   mutations: {
     SET_USER(state, payload) {
       state.user = payload;
     },
-    RESET: (state) => {
-      Object.assign(state, getDefaultState());
+    SET_CITY(state, payload) {
+      state.city = payload;
+    },
+    REMOVE_USER: (state) => {
+      state.user = null;
     },
   },
   getters: {
     isLoggedIn(state) {
       return state.user;
     },
+    getCity(state) {
+      return state.city;
+    },
   },
   actions: {
     auth: ({ commit }, success) => {
       commit("SET_USER", success);
     },
+    setCity: ({ commit }, city) => {
+      commit("SET_CITY", city);
+    },
     logout: ({ commit }) => {
-      commit("RESET", "");
+      commit("REMOVE_USER", "");
     },
   },
   plugins: [createPersistedState()],

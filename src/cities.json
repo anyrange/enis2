@@ -1,0 +1,78 @@
+[
+  {
+    "value": "sms.akt.nis.edu.kz",
+    "label": "Актау ХБН"
+  },
+  {
+    "value": "sms.akb.nis.edu.kz",
+    "label": "Актобе ФМН"
+  },
+  {
+    "value": "sms.fmalm.nis.edu.kz",
+    "label": "Алматы ФМН"
+  },
+  {
+    "value": "sms.hbalm.nis.edu.kz",
+    "label": "Алматы ХБН"
+  },
+  {
+    "value": "sms.ast.nis.edu.kz",
+    "label": "Астана ФМН"
+  },
+  {
+    "value": "sms.atr.nis.edu.kz",
+    "label": "Атырау ХБН"
+  },
+  {
+    "value": "sms.krg.nis.edu.kz",
+    "label": "Караганда ХБН"
+  },
+  {
+    "value": "sms.kt.nis.edu.kz",
+    "label": "Кокшетау ФМН"
+  },
+  {
+    "value": "sms.kst.nis.edu.kz",
+    "label": "Костанай ФМН"
+  },
+  {
+    "value": "sms.kzl.nis.edu.kz",
+    "label": "Кызылорда ХБН"
+  },
+  {
+    "value": "sms.pvl.nis.edu.kz",
+    "label": "Павлодар ХБН"
+  },
+  {
+    "value": "sms.ptr.nis.edu.kz",
+    "label": "Петропавловск ХБН"
+  },
+  {
+    "value": "sms.sm.nis.edu.kz",
+    "label": "Семей ФМН"
+  },
+  {
+    "value": "sms.tk.nis.edu.kz",
+    "label": "Талдыкорган ФМН"
+  },
+  {
+    "value": "sms.trz.nis.edu.kz",
+    "label": "Тараз ФМН"
+  },
+  {
+    "value": "sms.ura.nis.edu.kz",
+    "label": "Уральск ФМН"
+  },
+  {
+    "value": "sms.ukk.nis.edu.kz",
+    "label": "Усть-Каменогорск ХБН"
+  },
+  {
+    "value": "sms.fmsh.nis.edu.kz",
+    "label": "Шымкент ФМН"
+  },
+  {
+    "value": "sms.hbsh.nis.edu.kz",
+    "label": "Шымкент ХБН"
+  }
+]
