@@ -50,10 +50,13 @@
             />
           </template>
           <q-select
+            class="q-mt-sm"
             filled
             v-model="city"
             unelevated
             :options="citiesList"
+            options-cover
+            stack-label
             @input="saveCity()"
             label="Школа"
           />
