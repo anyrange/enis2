@@ -77,7 +77,43 @@
   </q-page> -->
 
   <div class="body">
-    <form @submit.prevent="submit()" class="form">
+    <enis-icon class="icon" />
+
+    <form action="#" method="post" @submit.prevent="submit()">
+      <h1>Sign in</h1>
+      <section>
+        <label for="login">Login</label>
+        <input
+          id="login"
+          name="login"
+          type="text"
+          placeholder=" "
+          autocomplete="username"
+          required
+          v-model="user.login"
+        />
+      </section>
+      <section>
+        <label for="current-password">Password</label>
+        <input
+          id="current-password"
+          name="current-password"
+          type="password"
+          autocomplete="current-password"
+          aria-describedby="password-constraints"
+          required
+          v-model="user.password"
+        />
+        <div id="password-constraints">
+          Eight or more characters, with at least one&nbsp;lowercase and one
+          uppercase letter.
+        </div>
+      </section>
+
+      <button id="signin">Sign in</button>
+    </form>
+
+    <!-- <form @submit.prevent="submit()" class="form">
       <enis-icon class="icon" />
       <label for="login">Login</label>
       <input
@@ -104,7 +140,7 @@
         />
       </template>
       <button type="submit">SUBMIT</button>
-    </form>
+    </form> -->
   </div>
 </template>
 
