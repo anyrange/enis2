@@ -96,6 +96,7 @@ const periodDateAPI = async (cookie, periodId, reply, city) => {
 
     reply.setCookie(newCookie.split("=")[0], newCookie.split("=")[1], {
       httpOnly: true,
+      path: "/",
     });
   }
 

@@ -50,11 +50,11 @@ export default async function(fastify) {
         cookies.forEach((cookie) => {
           if (cookie.name == "lang") {
             reply.setCookie(cookie.name, cookie.value, {
-              path: process.env.FRONTEND_URI,
+              path: "/",
             });
           }
           reply.setCookie(cookie.name, cookie.value, {
-            path: process.env.FRONTEND_URI,
+            path: "/",
             httpOnly: true,
           });
         });

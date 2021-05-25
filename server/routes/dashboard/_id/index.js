@@ -33,7 +33,9 @@ export default async function(fastify) {
           return reply.code(400).send({ message: periods.message });
 
         const periodsData = await Promise.all(
-          periods.data.map((period) => periodDateAPI(cookie, period, city))
+          periods.data.map((period) =>
+            periodDateAPI(cookie, period, reply, city)
+          )
         );
 
         periodsData.forEach((periodData) => {
@@ -60,7 +62,7 @@ const periodAPI = async (cookie, year, city) => {
   }).then((res) => res.json());
 };
 
-const periodDateAPI = async (cookie, period, city) => {
+const periodDateAPI = async (cookie, period, reply, city) => {
   const params = new URLSearchParams();
   params.append("periodId", period.Id);
 
@@ -106,8 +108,16 @@ const periodDateAPI = async (cookie, period, city) => {
     body: params,
   });
 
-  cookie =
-    cookie + "; " + smsCookie.headers.raw()["set-cookie"][0].split(";")[0];
+  const newCookie = smsCookie.headers.raw()["set-cookie"][0].split(";")[0];
+
+  if (newCookie.split("=")[0] === "sms_Pavlodar_jce_SessionID") {
+    cookie = cookie + "; " + newCookie;
+
+    reply.setCookie(newCookie.split("=")[0], newCookie.split("=")[1], {
+      httpOnly: true,
+      path: "/",
+    });
+  }
 
   const diary = await fetch(`https://${city}/Jce/Diary/GetSubjects`, {
     method: "POST",
