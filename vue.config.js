@@ -1,13 +1,10 @@
 module.exports = {
   pwa: {
-    manifestOptions: {
-      name: "enis2",
-      short_name: "enis2",
-      display: "standalone",
-      background_color: "#ffffff",
-      themeColor: "#4885fb",
-      msTileColor: "#4885fb",
-    },
+    name: "enis2",
+    themeColor: "#4885fb",
+    msTileColor: "#4885fb",
+    background_color: "#ffffff",
+    display: "standalone",
     icons: [
       {
         src: "./img/icons/android-chrome-192x192.png",
