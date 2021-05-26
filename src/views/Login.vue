@@ -21,7 +21,8 @@
             mask="############"
             :rules="[
               (val) =>
-                (val && val.length <= 12) || 'ИИН должен содержать 12 символов',
+                (val && val.length === 12) ||
+                'ИИН должен содержать 12 символов',
             ]"
             :lazy-rules="'ondemand'"
             no-error-icon
@@ -33,7 +34,9 @@
             label="Ваш пароль"
             :rules="[
               (val) =>
-                (val && val.length > 0) || 'Пароль не можеть быть пустым',
+                (val &&
+                  val.match(`[A-za-z0-9!,@,#,$,%,^,&,*,(,),-,=,_,+,~]{6,}`)) ||
+                'Неверный формат',
             ]"
             :lazy-rules="'ondemand'"
             no-error-icon
@@ -84,6 +87,7 @@ import api from "@/api";
 import cities from "@/cities.json";
 
 const defaultCity = { value: "sms.pvl.nis.edu.kz", label: "Павлодар ХБН" };
+const regExp = new RegExp(`[A-za-z0-9!,@,#,$,%,^,&,*,(,),-,=,_,+,~]{6,16}`);
 
 export default {
   components: {
@@ -96,6 +100,7 @@ export default {
         password: "",
         captchaInput: "",
       },
+      passwordRegex: regExp,
       captcha: "",
       city: {},
       citiesList: cities,
