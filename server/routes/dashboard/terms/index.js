@@ -70,9 +70,5 @@ const periodAPI = async (cookie, year, city) => {
     method: "POST",
     headers: { cookie },
     body: params,
-  })
-    .then((res) => res.json())
-    .catch((err) => {
-      throw err;
-    });
+  }).then((res) => res.json());
 };

@@ -33,8 +33,12 @@ export default async function(fastify) {
           reply,
           city
         );
+
         if (typeof periodsData === "string")
           return reply.code("400").send({ message: periodsData });
+
+        if (!periodsData.success)
+          return reply.code(400).send({ message: periodsData.message });
 
         reply.code(200).send(periodsData);
       } catch (err) {
@@ -108,7 +112,6 @@ const periodDateAPI = async (cookie, periodId, reply, city) => {
     cookie = cookie + "; " + newCookie;
 
     reply.setCookie(newCookie.split("=")[0], newCookie.split("=")[1], {
-      httpOnly: true,
       sameSite: "none",
       path: "/",
       secure: true,
