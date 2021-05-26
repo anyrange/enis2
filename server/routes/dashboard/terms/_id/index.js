@@ -33,6 +33,8 @@ export default async function(fastify) {
           reply,
           city
         );
+        if (typeof periodsData === "string")
+          return reply.code("400").send({ message: periodsData });
 
         reply.code(200).send(periodsData);
       } catch (err) {
@@ -51,7 +53,18 @@ const periodDateAPI = async (cookie, periodId, reply, city) => {
     method: "POST",
     headers: { cookie },
     body: params,
-  }).then((res) => res.json());
+  }).then(async (res) => {
+    const sessionExpiredText = await res.text();
+    if (
+      sessionExpiredText ===
+      "Сессия пользователя была завершена, перезагрузите страницу"
+    )
+      return sessionExpiredText;
+
+    return JSON.parse(sessionExpiredText);
+  });
+
+  if (typeof parallel === "string") return parallel;
 
   if (!parallel.success) throw new Error(parallel.message);
 
