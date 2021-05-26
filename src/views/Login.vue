@@ -60,7 +60,7 @@
             @input="saveCity()"
             label="Школа"
           />
-        </q-card-section>
+        </q-card-section> ABOBA
         <q-card-actions class="q-px-md">
           <q-btn
             type="submit"

@@ -3,8 +3,12 @@ module.exports = {
     name: "enis2",
     themeColor: "#4885fb",
     msTileColor: "#4885fb",
-    background_color: "#ffffff",
-    display: "standalone",
+    appleMobileWebAppCapable: "yes",
+    appleMobileWebAppStatusBarStyle: "#4885fb",
+    manifestOptions: {
+      background_color: "#ffffff",
+      display: "standalone",
+    },
     icons: [
       {
         src: "./img/icons/android-chrome-192x192.png",
