@@ -51,10 +51,14 @@ export default async function(fastify) {
           if (cookie.name == "lang") {
             reply.setCookie(cookie.name, cookie.value, {
               path: "/",
+              sameSite: "none",
+              secure: true,
             });
           }
           reply.setCookie(cookie.name, cookie.value, {
             path: "/",
+            sameSite: "none",
+            secure: true,
             httpOnly: true,
           });
         });
