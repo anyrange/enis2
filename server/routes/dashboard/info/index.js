@@ -46,6 +46,8 @@ export default async function(fastify) {
 
         const body = await response.json();
 
+        if (!body.success)
+          return reply.code(400).send({ message: body.message });
         reply.code(200).send(body);
       } catch (err) {
         console.log(err);
