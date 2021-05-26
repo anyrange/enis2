@@ -154,3 +154,24 @@ export default {
   }
 }
 </style>
+
+<style>
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: 50%;
+}
+.form input {
+  margin: 0px 0px 20px 0px;
+}
+.icon {
+  width: 50px;
+  height: 50px;
+}
+</style>
