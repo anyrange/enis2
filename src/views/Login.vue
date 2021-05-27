@@ -73,6 +73,7 @@
             class="full-width q-mb-sm"
             label="Войти"
             ref="submitBtn"
+            :loading="loading"
           />
         </q-card-actions>
       </q-form>
@@ -95,6 +96,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       user: {
         login: "",
         password: "",
@@ -117,6 +119,7 @@ export default {
   methods: {
     ...mapActions(["auth", "setCity"]),
     submit() {
+      this.loading = true;
       this.setCity(this.city, this.city.value);
       api
         .login(this.user, this.city.value)
@@ -124,6 +127,9 @@ export default {
           const success = response.success;
           this.auth({ success });
           this.$router.push({ name: "dashboard" });
+        })
+        .finally(() => {
+          this.loading = false;
         })
         .catch((error) => {
           if (error.response.data.data) {

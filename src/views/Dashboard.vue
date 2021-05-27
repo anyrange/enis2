@@ -78,7 +78,7 @@
                           :value="item.Score / item.MaxScore"
                           rounded
                           :color="
-                            getStrengthColorScore(item.Score / item.MaxScore)
+                            getStrengthColor((item.Score / item.MaxScore) * 100)
                           "
                           class="q-mt-sm"
                         />
@@ -104,7 +104,7 @@
                           :value="item.Score / item.MaxScore"
                           rounded
                           :color="
-                            getStrengthColorScore(item.Score / item.MaxScore)
+                            getStrengthColor((item.Score / item.MaxScore) * 100)
                           "
                           class="q-mt-sm"
                         />
@@ -115,8 +115,8 @@
                         </q-item-label>
                       </q-item-section>
                     </q-item>
-                  </q-list></q-tab-panel
-                >
+                  </q-list>
+                </q-tab-panel>
               </q-tab-panels>
             </q-card>
           </q-dialog>
@@ -144,14 +144,13 @@ export default {
     return {
       loading: true,
       loadingTerms: true,
-
-      marks: null,
+      marks: [],
+      diary: [],
+      terms: "",
+      current_term: "",
       modalOpened: false,
       subjectTab: "sor",
       selectedSubject: {},
-      terms: "",
-      current_term: "",
-      diary: [],
     };
   },
   methods: {
@@ -176,7 +175,12 @@ export default {
             progress: true,
             timeout: 1500,
           });
-          this.disconnect();
+          if (
+            error.response.data.message ===
+            "Сессия пользователя была завершена, перезагрузите страницу"
+          ) {
+            this.disconnect();
+          }
         });
     },
     sortByScore(array) {
@@ -185,13 +189,6 @@ export default {
       });
     },
     getStrengthColor(score) {
-      const roundedScore = Math.ceil(score);
-      if (roundedScore >= 85) return "positive";
-      if (roundedScore >= 65) return "warning";
-      return "negative";
-    },
-    getStrengthColorScore(score) {
-      score = score * 100;
       const roundedScore = Math.ceil(score);
       if (roundedScore >= 85) return "positive";
       if (roundedScore >= 65) return "warning";
