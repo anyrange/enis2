@@ -26,3 +26,4 @@ pnpm-debug.log*
 *.lock
 server/node_modules
 .env
+package-lock.json

@@ -175,12 +175,7 @@ export default {
             progress: true,
             timeout: 1500,
           });
-          if (
-            error.response.data.message ===
-            "Сессия пользователя была завершена, перезагрузите страницу"
-          ) {
-            this.disconnect();
-          }
+          if (error.response.status === 500) this.disconnect();
         });
     },
     sortByScore(array) {
