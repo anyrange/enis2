@@ -57,8 +57,6 @@ export default async function(fastify) {
 
         if (!body.success) return reply.code(403).send(body);
 
-        console.log(req.body.login + " зашёл");
-
         reply.code(200).send(body);
       } catch (err) {
         console.log(err);
