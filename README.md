@@ -1,24 +1,24 @@
 # enis2
 
-## Project setup
-```
-yarn install
+[![Netlify Status](https://api.netlify.com/api/v1/badges/23dfe53d-5fee-4df5-820d-45d6109b713a/deploy-status)](https://app.netlify.com/sites/enis2/deploys)
+
+> Unofficial NIS client, inspired by [enis](https://github.com/superhooman/enis)
+
+## Development
+
+### Setup environemnt
+
+```bash
+$ git clone https://github.com/anyrange/enis2.git
+$ cd enis2 && npm install
+$ cd server && npm install && cd ..
+$ npm run dev
 ```
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+### Environment variables
 
-### Compiles and minifies for production
-```
-yarn build
-```
+Rename [.env.example](/.env.example) to `.env` and don't forget to set your variables
 
-### Lints and fixes files
-```
-yarn lint
-```
+## License
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+[MIT](/LICENSE)
