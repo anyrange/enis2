@@ -7,7 +7,7 @@
 
 <script>
 import UpdateNotification from "@/components/UpdateNotification";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "App",
@@ -16,6 +16,12 @@ export default {
   },
   computed: {
     ...mapGetters({ theme: "getTheme" }),
+  },
+  methods: {
+    ...mapActions(["initTheme"]),
+  },
+  created() {
+    this.initTheme();
   },
   watch: {
     theme: {
