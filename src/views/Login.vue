@@ -128,6 +128,7 @@
           </q-card-actions>
           <div class="q-px-md q-mb-sm flex justify-center">
             <q-btn
+              aria-label="theme toggler"
               class="q-mr-xs"
               flat
               round
@@ -135,12 +136,14 @@
               :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
             />
             <q-btn
+              aria-label="github repository"
               right
               class="flex-end"
               type="a"
               target="_blank"
               round
               flat
+              rel="noreferrer"
               href="https://github.com/anyrange/enis2"
             >
               <q-icon size="1.5rem">
