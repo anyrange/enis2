@@ -24,6 +24,9 @@ export default createStore({
     getCity(state) {
       return state.city;
     },
+    getCityValue(state) {
+      return state.city.value;
+    },
   },
   actions: {
     auth: ({ commit }, success) => {

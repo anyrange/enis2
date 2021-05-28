@@ -1,12 +1,8 @@
 <template>
-  <div id="q-app">
-    <q-layout>
-      <q-page-container>
-        <router-view />
-      </q-page-container>
-    </q-layout>
-    <update-notification />
-  </div>
+  <q-layout view="lHh lpr lFf" container style="height: 100vh">
+    <router-view />
+  </q-layout>
+  <update-notification />
 </template>
 
 <script>

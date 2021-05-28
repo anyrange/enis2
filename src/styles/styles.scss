@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
-#q-app {
+#app {
   font-family: "Inter", sans-serif;
 }
 
@@ -25,4 +25,12 @@
   .xl\:w-1\/4 {
     width: 25%;
   }
+}
+
+.w-4 {
+  width: 1rem /* 16px */;
+}
+
+.h-4 {
+  height: 1rem /* 16px */;
 }

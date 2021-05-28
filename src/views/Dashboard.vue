@@ -1,143 +1,137 @@
 <template>
-  <q-layout view="lHh lpr lFf" container style="height: 100vh">
-    <template v-if="!loadingTerms">
-      <q-header bordered class="bg-white text-primary">
-        <q-tabs
-          v-model="current_term"
-          class="text-grey"
-          active-color="primary"
-          indicator-color="primary"
-        >
-          <q-tab
-            v-for="(term, index) in terms"
-            :key="index"
-            :label="`${index + 1} Четверть`"
-            :name="term.Name"
-            :ripple="false"
-            @click="getDiary(term)"
-          />
-        </q-tabs>
-      </q-header>
-    </template>
-    <template v-if="!loading">
-      <q-page-container>
-        <q-page class="flex flex-center">
-          <q-card class="lg:w-1/3 xl:w-1/4" flat>
-            <q-list bordered separator>
-              <q-item
-                v-for="subject in sortByScore(marks.data)"
-                :key="subject.Id"
-                class="q-my-sm"
-                clickable
-                @click="selectSubject(subject)"
-              >
-                <q-item-section>
-                  <q-item-label>{{ subject.Name }}</q-item-label>
-                  <q-item-label class="text-subtitle2">
-                    {{ subject.Score }}%
-                  </q-item-label>
-                  <q-linear-progress
-                    :value="subject.Score / 100"
-                    rounded
-                    :color="getStrengthColor(subject.Score)"
-                    class="q-mt-sm"
-                  />
-                </q-item-section>
-                <q-item-section side>
-                  <q-item-label class="text-weight-bold">
-                    {{ subject.Mark }}
-                  </q-item-label>
-                </q-item-section>
-              </q-item>
-            </q-list>
-          </q-card>
-          <q-dialog v-model="modalOpened" @hide="selectedSubject = {}">
-            <q-card style="width: 700px; max-width: 80vw;">
-              <q-tabs
-                v-model="subjectTab"
-                align="justify"
-                class="text-grey"
-                active-color="primary"
-                indicator-color="primary"
-              >
-                <q-tab name="sor" label="СОР" />
-                <q-tab name="soch" label="СОЧ" />
-              </q-tabs>
-              <q-separator />
-              <q-tab-panels v-model="subjectTab" animated>
-                <q-tab-panel name="sor">
-                  <q-list separator>
-                    <q-item
-                      v-for="item in selectedSubject.SOR"
-                      :key="item.RubricId"
-                      class="q-my-sm"
-                    >
-                      <q-item-section>
-                        <q-item-label>{{ item.Name }}</q-item-label>
-                        <q-linear-progress
-                          :value="item.Score / item.MaxScore"
-                          rounded
-                          :color="
-                            getStrengthColor((item.Score / item.MaxScore) * 100)
-                          "
-                          class="q-mt-sm"
-                        />
-                      </q-item-section>
-                      <q-item-section side>
-                        <q-item-label class="text-weight-bold">
-                          {{ item.Score }} / {{ item.MaxScore }}
-                        </q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-tab-panel>
-                <q-tab-panel name="soch">
-                  <q-list separator>
-                    <q-item
-                      v-for="item in selectedSubject.SOCH"
-                      :key="item.RubricId"
-                      class="q-my-sm"
-                    >
-                      <q-item-section>
-                        <q-item-label>{{ item.Name }}</q-item-label>
-                        <q-linear-progress
-                          :value="item.Score / item.MaxScore"
-                          rounded
-                          :color="
-                            getStrengthColor((item.Score / item.MaxScore) * 100)
-                          "
-                          class="q-mt-sm"
-                        />
-                      </q-item-section>
-                      <q-item-section side>
-                        <q-item-label class="text-weight-bold">
-                          {{ item.Score }} / {{ item.MaxScore }}
-                        </q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-tab-panel>
-              </q-tab-panels>
-            </q-card>
-          </q-dialog>
-        </q-page>
-        <q-page-sticky position="bottom" :offset="[18, 18]">
-          <q-btn
-            color="red"
-            icon="logout"
-            label="Выйти"
-            rounded
-            @click="disconnect()"
-          />
-        </q-page-sticky>
-      </q-page-container>
-    </template>
-  </q-layout>
+  <q-header bordered class="bg-white text-primary" v-if="!loadingTerms">
+    <q-tabs
+      v-model="current_term"
+      class="text-grey"
+      active-color="primary"
+      indicator-color="primary"
+    >
+      <q-tab
+        v-for="(term, index) in terms"
+        :key="index"
+        :label="`${index + 1} Четверть`"
+        :name="term.Name"
+        :ripple="false"
+        @click="getDiary(term)"
+      />
+    </q-tabs>
+  </q-header>
+  <q-page-container v-if="!loading">
+    <q-page class="flex flex-center">
+      <q-card class="lg:w-1/3 xl:w-1/4" flat>
+        <q-list bordered separator>
+          <q-item
+            v-for="subject in sortByScore(marks.data)"
+            :key="subject.Id"
+            class="q-my-sm"
+            clickable
+            @click="selectSubject(subject)"
+          >
+            <q-item-section>
+              <q-item-label>{{ subject.Name }}</q-item-label>
+              <q-item-label class="text-subtitle2">
+                {{ subject.Score }}%
+              </q-item-label>
+              <q-linear-progress
+                :value="subject.Score / 100"
+                rounded
+                :color="getStrengthColor(subject.Score)"
+                class="q-mt-sm"
+              />
+            </q-item-section>
+            <q-item-section side>
+              <q-item-label class="text-weight-bold">
+                {{ subject.Mark }}
+              </q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-card>
+      <q-dialog v-model="modalOpened" @hide="selectedSubject = {}">
+        <q-card style="width: 700px; max-width: 80vw;">
+          <q-tabs
+            v-model="subjectTab"
+            align="justify"
+            class="text-grey"
+            active-color="primary"
+            indicator-color="primary"
+          >
+            <q-tab name="sau" label="СОР" />
+            <q-tab name="sat" label="СОЧ" />
+          </q-tabs>
+          <q-separator />
+          <q-tab-panels v-model="subjectTab" animated>
+            <q-tab-panel name="sau">
+              <q-list separator>
+                <q-item
+                  v-for="item in selectedSubject.SAU"
+                  :key="item.RubricId"
+                  class="q-my-sm"
+                >
+                  <q-item-section>
+                    <q-item-label>{{ item.Name }}</q-item-label>
+                    <q-linear-progress
+                      :value="item.Score / item.MaxScore"
+                      rounded
+                      :color="
+                        getStrengthColor((item.Score / item.MaxScore) * 100)
+                      "
+                      class="q-mt-sm"
+                    />
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-item-label class="text-weight-bold">
+                      {{ item.Score }} / {{ item.MaxScore }}
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-tab-panel>
+            <q-tab-panel name="sat">
+              <q-list separator>
+                <q-item
+                  v-for="item in selectedSubject.SAT"
+                  :key="item.RubricId"
+                  class="q-my-sm"
+                >
+                  <q-item-section>
+                    <q-item-label>{{ item.Name }}</q-item-label>
+                    <q-linear-progress
+                      :value="item.Score / item.MaxScore"
+                      rounded
+                      :color="
+                        getStrengthColor((item.Score / item.MaxScore) * 100)
+                      "
+                      class="q-mt-sm"
+                    />
+                  </q-item-section>
+                  <q-item-section side>
+                    <q-item-label class="text-weight-bold">
+                      {{ item.Score }} / {{ item.MaxScore }}
+                    </q-item-label>
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-tab-panel>
+          </q-tab-panels>
+        </q-card>
+      </q-dialog>
+    </q-page>
+    <q-page-sticky position="bottom" :offset="[18, 18]">
+      <q-btn
+        color="red"
+        icon="logout"
+        label="Выйти"
+        rounded
+        @click="disconnect()"
+      />
+    </q-page-sticky>
+  </q-page-container>
 </template>
 
 <script>
 import { mapActions } from "vuex";
-import api from "@/api";
+import { terms, diary, subjectSAU, subjectSAT } from "@/api";
 
 export default {
   data() {
@@ -149,33 +143,38 @@ export default {
       terms: "",
       current_term: "",
       modalOpened: false,
-      subjectTab: "sor",
-      selectedSubject: {},
+      subjectTab: "sau",
+      selectedSubject: {
+        SAU: {},
+        SAT: {},
+      },
     };
   },
   methods: {
     ...mapActions(["logout"]),
     disconnect() {
       this.logout();
+      this.$q.loading.hide();
       this.$router.push({ name: "login" });
     },
     selectSubject(subj) {
       this.modalOpened = true;
-      api
-        .subject(subj.JournalId, subj.Evaluations[0].Id, subj.Evaluations[1].Id)
+      subjectSAU(subj.JournalId, subj.Evaluations[0].Id)
         .then((response) => {
-          this.selectedSubject.SOR = response[0].data.data;
-          this.selectedSubject.SOCH = response[1].data.data;
+          this.selectedSubject.SAU = response.data;
+          subjectSAT(subj.JournalId, subj.Evaluations[1].Id).then(
+            (response) => {
+              this.selectedSubject.SAT = response.data;
+            }
+          );
         })
         .catch((error) => {
-          this.$q.notify({
-            color: "negative",
-            position: "bottom-left",
-            message: error.response.data.message,
-            progress: true,
-            timeout: 1500,
-          });
-          if (error.response.status === 500) this.disconnect();
+          if (
+            error.response.data.message ===
+            "Сессия пользователя была завершена, перезагрузите страницу"
+          ) {
+            this.disconnect();
+          }
         });
     },
     sortByScore(array) {
@@ -194,22 +193,13 @@ export default {
       this.current_term = termName;
     },
     fetchTerms() {
-      api
-        .terms()
+      terms()
         .then((response) => {
           this.terms = response;
           this.getDiary(this.terms[this.terms.length - 1]);
         })
-        .catch((error) => {
-          this.$q.notify({
-            color: "negative",
-            position: "bottom-left",
-            message: error.response.data.message,
-            progress: true,
-            timeout: 1500,
-          });
+        .catch(() => {
           this.disconnect();
-          this.$q.loading.hide();
         })
         .finally(() => {
           this.loadingTerms = false;
@@ -224,9 +214,7 @@ export default {
 
       this.$q.loading.show();
       this.loading = true;
-
-      api
-        .diary(id)
+      diary(id)
         .then((response) => {
           this.diary.push({
             termName: termName,
@@ -234,16 +222,8 @@ export default {
           });
           this.chooseTerm(termName);
         })
-        .catch((error) => {
-          this.$q.notify({
-            color: "negative",
-            position: "bottom-left",
-            message: error.response.data.message,
-            progress: true,
-            timeout: 1500,
-          });
+        .catch(() => {
           this.disconnect();
-          this.$q.loading.hide();
         })
         .finally(() => {
           this.loading = false;
