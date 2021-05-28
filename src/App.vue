@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh lpr lFf" container style="height: 100vh">
+  <q-layout view="lHh Lpr lFf" container style="height: 100vh">
     <router-view />
   </q-layout>
   <update-notification />
@@ -7,11 +7,25 @@
 
 <script>
 import UpdateNotification from "@/components/UpdateNotification";
+import { mapGetters } from "vuex";
 
 export default {
   name: "App",
   components: {
     UpdateNotification,
+  },
+  computed: {
+    ...mapGetters({ theme: "getTheme" }),
+  },
+  watch: {
+    theme: {
+      handler: function() {
+        this.theme === "light"
+          ? this.$q.dark.set(false)
+          : this.$q.dark.set(true);
+      },
+      immediate: true,
+    },
   },
 };
 </script>

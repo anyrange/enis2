@@ -1,5 +1,9 @@
 <template>
-  <q-header bordered class="bg-white text-primary" v-if="!loadingTerms">
+  <q-header
+    bordered
+    :class="$q.dark.isActive ? 'header_dark' : 'header_normal'"
+    v-if="!loadingTerms"
+  >
     <q-tabs
       v-model="current_term"
       class="text-grey"
@@ -239,3 +243,12 @@ export default {
   },
 };
 </script>
+
+<style>
+.header_normal {
+  background: #fff;
+}
+.header_dark {
+  background: #1d1d1d;
+}
+</style>
