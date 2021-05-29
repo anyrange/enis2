@@ -135,7 +135,7 @@
 
 <script>
 import { mapActions } from "vuex";
-import { terms, diary, subjectSAU, subjectSAT } from "@/api";
+import { terms, diary, subject } from "@/api";
 
 export default {
   data() {
@@ -161,27 +161,26 @@ export default {
       this.$q.loading.hide();
       this.$router.push({ name: "login" });
     },
-    selectSubject(subj) {
+    async selectSubject(subj) {
       this.modalOpened = true;
-      subjectSAU(subj.JournalId, subj.Evaluations[0].Id)
-        .then((response) => {
-          this.selectedSubject.SAU = response.data;
-          subjectSAT(subj.JournalId, subj.Evaluations[1].Id).then(
-            (response) => {
-              this.selectedSubject.SAT = response.data;
-            }
-          );
-        })
-        .catch((error) => {
-          if (
-            error.response.data.message ===
-              "Сессия пользователя была завершена, перезагрузите страницу" ||
-            error.response.data.message ===
-              "Время работы с дневником завершено. Для продолжения необходимо обновить модуль"
-          ) {
-            this.disconnect();
-          }
-        });
+      try {
+        this.selectedSubject.SAU = await subject(
+          subj.JournalId,
+          subj.Evaluations[0].Id
+        );
+        this.selectedSubject.SAT = await subject(
+          subj.JournalId,
+          subj.Evaluations[1].Id
+        );
+      } catch (error) {
+        const possibleErrors = [
+          "Сессия пользователя была завершена, перезагрузите страницу",
+          "Время работы с дневником завершено. Для продолжения необходимо обновить модуль",
+        ];
+        if (possibleErrors.indexOf(error.response.data.message) >= 0) {
+          this.disconnect();
+        }
+      }
     },
     sortByScore(array) {
       return array.sort((a, b) => {
@@ -198,18 +197,14 @@ export default {
       this.marks = this.diary.find((term) => termName === term.termName);
       this.current_term = termName;
     },
-    fetchTerms() {
-      terms()
-        .then((response) => {
-          this.terms = response;
-          this.getDiary(this.terms[this.terms.length - 1]);
-        })
-        .catch(() => {
-          this.disconnect();
-        })
-        .finally(() => {
-          this.loadingTerms = false;
-        });
+    async fetchTerms() {
+      try {
+        this.terms = await terms();
+        this.getDiary(this.terms[this.terms.length - 1]);
+        this.loadingTerms = false;
+      } catch (error) {
+        this.disconnect();
+      }
     },
     getDiary(term) {
       const id = term.Id;

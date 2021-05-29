@@ -38,9 +38,8 @@ export function terms() {
 export function diary(term) {
   return api.get(`dashboard/terms/${term}`);
 }
-export function subjectSAU(journalId, evalIdSAU) {
-  return api.get(`dashboard/info?journalId=${journalId}&evalId=${evalIdSAU}`);
-}
-export function subjectSAT(journalId, evalIdSAT) {
-  return api.get(`dashboard/info?journalId=${journalId}&evalId=${evalIdSAT}`);
+export function subject(journalId, evalId) {
+  return api
+    .get(`dashboard/info?journalId=${journalId}&evalId=${evalId}`)
+    .then((response) => response.data);
 }
