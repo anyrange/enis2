@@ -36,7 +36,7 @@ export default async function(fastify) {
           .join("; ");
 
         const response = await fetch(
-          `https://${req.query.city}/Jce/Diary/GetResultByEvalution?_dc=1621922724082`,
+          `https://${req.query.city}/Jce/Diary/GetResultByEvalution`,
           {
             method: "POST",
             body: params,
