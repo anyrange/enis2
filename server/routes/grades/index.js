@@ -67,6 +67,16 @@ export default async function(fastify) {
       params.append("isEditable", true);
       params.append("group", { property: "ComponentId", direction: "ASC" });
 
+      const url = await fetch(`https://${domain}/reportcard/GetUrl`, {
+        method: "POST",
+        body: params,
+        headers: { cookie },
+      }).then((res) => res.json());
+
+      await fetch(url.data, {
+        headers: { cookie },
+      });
+
       const grades = await fetch(
         `https://${domain}/ReportCardByStudent/GetData`,
         {
