@@ -43,3 +43,8 @@ export function subject(journalId, evalId) {
     .get(`dashboard/info?journalId=${journalId}&evalId=${evalId}`)
     .then((response) => response.data);
 }
+export function grades() {
+  return api.get("grades").then((response) => {
+    console.log(response);
+  });
+}

@@ -135,7 +135,7 @@
 
 <script>
 import { mapActions } from "vuex";
-import { terms, diary, subject } from "@/api";
+import { terms, diary, subject, grades } from "@/api";
 
 export default {
   data() {
@@ -144,6 +144,7 @@ export default {
       loadingTerms: true,
       marks: [],
       diary: [],
+      grades: [],
       terms: "",
       current_term: "",
       modalOpened: false,
@@ -231,10 +232,15 @@ export default {
           this.$q.loading.hide();
         });
     },
+    async fetchGrades() {
+      this.grades = await grades();
+      console.log(this.grades);
+    },
   },
   created() {
     this.$q.loading.show();
     this.fetchTerms();
+    this.fetchGrades();
   },
 };
 </script>
