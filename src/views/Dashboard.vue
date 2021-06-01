@@ -13,17 +13,23 @@
       <q-tab
         v-for="(term, index) in terms"
         :key="index"
-        :label="`${index + 1} Четверть`"
+        :label="getTermLable(index + 1)"
         :name="term.Name"
         :ripple="false"
         @click="getDiary(term)"
+      />
+      <q-tab
+        name="grades"
+        icon="table_view"
+        :ripple="false"
+        @click="chooseGrades()"
       />
     </q-tabs>
   </q-header>
   <q-page-container v-if="!loading">
     <q-page class="flex flex-center">
       <q-card class="lg:w-1/3 xl:w-1/4" flat>
-        <q-list bordered separator>
+        <q-list bordered separator v-if="chosenTab === 'marks'">
           <q-item
             v-for="subject in sortByScore(marks.data)"
             :key="subject.Id"
@@ -48,6 +54,107 @@
                 {{ subject.Mark }}
               </q-item-label>
             </q-item-section>
+          </q-item>
+        </q-list>
+        <q-list v-else>
+          <q-item v-for="item in grades" :key="item.SubjectName">
+            <q-card
+              style="border-radius: 10px; width: 100%"
+              :class="{ 'grade-card-mobile': !$q.screen.gt.sm }"
+              flat
+              bordered
+            >
+              <q-card-section>
+                <div class="row justify-between">
+                  <div class="col">
+                    <div
+                      class="text-h5 text-weight-medium"
+                      style="display: inline-block;width: 100%;white-space: nowrap;overflow: hidden !important;text-overflow: ellipsis;"
+                    >
+                      {{ item.SubjectName }}
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="row justify-end q-gutter-md">
+                      <div v-if="item.Exam !== 'none'">
+                        <div class="column items-center">
+                          <div class="col">
+                            <div class="text-h5 text-weight-medium">5</div>
+                          </div>
+                          <div class="col">
+                            <div class="text-h7">{{ item.Exam }}</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div v-if="item.Final !== 'none'">
+                        <div class="column items-center">
+                          <div class="col">
+                            <div class="text-h5 text-weight-medium">
+                              {{ item.Final }}
+                            </div>
+                          </div>
+                          <div class="col">
+                            <div class="text-h7">Итоговая</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="q-mt-lg">
+                  <div class="row justify-between">
+                    <template v-if="item.FirstHalfYear === 'none'">
+                      <div class="column items-center">
+                        <div class="text-subtitle2">I</div>
+                        <div class="text-subtitle1">
+                          {{ formatScore(item.FirstPeriod) }}
+                        </div>
+                      </div>
+                      <div class="column items-center">
+                        <div class="text-subtitle2">II</div>
+                        <div class="text-subtitle1">
+                          {{ formatScore(item.SecondPeriod) }}
+                        </div>
+                      </div>
+                      <div class="column items-center">
+                        <div class="text-subtitle2">III</div>
+                        <div class="text-subtitle1">
+                          {{ formatScore(item.FirstPeriod) }}
+                        </div>
+                      </div>
+                      <div class="column items-center">
+                        <div class="text-subtitle2">IV</div>
+                        <div class="text-subtitle1">
+                          {{ formatScore(item.ForthPeriod) }}
+                        </div>
+                      </div>
+                    </template>
+                    <template v-else>
+                      <div class="column items-center">
+                        <div class="text-subtitle2">I и II</div>
+                        <div class="text-subtitle1">
+                          {{ formatScore(item.FirstHalfYear) }}
+                        </div>
+                      </div>
+                      <div class="column items-center">
+                        <div class="text-subtitle2">III и IV</div>
+                        <div class="text-subtitle1">
+                          {{ formatScore(item.SecondHalfYear) }}
+                        </div>
+                      </div>
+                    </template>
+                    <div class="column items-center">
+                      <div class="text-subtitle2">
+                        Годовая
+                      </div>
+                      <div class="text-subtitle1">
+                        {{ formatScore(item.Year) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </q-card-section>
+            </q-card>
           </q-item>
         </q-list>
       </q-card>
@@ -148,6 +255,7 @@ export default {
       terms: "",
       current_term: "",
       modalOpened: false,
+      chosenTab: "marks",
       subjectTab: "sau",
       selectedSubject: {
         SAU: {},
@@ -188,15 +296,35 @@ export default {
         return b.Score - a.Score;
       });
     },
+    formatScore(score) {
+      if (score === "true") return "Зачёт";
+      if (score === "false") return "Незачёт";
+      return score;
+    },
     getStrengthColor(score) {
       const roundedScore = Math.ceil(score);
       if (roundedScore >= 85) return "positive";
       if (roundedScore >= 65) return "warning";
       return "negative";
     },
+    getTermLable(index) {
+      switch (index) {
+        case 1:
+          return "I";
+        case 2:
+          return "II";
+        case 3:
+          return "III";
+        case 4:
+          return "IV";
+        default:
+          break;
+      }
+    },
     chooseTerm(termName) {
       this.marks = this.diary.find((term) => termName === term.termName);
       this.current_term = termName;
+      this.chosenTab = "marks";
     },
     async fetchTerms() {
       try {
@@ -232,15 +360,26 @@ export default {
           this.$q.loading.hide();
         });
     },
+    chooseGrades() {
+      this.chosenTab = "grades";
+      this.current_term = "grades";
+      this.fetchGrades();
+    },
     async fetchGrades() {
-      this.grades = await grades();
-      console.log(this.grades);
+      try {
+        if (!this.grades.length) {
+          this.$q.loading.show();
+          this.grades = await grades();
+          this.$q.loading.hide();
+        }
+      } catch (error) {
+        this.disconnect();
+      }
     },
   },
   created() {
     this.$q.loading.show();
     this.fetchTerms();
-    this.fetchGrades();
   },
 };
 </script>
@@ -251,5 +390,8 @@ export default {
 }
 .header_dark {
   background: #1d1d1d;
+}
+.grade-card-mobile {
+  max-width: 350px;
 }
 </style>
