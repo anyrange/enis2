@@ -119,7 +119,7 @@
                       <div class="column items-center">
                         <div class="text-subtitle2">III</div>
                         <div class="text-subtitle1">
-                          {{ formatScore(item.FirstPeriod) }}
+                          {{ formatScore(item.ThirdPeriod) }}
                         </div>
                       </div>
                       <div class="column items-center">
