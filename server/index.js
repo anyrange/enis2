@@ -49,6 +49,10 @@ process.on("unhandledRejection", (error) => {
   console.log(error);
 });
 
+// app.ready(() => {
+//   console.log(app.printRoutes({ commonPrefix: false }));
+// });
+
 app.listen(PORT, "0.0.0.0", (err, address) => {
   if (err) return console.log(err);
   console.info(`App listening on: ${address}`);
