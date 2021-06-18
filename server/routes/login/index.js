@@ -57,6 +57,8 @@ export default async function(fastify) {
             path: "/",
             sameSite: "strict",
             httpOnly: true,
+            secure: true,
+
             domain: url.hostname,
             expires: expireDate,
           });
