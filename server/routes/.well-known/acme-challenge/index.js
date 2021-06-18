@@ -5,7 +5,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 
 export default async function(fastify) {
-  fastify.get("/zsCoGzILS5mnrpQMB27gqN_XQz5aOdua2kygclQ_IH4", (req, reply) => {
+  fastify.get("/aTIZzv3rWbge5tMjVidvF1RjIPPNP1Xn-3SEocSVkWM", (req, reply) => {
     fs.readFile(
       join(dirname(__filename), "../../../static/certificate"),
       (err, file) => {
