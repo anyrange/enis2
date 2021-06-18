@@ -49,8 +49,7 @@ export default async function(fastify) {
 
         const url = new URL(process.env.FRONTEND_URI);
 
-        const expireDate = new Date();
-        expireDate.setDate(expireDate.getDate() + 365);
+        const year = 60 * 60 * 24 * 365;
 
         cookies.forEach((cookie) => {
           reply.setCookie(cookie.name, cookie.value, {
@@ -58,9 +57,8 @@ export default async function(fastify) {
             sameSite: "strict",
             httpOnly: true,
             secure: true,
-
             domain: url.hostname,
-            expires: expireDate,
+            maxAge: year,
           });
         });
 

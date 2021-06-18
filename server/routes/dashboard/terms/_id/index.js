@@ -113,15 +113,15 @@ const periodDateAPI = async (cookie, periodId, reply, city) => {
 
     const url = new URL(process.env.FRONTEND_URI);
 
-    const expireDate = new Date();
-    expireDate.setDate(expireDate.getDate() + 365);
+    const year = 60 * 60 * 24 * 365;
+
     reply.setCookie(newCookie.split("=")[0], newCookie.split("=")[1], {
       path: "/",
       sameSite: "strict",
       secure: true,
       domain: url.hostname,
       httpOnly: true,
-      expires: expireDate,
+      maxAge: year,
     });
   }
 
