@@ -47,11 +47,18 @@ export default async function(fastify) {
         const body = await response.json();
         const cookies = parseCookies(response);
 
+        const url = new URL(process.env.FRONTEND_URI);
+
+        const expireDate = new Date();
+        expireDate.setDate(expireDate.getDate() + 365);
+
         cookies.forEach((cookie) => {
           reply.setCookie(cookie.name, cookie.value, {
             path: "/",
-            sameSite: "none",
-            secure: true,
+            sameSite: "strict",
+            httpOnly: true,
+            domain: url.hostname,
+            expires: expireDate,
           });
         });
 

@@ -111,10 +111,16 @@ const periodDateAPI = async (cookie, periodId, reply, city) => {
   if (newCookie.split("=")[0] !== "lang") {
     cookie = cookie + "; " + newCookie;
 
+    const url = new URL(process.env.FRONTEND_URI);
+
+    const expireDate = new Date();
+    expireDate.setDate(expireDate.getDate() + 365);
     reply.setCookie(newCookie.split("=")[0], newCookie.split("=")[1], {
-      sameSite: "none",
       path: "/",
-      secure: true,
+      sameSite: "strict",
+      domain: url.hostname,
+      httpOnly: true,
+      expires: expireDate,
     });
   }
 
