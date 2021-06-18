@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import { URLSearchParams } from "url";
+import { parseCookies } from "../../../../includes/parseCookies.js";
 
 export default async function(fastify) {
   const querystring = fastify.getSchema("domain");
@@ -43,7 +44,7 @@ export default async function(fastify) {
         reply.code(200).send(periodsData);
       } catch (err) {
         console.log(err);
-        reply.code(500).send({ message: "Что-то пошло не так!" });
+        reply.code(500).send({ message: "Сервис временно недоступен!" });
       }
     }
   );
@@ -100,22 +101,24 @@ const periodDateAPI = async (cookie, periodId, reply, city) => {
     body: params,
   }).then((res) => res.json());
 
-  const smsCookie = await fetch(diaryLink.data.Url, {
+  const cookieResponse = await fetch(diaryLink.data.Url, {
     method: "POST",
     headers: { cookie },
     body: params,
   });
 
-  const newCookie = smsCookie.headers.raw()["set-cookie"][0].split(";")[0];
+  const newCookies = parseCookies(cookieResponse);
+  const smsCookie =
+    newCookies && newCookies.find((cookie) => cookie.name !== "lang");
 
-  if (newCookie.split("=")[0] !== "lang") {
-    cookie = cookie + "; " + newCookie;
+  if (smsCookie) {
+    cookie = cookie + "; " + smsCookie.name + "=" + smsCookie.value;
 
     const url = new URL(process.env.FRONTEND_URI);
 
     const year = 60 * 60 * 24 * 365;
 
-    reply.setCookie(newCookie.split("=")[0], newCookie.split("=")[1], {
+    reply.setCookie(smsCookie.name, smsCookie.value, {
       path: "/",
       sameSite: "strict",
       secure: true,

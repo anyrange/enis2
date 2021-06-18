@@ -39,8 +39,8 @@ export default async function(fastify) {
           `https://${req.query.city}/root/Account/LogOn`,
           {
             method: "POST",
-            body: params,
             headers: { cookie },
+            body: params,
           }
         );
 

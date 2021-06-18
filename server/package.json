@@ -7,7 +7,7 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "node index.js"
   },
   "dependencies": {
     "dotenv": "^10.0.0",
@@ -15,7 +15,6 @@
     "fastify-autoload": "^3.7.1",
     "fastify-cookie": "^5.3.1",
     "fastify-cors": "^6.0.1",
-    "node-fetch": "^2.6.1",
-    "nodemon": "^1.18.4"
+    "node-fetch": "^2.6.1"
   }
 }
