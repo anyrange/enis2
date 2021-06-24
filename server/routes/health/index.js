@@ -1,5 +1,5 @@
 export default async function(fastify) {
-  fastify.get("/", () => {
+  fastify.get("", () => {
     return { message: "I'm alive" };
   });
 }

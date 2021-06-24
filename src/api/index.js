@@ -44,5 +44,5 @@ export function subject(journalId, evalId) {
     .then((response) => response.data);
 }
 export function grades() {
-  return api.get("grades").then((response) => response.data);
+  return api.get("dashboard/grades").then((response) => response.data);
 }
