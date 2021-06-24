@@ -23,6 +23,7 @@ export default async function(fastify) {
       );
 
       const periods = await fastify.api({
+        method: "POST",
         url: `https://${city}/Ref/GetPeriods`,
         body: params,
         cookie,
