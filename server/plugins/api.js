@@ -5,11 +5,11 @@ export default fp(async function plugin(fastify) {
   fastify.decorate(
     "api",
     async ({ cookie = "", body = {}, url, method = "GET" }) => {
-      const response = await fetch(url, {
-        method,
-        body: body,
-        headers: { cookie },
-      });
+      let options = { method, headers: { cookie } };
+
+      if (method === "POST") options = Object.assign(options, { body });
+
+      const response = await fetch(url, options);
 
       if (!response.ok) {
         const err = new Error(response.statusText);
