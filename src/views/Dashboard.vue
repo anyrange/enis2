@@ -252,7 +252,7 @@ export default {
       marks: [],
       diary: [],
       grades: [],
-      terms: "",
+      terms: [],
       current_term: "",
       modalOpened: false,
       chosenTab: "marks",
@@ -332,10 +332,11 @@ export default {
         this.getDiary(this.terms[this.terms.length - 1]);
         this.loadingTerms = false;
       } catch (error) {
+        console.log(error);
         this.disconnect();
       }
     },
-    getDiary(term) {
+    async getDiary(term) {
       const id = term.Id;
       const termName = term.Name;
 
@@ -344,21 +345,19 @@ export default {
 
       this.$q.loading.show();
       this.loading = true;
-      diary(id)
-        .then((response) => {
-          this.diary.push({
-            termName: termName,
-            data: response.data,
-          });
-          this.chooseTerm(termName);
-        })
-        .catch(() => {
-          this.disconnect();
-        })
-        .finally(() => {
-          this.loading = false;
-          this.$q.loading.hide();
+      try {
+        const response = await diary(id);
+        this.diary.push({
+          termName: termName,
+          data: response.data,
         });
+        this.chooseTerm(termName);
+      } catch {
+        this.disconnect();
+      } finally {
+        this.loading = false;
+        this.$q.loading.hide();
+      }
     },
     chooseGrades() {
       this.chosenTab = "grades";

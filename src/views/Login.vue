@@ -173,7 +173,6 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import { login } from "@/api";
 import cities from "@/cities.json";
 
 const defaultCity = { value: "sms.pvl.nis.edu.kz", label: "Павлодар ХБН" };
@@ -203,28 +202,24 @@ export default {
     this.city = this.savedCity || defaultCity;
   },
   methods: {
-    ...mapActions(["auth", "setCity"]),
-    toggleTheme() {
-      this.$store.dispatch("toggleTheme");
-    },
-    submit() {
+    ...mapActions(["login", "setCity", "toggleTheme"]),
+    async submit() {
       this.loading = true;
       this.setCity(this.city);
-      login(this.user)
-        .then((response) => {
-          const success = response.success;
-          this.auth({ success });
-          this.$router.push({ name: "dashboard" });
-        })
-        .finally(() => {
-          this.loading = false;
-        })
-        .catch((error) => {
-          if (error.response.data.data) {
-            this.captcha = error.response.data.data.base64img;
-            this.user.captchaInput = "";
-          }
-        });
+      try {
+        await this.login(this.user);
+        this.$router.push({ name: "dashboard" });
+      } catch (error) {
+        if (error.response.data.data) {
+          this.captcha = error.response.data.data.base64img;
+          this.user.captchaInput = "";
+        }
+      } finally {
+        this.loading = false;
+      }
+    },
+    created() {
+      this.$router.push({ name: "dashboard" });
     },
   },
 };
