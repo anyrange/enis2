@@ -30,10 +30,13 @@ api.interceptors.response.use(
 );
 
 export function login(user) {
-  return api.post("login", user);
+  // return api.post("login", user);
+  console.log(user);
+  return { success: true };
 }
 export function refreshCaptcha() {
-  return api.get("login/captchaRefresh");
+  return "ABOBA";
+  // return api.get("login/captchaRefresh");
 }
 export function terms() {
   return [
