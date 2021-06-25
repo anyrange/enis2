@@ -12,17 +12,24 @@
     "server": "nodemon index.js --prefix server"
   },
   "dependencies": {
-    "@quasar/extras": "^1.0.0",
+    "@tailwindcss/postcss7-compat": "^2.0.2",
+    "@vuelidate/core": "^2.0.0-alpha.19",
+    "@vuelidate/validators": "^2.0.0-alpha.17",
+    "autoprefixer": "^9",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "js-cookie": "^2.2.1",
-    "quasar": "^2.0.0-beta.1",
+    "postcss": "^7",
     "register-service-worker": "^1.7.1",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.0.2",
+    "v-wave": "^1.2.8",
+    "vee-validate": "^4.4.5",
     "vue": "^3.0.0",
-    "vue-cookies": "^1.7.4",
     "vue-router": "^4.0.0-0",
+    "vue-toastification": "^2.0.0-rc.1",
     "vuex": "^4.0.0-0",
-    "vuex-persistedstate": "^4.0.0-beta.3"
+    "vuex-persistedstate": "^4.0.0-beta.3",
+    "@quasar/extras": "^1.0.0",
+    "quasar": "^2.0.0-beta.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -37,6 +44,7 @@
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^7.0.0",
     "nodemon": "^2.0.7",
+    "vue-cli-plugin-tailwind": "~2.0.6",
     "vue-cli-plugin-quasar": "^4.0.0-beta.2"
   },
   "eslintConfig": {

@@ -1,6 +1,8 @@
 import axios from "axios";
-import store from "@/store";
-import { Notify } from "quasar";
+import $store from "@/store";
+import { useToast } from "vue-toastification";
+const toast = useToast();
+import mockDiary from "./mockDiary.js";
 
 const api = axios.create({
   baseURL: process.env.VUE_APP_SERVER_URI,
@@ -9,7 +11,7 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const queryCharacter = config.url.includes("&") ? "&" : "?";
-  config.url = `${config.url}${queryCharacter}city=${store.getters.getCityValue}`;
+  config.url = `${config.url}${queryCharacter}city=${$store.getters.getCityValue}`;
   return config;
 });
 
@@ -18,12 +20,10 @@ api.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    Notify.create({
-      color: "negative",
-      position: "bottom-left",
-      message: error?.response?.data?.message || "Что-то пошло не так",
-      progress: true,
-      timeout: 1500,
+    if (error.response.data.status === 401) $store.dispatch("logout");
+    toast.error(error?.response?.data?.message || "Что-то пошло не так", {
+      timeout: 2500,
+      icon: false,
     });
     return Promise.reject(error);
   }
@@ -32,11 +32,25 @@ api.interceptors.response.use(
 export function login(user) {
   return api.post("login", user);
 }
+export function refreshCaptcha() {
+  return api.get("login/captchaRefresh");
+}
+
+api.get("dashboard/terms");
+
 export function terms() {
-  return api.get("dashboard/terms");
+  return [
+    { Id: "grade1id", Name: "1 четверть" },
+    { Id: "grade2id", Name: "2 четверть" },
+    { Id: "grade3id", Name: "3 четверть" },
+    { Id: "grade4id", Name: "4 четверть" },
+  ];
+  // return api.get("dashboard/terms");
 }
 export function diary(term) {
-  return api.get(`dashboard/terms/${term}`);
+  console.log(term);
+  return mockDiary;
+  // return api.get(`dashboard/terms/${term}`);
 }
 export function subject(journalId, evalId) {
   return api

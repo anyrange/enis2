@@ -1,0 +1,18 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+#app {
+  font-family: "Inter", sans-serif;
+}
+
+#wrapper {
+  @apply bg-white text-black dark:text-white dark:bg-gray-900-spotify antialiased;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}

@@ -1,0 +1,55 @@
+export default {
+  data: [
+    {
+      Name: "Английский язык",
+      JournalId: "cbc0ec14-6c9f-43c8-9ecd-b1d3d285d95c",
+      Score: 85.63,
+      Mark: 5,
+      MarkComment: "",
+      Evaluations: [
+        {
+          Type: 2,
+          EvalType: 0,
+          Formula: 0,
+          Name: "Суммативное оценивание за раздел",
+          ShortName: "СОр",
+          Percent: 50,
+          IsCanDontConsider: false,
+          MaxScores: {
+            "77f469f8-b76e-4050-80e9-83d862899e2e": 10,
+            "bd2c5e3d-a5c3-48cd-b207-5aafcd6c3966": 6,
+            "f62dbaf4-eece-4319-baa5-3a5c98e1c5d9": 10,
+            "82d978e0-106c-404d-9f24-dfcac33162bf": 6,
+          },
+          Id: "453447f4-ca60-4a37-b24d-164f13adb00e",
+        },
+        {
+          Type: 3,
+          EvalType: 0,
+          Formula: 0,
+          Name: "Суммативное оценивание за четверть",
+          ShortName: "СОч",
+          Percent: 50,
+          IsCanDontConsider: false,
+          MaxScores: {
+            "77f469f8-b76e-4050-80e9-83d862899e2e": 4,
+            "bd2c5e3d-a5c3-48cd-b207-5aafcd6c3966": 6,
+            "f62dbaf4-eece-4319-baa5-3a5c98e1c5d9": 4,
+            "82d978e0-106c-404d-9f24-dfcac33162bf": 6,
+          },
+          Id: "287161bb-5ceb-4699-be93-c6d6dccfe7c2",
+        },
+      ],
+      Id: "2157eae6-049d-4043-b5da-f89f680b30cb",
+    },
+    {
+      Name: "Начальная военная и технологическая подготовка",
+      JournalId: "00000000-0000-0000-0000-000000000000",
+      Score: 0,
+      Mark: 0,
+      MarkComment: null,
+      Evaluations: [],
+      Id: "cc202a3a-6976-45df-9569-317b2e0fd74e",
+    },
+  ],
+};

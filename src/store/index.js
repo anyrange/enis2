@@ -1,5 +1,7 @@
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
+import { login as $login } from "@/api";
+import $router from "@/router";
 
 export default createStore({
   state: {
@@ -22,7 +24,7 @@ export default createStore({
     },
   },
   getters: {
-    isLoggedIn(state) {
+    isAuthenticated(state) {
       return state.user;
     },
     getCity(state) {
@@ -36,14 +38,20 @@ export default createStore({
     },
   },
   actions: {
-    auth: ({ commit }, success) => {
-      commit("SET_USER", success);
+    login: async ({ commit }, cred) => {
+      const user = await $login(cred);
+      commit("SET_USER", user.success);
     },
     setCity: ({ commit }, city) => {
       commit("SET_CITY", city);
     },
     logout: ({ commit }) => {
-      commit("REMOVE_USER", "");
+      commit("REMOVE_USER");
+      if ($router.currentRoute.value.name === "dashboard") {
+        $router.push({ name: "login" });
+      } else {
+        $router.push({ name: "_login" });
+      }
     },
     initTheme({ commit, getters }) {
       const cachedTheme = getters.getTheme;
