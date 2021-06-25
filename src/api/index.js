@@ -35,9 +35,6 @@ export function login(user) {
 export function refreshCaptcha() {
   return api.get("login/captchaRefresh");
 }
-
-api.get("dashboard/terms");
-
 export function terms() {
   return [
     { Id: "grade1id", Name: "1 четверть" },
@@ -53,10 +50,11 @@ export function diary(term) {
   // return api.get(`dashboard/terms/${term}`);
 }
 export function subject(journalId, evalId) {
-  return api
-    .get(`dashboard/info?journalId=${journalId}&evalId=${evalId}`)
-    .then((response) => response.data);
+  console.log(journalId, evalId);
+  // return api
+  //   .get(`dashboard/info?journalId=${journalId}&evalId=${evalId}`)
+  //   .then((response) => response.data);
 }
 export function grades() {
-  return api.get("dashboard/grades").then((response) => response.data);
+  // return api.get("dashboard/grades").then((response) => response.data);
 }
