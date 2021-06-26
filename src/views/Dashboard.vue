@@ -372,7 +372,7 @@ export default {
           this.$q.loading.hide();
         }
       } catch (error) {
-        this.disconnect();
+        // this.disconnect();
       }
     },
   },

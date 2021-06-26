@@ -5,9 +5,12 @@ import $router from "@/router";
 
 export default createStore({
   state: {
-    user: null,
-    city: null,
-    theme: null,
+    user: false,
+    city: {
+      value: "sms.pvl.nis.edu.kz",
+      label: "Павлодар ХБН",
+    },
+    theme: "",
   },
   mutations: {
     SET_USER(state, user) {
@@ -20,7 +23,7 @@ export default createStore({
       state.theme = theme;
     },
     REMOVE_USER: (state) => {
-      state.user = null;
+      state.user = false;
     },
   },
   getters: {
@@ -29,9 +32,6 @@ export default createStore({
     },
     getCity(state) {
       return state.city;
-    },
-    getCityValue(state) {
-      return state.city.value;
     },
     getTheme: (state) => {
       return state.theme;
@@ -42,9 +42,6 @@ export default createStore({
       const user = await $login(cred);
       commit("SET_USER", user.success);
     },
-    setCity: ({ commit }, city) => {
-      commit("SET_CITY", city);
-    },
     logout: ({ commit }) => {
       commit("REMOVE_USER");
       if ($router.currentRoute.value.name === "dashboard") {
@@ -53,20 +50,24 @@ export default createStore({
         $router.push({ name: "_login" });
       }
     },
-    initTheme({ commit, getters }) {
+    setCity: ({ commit }, city) => {
+      commit("SET_CITY", city);
+    },
+    setTheme({ commit, getters }) {
       const cachedTheme = getters.getTheme;
-      const prefer = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const preferedTheme = window.matchMedia("(prefers-color-scheme: dark)")
+        .matches;
       if (cachedTheme) {
         commit("SET_THEME", cachedTheme);
-      } else if (prefer) {
+      } else if (preferedTheme) {
         commit("SET_THEME", "dark");
       } else {
         commit("SET_THEME", "light");
       }
     },
     toggleTheme({ commit, getters }) {
-      const theme = getters.getTheme;
-      theme === "light"
+      const currentTheme = getters.getTheme;
+      currentTheme === "light"
         ? commit("SET_THEME", "dark")
         : commit("SET_THEME", "light");
     },
