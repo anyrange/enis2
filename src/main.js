@@ -5,24 +5,30 @@ import store from "./store";
 import "./registerServiceWorker";
 import "./assets/tailwind.css";
 import "./assets/styles.css";
-import Spinner from "@/components/Spinner";
 import VWave from "v-wave";
 import Toast, { POSITION } from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
+import "quasar/dist/quasar.css";
+import "@quasar/extras/material-icons/material-icons.css";
 import { Quasar } from "quasar";
-import quasarUserOptions from "./quasar-user-options";
+import { Notify, Loading, Dark } from "quasar";
 
 const app = createApp(App);
+
+app.use(Quasar, {
+  plugins: {
+    Notify,
+    Loading,
+    Dark,
+  },
+});
 
 app
   .use(store)
   .use(router)
   .use(VWave)
-  .use(Quasar, quasarUserOptions)
   .use(Toast, {
     position: POSITION.BOTTOM_LEFT,
   })
   .mount("#app");
-
-app.component("Spinner", Spinner);
