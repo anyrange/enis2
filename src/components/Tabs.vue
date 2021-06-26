@@ -1,7 +1,7 @@
 <template>
-  <ul class="flex">
+  <div class="flex justify-center items-center dark:bg-gray-800-spotify">
     <slot />
-  </ul>
+  </div>
 </template>
 
 <script>
@@ -10,6 +10,7 @@ export default {
   props: {
     modelValue: {
       type: [String, Number],
+      required: true,
     },
   },
   emits: ["update:modelValue"],

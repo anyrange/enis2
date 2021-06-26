@@ -2,14 +2,12 @@
   <div>
     <button
       v-wave
-      class="w-full h-auto flex items-center justify-center px-10 py-2 uppercase text-center text-sm font-medium hover:opacity-80 disabled:opacity-20 transition-all duration-150 ease-linear focus:outline-none focus:ring-2"
+      class="w-full h-auto flex items-center justify-center px-10 py-2 uppercase text-center select-none text-sm font-medium hover:opacity-80 disabled:opacity-20 focus:outline-none focus:ring-2 shadow"
       :type="type"
       :disabled="disabled || loading"
       :class="[
-        this.color === 'primary' ? 'bg-blue-500 text-white' : '',
-        this.color === 'negative'
-          ? 'dark:bg-opacity-10 bg-red-700 dark:text-red-500 text-white'
-          : '',
+        this.color === 'primary' ? 'btn-primary' : '',
+        this.color === 'negative' ? 'btn-negative' : '',
         this.rounded ? 'rounded-full' : 'rounded-sm',
       ]"
     >
@@ -70,3 +68,12 @@ export default {
   },
 };
 </script>
+
+<style lang="postcss">
+.btn-primary {
+  @apply focus:ring-blue-200 dark:focus:ring-blue-400 text-white bg-blue-500;
+}
+.btn-negative {
+  @apply focus:ring-red-200 dark:focus:ring-red-800 text-white dark:text-red-500 bg-red-600 dark:bg-opacity-10;
+}
+</style>

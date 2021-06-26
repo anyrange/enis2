@@ -1,18 +1,18 @@
 <template>
   <div class="flex flex-col gap-2">
     <label
-      for="label"
-      class="block text-base text-gray-600-spotify dark:text-gray-500-spotify"
+      for="base-select"
+      class="text-base font-medium select-none text-gray-600-spotify dark:text-gray-500-spotify"
     >
       {{ label }}
     </label>
     <select
-      :id="label"
       :value="modelValue.value"
-      name="label"
+      id="base-select"
+      name="base-select"
       autocomplete="on"
       @input="$emit('input', $event.target.value)"
-      class="block w-full py-2 px-2 bg-gray-100 text-gray-600-spotify dark:bg-gray-700-spotify dark:text-gray-500-spotify rounded-md focus:outline-none focus:ring-2"
+      class="w-full text-sm py-2 px-2 select-none rounded-sm focus:outline-none focus:ring-2 bg-gray-100 dark:bg-gray-700-spotify text-gray-600-spotify dark:text-gray-500-spotify"
     >
       <option v-for="option in options" :key="option" :value="option.value">
         {{ option.label }}
@@ -23,6 +23,7 @@
 
 <script>
 export default {
+  name: "BaseSelect",
   props: {
     modelValue: {
       required: true,

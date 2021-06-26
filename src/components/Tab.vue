@@ -1,16 +1,17 @@
 <template>
-  <li
+  <a
     v-if="visible"
-    class="px-5 py-3 text-gray-200 text-sm rounded-md leading-4 font-medium cursor-pointer"
+    href="#"
+    class="tab"
     v-wave
-    :class="{
-      'bg-gray-600-spotify': isActive,
-      'opacity-40 cursor-not-allowed': disabled,
-    }"
+    :class="[
+      isActive ? 'active-tab' : 'default-tab',
+      disabled ? 'disabled-tab' : '',
+    ]"
     @click="activateTab(name)"
   >
     <slot />
-  </li>
+  </a>
 </template>
 
 <script>
@@ -48,3 +49,19 @@ export default {
   },
 };
 </script>
+
+<style lang="postcss" scoped>
+.tab {
+  @apply h-12 w-12 flex flex-grow items-center justify-center text-base font-medium cursor-pointer select-none duration-200;
+}
+.active-tab {
+  @apply text-blue-500 font-semibold hover:bg-blue-500 hover:bg-opacity-10;
+  box-shadow: 0px 2px 0px #1976d2;
+}
+.default-tab {
+  @apply text-gray-500-spotify hover:bg-gray-100 dark:hover:bg-gray-700-spotify;
+}
+.disabled-tab {
+  @apply opacity-40 cursor-not-allowed;
+}
+</style>
