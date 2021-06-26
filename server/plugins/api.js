@@ -19,12 +19,6 @@ export default fp(async function plugin(fastify) {
 
       const json = await response.json();
 
-      if (!json.success) {
-        const err = new Error(json.message);
-        err.code = 400;
-        throw err;
-      }
-
       return json;
     }
   );

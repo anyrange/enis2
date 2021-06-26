@@ -13,6 +13,6 @@ export default async function(fastify) {
     if (!response.data.base64img)
       return reply.code(400).send({ message: "Что-то пошло не так" });
 
-    reply.code(200).send({ base54img: response.data.base64img });
+    reply.code(200).send(response.data.base64img);
   });
 }
