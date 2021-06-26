@@ -1,8 +1,17 @@
+/* eslint-disable no-unused-vars */
 import axios from "axios";
 import $store from "@/store";
 import { useToast } from "vue-toastification";
 const toast = useToast();
-import mockDiary from "./mockDiary.js";
+
+import {
+  mockDiary,
+  mockTerms,
+  mockCaptcha,
+  mockUser,
+  mockSubject,
+  mockGrades,
+} from "./mockData.js";
 
 const api = axios.create({
   baseURL: process.env.VUE_APP_SERVER_URI,
@@ -11,7 +20,7 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const queryCharacter = config.url.includes("&") ? "&" : "?";
-  config.url = `${config.url}${queryCharacter}city=${$store.getters.getCityValue}`;
+  config.url = `${config.url}${queryCharacter}city=${$store.getters.getCity.value}`;
   return config;
 });
 
@@ -31,33 +40,25 @@ api.interceptors.response.use(
 
 export function login(user) {
   // return api.post("login", user);
-  console.log(user);
-  return { success: true };
+  return mockUser;
 }
 export function refreshCaptcha() {
-  return "ABOBA";
   // return api.get("login/captchaRefresh");
+  return mockCaptcha;
 }
 export function terms() {
-  return [
-    { Id: "grade1id", Name: "1 четверть" },
-    { Id: "grade2id", Name: "2 четверть" },
-    { Id: "grade3id", Name: "3 четверть" },
-    { Id: "grade4id", Name: "4 четверть" },
-  ];
   // return api.get("dashboard/terms");
+  return mockTerms;
 }
 export function diary(term) {
-  console.log(term);
-  return mockDiary;
   // return api.get(`dashboard/terms/${term}`);
+  return mockDiary;
 }
 export function subject(journalId, evalId) {
-  console.log(journalId, evalId);
-  // return api
-  //   .get(`dashboard/info?journalId=${journalId}&evalId=${evalId}`)
-  //   .then((response) => response.data);
+  // return api.get(`dashboard/info?journalId=${journalId}&evalId=${evalId}`).then((r) => r.data);
+  return mockSubject;
 }
 export function grades() {
   // return api.get("dashboard/grades").then((response) => response.data);
+  return mockGrades;
 }
