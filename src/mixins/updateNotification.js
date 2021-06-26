@@ -1,7 +1,3 @@
-<template>
-  <div></div>
-</template>
-<script>
 export default {
   data() {
     return {
@@ -39,16 +35,20 @@ export default {
       }
       this.registration.waiting.postMessage("skipWaiting");
     },
+    checkForUpdates() {
+      document.addEventListener("swUpdated", this.showRefreshUI, {
+        once: true,
+      });
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          if (this.refreshing) return;
+          this.refreshing = true;
+          window.location.reload();
+        });
+      }
+    },
   },
   created() {
-    document.addEventListener("swUpdated", this.showRefreshUI, { once: true });
-    if (navigator.serviceWorker) {
-      navigator.serviceWorker.addEventListener("controllerchange", () => {
-        if (this.refreshing) return;
-        this.refreshing = true;
-        window.location.reload();
-      });
-    }
+    this.checkForUpdates();
   },
 };
-</script>

@@ -1,39 +1,15 @@
 <template>
-  <router-view />
-  <update-notification />
+  <q-layout view="lHh Lpr lFf" container style="height: 100vh">
+    <router-view />
+  </q-layout>
 </template>
 
 <script>
-import UpdateNotification from "@/components/UpdateNotification";
-import { mapGetters, mapActions } from "vuex";
+import updateNotification from "@/mixins/updateNotification.js";
+import themeWatcher from "@/mixins/themeWatcher.js";
 
 export default {
   name: "App",
-  components: {
-    UpdateNotification,
-  },
-  computed: {
-    ...mapGetters({ theme: "getTheme" }),
-  },
-  methods: {
-    ...mapActions(["initTheme"]),
-  },
-  created() {
-    this.initTheme();
-  },
-  watch: {
-    theme: {
-      handler: function() {
-        if (this.theme === "dark") {
-          document.documentElement.classList.add("dark");
-          this.$q.dark.set(true);
-        } else {
-          document.documentElement.classList.remove("dark");
-          this.$q.dark.set(false);
-        }
-      },
-      immediate: true,
-    },
-  },
+  mixins: [updateNotification, themeWatcher],
 };
 </script>
