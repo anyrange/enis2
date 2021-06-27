@@ -272,9 +272,6 @@ export default {
     disconnect() {
       this.$q.loading.hide();
     },
-    chooseTerm(termName) {
-      this.current_term = termName;
-    },
     sortByScore(array) {
       return array.sort((a, b) => {
         return b.Score - a.Score;
@@ -319,8 +316,7 @@ export default {
       const id = term.Id;
       const termName = term.Name;
 
-      if (this.diary.find((term) => termName === term.termName))
-        return this.chooseTerm(termName);
+      if (this.diary.find((term) => termName === term.termName)) return;
 
       this.$q.loading.show();
       this.loading = true;
@@ -330,8 +326,7 @@ export default {
           termName: termName,
           data: response.data,
         });
-        console.log("diary:", this.diary);
-        this.chooseTerm(termName);
+        this.current_term = termName;
       } catch {
         this.disconnect();
       } finally {
@@ -368,17 +363,6 @@ export default {
   created() {
     this.$q.loading.show();
     this.fetchTerms();
-  },
-  watch: {
-    diary() {
-      console.log("diary: ", this.diary);
-    },
-    grades() {
-      console.log("grades: ", this.grades);
-    },
-    terms() {
-      console.log("terms: ", this.terms);
-    },
   },
 };
 </script>

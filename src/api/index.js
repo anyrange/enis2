@@ -39,8 +39,8 @@ export function refreshCaptcha() {
 export function terms() {
   return api.get("dashboard/terms");
 }
-export function diary(term) {
-  return api.get(`dashboard/terms/${term}`);
+export function diary(id) {
+  return api.get(`dashboard/terms/${id}`);
 }
 export function subject(journalId, evalId) {
   return api
@@ -62,6 +62,7 @@ import {
   mockSubject,
   mockGrades,
 } from "./mockData.js";
+
 const mock = new MockAdapter(api, { delayResponse: 500 });
 mock.onPost("login").reply(200, mockUser, {
   status: 200,
@@ -72,9 +73,12 @@ mock.onGet("login/captchaRefresh").reply(200, mockCaptcha, {
 mock.onGet("dashboard/terms").reply(200, mockTerms, {
   status: 200,
 });
-const termsRegex = new RegExp(`\/terms\/*`);
-mock.onGet(termsRegex).reply(200, mockDiary, {
-  status: 200,
+mock.onGet(new RegExp(`\/terms\/*`)).reply((config) => {
+  const match = (id) => config.url.includes(id);
+  if (match("term1id")) return [200, mockDiary[0]];
+  if (match("term2id")) return [200, mockDiary[1]];
+  if (match("term3id")) return [200, mockDiary[2]];
+  if (match("term4id")) return [200, mockDiary[3]];
 });
 mock.onGet("dashboard/info?journalId=1&evalId=1").reply(200, {
   data: mockSubject,
