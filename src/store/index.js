@@ -2,6 +2,10 @@ import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
 import { login as $login } from "@/api";
 import $router from "@/router";
+// import modules from "./modules";
+
+import terms from "@/store/modules/terms";
+import diary from "@/store/modules/diary";
 
 export default createStore({
   state: {
@@ -41,6 +45,11 @@ export default createStore({
     login: async ({ commit }, cred) => {
       const user = await $login(cred);
       commit("SET_USER", user.success);
+      if ($router.currentRoute.value.name === "login") {
+        $router.push({ name: "dashboard" });
+      } else {
+        $router.push({ name: "_dashboard" });
+      }
     },
     logout: ({ commit }) => {
       commit("REMOVE_USER");
@@ -72,5 +81,6 @@ export default createStore({
         : commit("SET_THEME", "light");
     },
   },
+  modules: { terms, diary },
   plugins: [createPersistedState()],
 });
