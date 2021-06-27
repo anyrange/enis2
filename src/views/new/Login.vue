@@ -50,6 +50,7 @@
           </transition>
           <base-select
             v-model="city"
+            @update="setCity(city)"
             :options="$options.cities"
             label="Школа"
             class="-mt-2"
@@ -161,7 +162,6 @@ export default {
       this.v$.$validate();
       if (!this.v$.$error) {
         this.loading = true;
-        this.setCity(this.city);
         try {
           await this.login(this.user);
         } catch (error) {
