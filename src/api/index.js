@@ -51,8 +51,7 @@ export function grades() {
   return api.get("dashboard/grades").then((r) => r.data);
 }
 
-/* MOCK */
-/* eslint-disable no-useless-escape */
+/* MOCKS */
 import MockAdapter from "axios-mock-adapter";
 import {
   mockDiary,
@@ -73,7 +72,7 @@ mock.onGet("login/captchaRefresh").reply(200, mockCaptcha, {
 mock.onGet("dashboard/terms").reply(200, mockTerms, {
   status: 200,
 });
-mock.onGet(new RegExp(`\/terms\/*`)).reply((config) => {
+mock.onGet(new RegExp("terms/*")).reply((config) => {
   const match = (id) => config.url.includes(id);
   if (match("term1id")) return [200, mockDiary[0]];
   if (match("term2id")) return [200, mockDiary[1]];
