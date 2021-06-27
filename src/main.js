@@ -6,7 +6,7 @@ import "./registerServiceWorker";
 import "./assets/tailwind.css";
 import "./assets/styles.css";
 import VWave from "v-wave";
-import Toast, { POSITION } from "vue-toastification";
+import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
 
 import "quasar/dist/quasar.css";
@@ -28,7 +28,5 @@ app
   .use(store)
   .use(router)
   .use(VWave)
-  .use(Toast, {
-    position: POSITION.BOTTOM_LEFT,
-  })
+  .use(Toast)
   .mount("#app");

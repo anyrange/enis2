@@ -32,6 +32,7 @@ api.interceptors.response.use(
     if (error.response.data.status === 401) $store.dispatch("logout");
     toast.error(error?.response?.data?.message || "Что-то пошло не так", {
       timeout: 2500,
+      position: "bottom-left",
     });
     return Promise.reject(error);
   }
