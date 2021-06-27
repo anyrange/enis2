@@ -23,7 +23,7 @@ export default {
               rounded: true,
               outlined: true,
               color: "",
-              title: "Обновление достпуно",
+              title: "Обновление доступно",
               label: "Обновить",
             },
             listeners: {
