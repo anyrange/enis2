@@ -29,7 +29,8 @@
     "vuex": "^4.0.0-0",
     "vuex-persistedstate": "^4.0.0-beta.3",
     "@quasar/extras": "^1.0.0",
-    "quasar": "^2.0.0-beta.1"
+    "quasar": "^2.0.0-beta.1",
+    "axios-mock-adapter": "^1.19.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

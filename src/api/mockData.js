@@ -5,26 +5,26 @@ export const mockDiary = {
   data: [
     {
       Name: "Английский язык",
-      JournalId: "cbc0ec14-6c9f-43c8-9ecd-b1d3d285d95c",
+      JournalId: "1",
       Score: 85.63,
       Mark: 5,
       Evaluations: [
         {
-          Id: "453447f4-ca60-4a37-b24d-164f13adb00e",
+          Id: "1",
         },
         {
-          Id: "287161bb-5ceb-4699-be93-c6d6dccfe7c2",
+          Id: "1",
         },
       ],
-      Id: "2157eae6-049d-4043-b5da-f89f680b30cb",
+      Id: "1",
     },
     {
       Name: "Начальная военная и технологическая подготовка",
-      JournalId: "00000000-0000-0000-0000-000000000000",
+      JournalId: "1",
       Score: 0,
       Mark: 0,
       Evaluations: [],
-      Id: "cc202a3a-6976-45df-9569-317b2e0fd74e",
+      Id: "1",
     },
   ],
 };
