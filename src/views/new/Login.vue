@@ -54,9 +54,7 @@
             label="Школа"
             class="-mt-2"
           />
-          <base-button type="submit" :loading="loading">
-            Войти
-          </base-button>
+          <base-button type="submit" :loading="loading" label="Войти" />
           <div class="flex justify-between">
             <a href="#" class="icon-button" @click="toggleTheme()">
               <sun-icon v-if="theme === 'dark'" class="icon" />

@@ -48,9 +48,7 @@
   </section>
   <div class="fixed bottom-8 inset-x-0">
     <div class="flex justify-center">
-      <base-button rounded color="negative" @click="logout()">
-        Выйти
-      </base-button>
+      <base-button label="Выйти" rounded color="negative" @click="logout()" />
     </div>
   </div>
 </template>
@@ -62,7 +60,6 @@ import BaseButton from "@/components/BaseButton.vue";
 import TabelIcon from "@/components/icons/TabelIcon.vue";
 import LinearProgress from "@/components/LinearProgress.vue";
 import { mapActions } from "vuex";
-// eslint-disable-next-line no-unused-vars
 import { terms, diary, subject, grades } from "@/api";
 
 export default {

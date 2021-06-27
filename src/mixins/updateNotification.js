@@ -1,6 +1,10 @@
+import BaseButton from "@/components/BaseButton.vue";
+import { useToast } from "vue-toastification";
+
 export default {
   data() {
     return {
+      toast: useToast(),
       refreshing: false,
       registration: null,
       updateExists: false,
@@ -11,21 +15,32 @@ export default {
       this.registration = e.detail;
       this.updateExists = true;
       if (this.updateExists) {
-        this.$q.notify({
-          color: "positive",
-          position: "bottom-left",
-          message: "Обновление доступно",
-          timeout: 0,
-          actions: [
-            {
+        this.toast.success(
+          {
+            component: BaseButton,
+            props: {
+              wFull: false,
+              rounded: true,
+              outlined: true,
+              color: "",
+              title: "Обновление достпуно",
               label: "Обновить",
-              color: "white",
-              handler: () => {
+            },
+            listeners: {
+              click: () => {
                 this.refreshApp();
               },
             },
-          ],
-        });
+          },
+          {
+            timeout: false,
+            icon: false,
+            draggable: false,
+            closeOnClick: false,
+            closeButton: false,
+            position: "bottom-right",
+          }
+        );
       }
     },
     refreshApp() {
