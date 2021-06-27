@@ -82,7 +82,7 @@
                             <div class="text-h5 text-weight-medium">5</div>
                           </div>
                           <div class="col">
-                            <div class="text-h7">{{ item.Exam }}</div>
+                            <div class="text-h7">Экзамен</div>
                           </div>
                         </div>
                       </div>
