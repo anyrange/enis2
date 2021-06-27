@@ -208,7 +208,6 @@ export default {
       this.setCity(this.city);
       try {
         await this.login(this.user);
-        this.$router.push({ name: "dashboard" });
       } catch (error) {
         if (error.response.data.data) {
           this.captcha = error.response.data.data.base64img;
@@ -217,9 +216,6 @@ export default {
       } finally {
         this.loading = false;
       }
-    },
-    created() {
-      this.$router.push({ name: "dashboard" });
     },
   },
 };

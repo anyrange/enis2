@@ -1,13 +1,17 @@
 import { createRouter, createWebHistory } from "vue-router";
 import $store from "@/store";
 
+const authenticated = () => {
+  return $store.getters.isAuthenticated;
+};
+
 const routes = [
   {
     path: "/",
     name: "login",
     component: () => import("@/views/Login.vue"),
     beforeEnter(to, from, next) {
-      $store.getters.isAuthenticated ? next({ name: "dashboard" }) : next();
+      authenticated() ? next({ name: "dashboard" }) : next();
     },
   },
   {
@@ -15,7 +19,7 @@ const routes = [
     name: "dashboard",
     component: () => import("@/views/Dashboard.vue"),
     beforeEnter(to, from, next) {
-      $store.getters.isAuthenticated ? next() : next({ name: "login" });
+      authenticated() ? next() : next({ name: "login" });
     },
   },
   {
@@ -23,7 +27,7 @@ const routes = [
     name: "_login",
     component: () => import("@/views/new/Login.vue"),
     beforeEnter(to, from, next) {
-      $store.getters.isAuthenticated ? next({ name: "_dashboard" }) : next();
+      authenticated() ? next({ name: "_dashboard" }) : next();
     },
   },
   {
@@ -31,7 +35,7 @@ const routes = [
     name: "_dashboard",
     component: () => import("@/views/new/Dashboard.vue"),
     beforeEnter(to, from, next) {
-      $store.getters.isAuthenticated ? next() : next({ name: "_login" });
+      authenticated() ? next() : next({ name: "_login" });
     },
   },
   {

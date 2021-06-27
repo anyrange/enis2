@@ -22,17 +22,17 @@
         name="grades"
         icon="table_view"
         :ripple="false"
-        @click="chooseGrades()"
+        @click="getGrades()"
       />
     </q-tabs>
   </q-header>
   <q-page-container v-if="!loading">
     <q-page class="flex flex-center">
       <q-card class="lg:w-1/3 xl:w-1/4" flat>
-        <q-list bordered separator v-if="chosenTab === 'marks'">
+        <q-list bordered separator v-if="current_term !== 'grades'">
           <q-item
-            v-for="subject in sortByScore(marks.data)"
-            :key="subject.Id"
+            v-for="subject in currentTermMarks"
+            :key="subject"
             class="q-my-sm"
             clickable
             @click="selectSubject(subject)"
@@ -234,7 +234,7 @@
         icon="logout"
         label="Выйти"
         rounded
-        @click="disconnect()"
+        @click="logout()"
       />
     </q-page-sticky>
   </q-page-container>
@@ -249,47 +249,31 @@ export default {
     return {
       loading: true,
       loadingTerms: true,
-      marks: [],
       diary: [],
       grades: [],
       terms: [],
       current_term: "",
       modalOpened: false,
-      chosenTab: "marks",
       subjectTab: "sau",
       selectedSubject: {
+        empty: false,
         SAU: {},
         SAT: {},
       },
     };
   },
+  computed: {
+    currentTermMarks() {
+      return this.diary.find((t) => this.current_term === t.termName).data;
+    },
+  },
   methods: {
     ...mapActions(["logout"]),
     disconnect() {
-      this.logout();
       this.$q.loading.hide();
-      this.$router.push({ name: "login" });
     },
-    async selectSubject(subj) {
-      this.modalOpened = true;
-      try {
-        this.selectedSubject.SAU = await subject(
-          subj.JournalId,
-          subj.Evaluations[0].Id
-        );
-        this.selectedSubject.SAT = await subject(
-          subj.JournalId,
-          subj.Evaluations[1].Id
-        );
-      } catch (error) {
-        const possibleErrors = [
-          "Сессия пользователя была завершена, перезагрузите страницу",
-          "Время работы с дневником завершено. Для продолжения необходимо обновить модуль",
-        ];
-        if (possibleErrors.indexOf(error.response.data.message) >= 0) {
-          this.disconnect();
-        }
-      }
+    chooseTerm(termName) {
+      this.current_term = termName;
     },
     sortByScore(array) {
       return array.sort((a, b) => {
@@ -321,11 +305,6 @@ export default {
           break;
       }
     },
-    chooseTerm(termName) {
-      this.marks = this.diary.find((term) => termName === term.termName);
-      this.current_term = termName;
-      this.chosenTab = "marks";
-    },
     async fetchTerms() {
       try {
         this.terms = await terms();
@@ -351,6 +330,7 @@ export default {
           termName: termName,
           data: response.data,
         });
+        console.log("diary:", this.diary);
         this.chooseTerm(termName);
       } catch {
         this.disconnect();
@@ -359,26 +339,46 @@ export default {
         this.$q.loading.hide();
       }
     },
-    chooseGrades() {
-      this.chosenTab = "grades";
-      this.current_term = "grades";
-      this.fetchGrades();
-    },
-    async fetchGrades() {
+    async selectSubject(subj) {
+      this.modalOpened = true;
+      if (!subj.Evaluations[0]?.Id || !subj.Evaluations[1]?.Id) {
+        return (this.selectedSubject.empty = true);
+      }
       try {
-        if (!this.grades.length) {
-          this.$q.loading.show();
-          this.grades = await grades();
-          this.$q.loading.hide();
-        }
+        this.selectedSubject.SAU = await subject(
+          subj.JournalId,
+          subj.Evaluations[0].Id
+        );
+        this.selectedSubject.SAT = await subject(
+          subj.JournalId,
+          subj.Evaluations[1].Id
+        );
       } catch (error) {
-        // this.disconnect();
+        console.log(error);
+      }
+    },
+    async getGrades() {
+      if (!this.grades.length) {
+        this.$q.loading.show();
+        this.grades = await grades();
+        this.$q.loading.hide();
       }
     },
   },
   created() {
     this.$q.loading.show();
     this.fetchTerms();
+  },
+  watch: {
+    diary() {
+      console.log("diary: ", this.diary);
+    },
+    grades() {
+      console.log("grades: ", this.grades);
+    },
+    terms() {
+      console.log("terms: ", this.terms);
+    },
   },
 };
 </script>
