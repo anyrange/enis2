@@ -2,10 +2,17 @@ import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
 import { login as $login } from "@/api";
 import $router from "@/router";
-// import modules from "./modules";
 
-import terms from "@/store/modules/terms";
-import diary from "@/store/modules/diary";
+const requireModule = require.context("./modules", false, /\.js$/);
+const modules = {};
+requireModule.keys().forEach((fileName) => {
+  if (fileName === "./index.js") return;
+  const moduleName = fileName.replace(/(\.\/|\.js)/g, "");
+  modules[moduleName] = {
+    namespaced: true,
+    ...requireModule(fileName).default,
+  };
+});
 
 export default createStore({
   state: {
@@ -53,6 +60,8 @@ export default createStore({
     },
     logout: ({ commit }) => {
       commit("REMOVE_USER");
+      localStorage.clear();
+      location.reload();
       if ($router.currentRoute.value.name === "dashboard") {
         $router.push({ name: "login" });
       } else {
@@ -81,6 +90,6 @@ export default createStore({
         : commit("SET_THEME", "light");
     },
   },
-  modules: { terms, diary },
+  modules,
   plugins: [createPersistedState()],
 });

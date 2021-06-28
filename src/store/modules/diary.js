@@ -1,32 +1,33 @@
-import * as api from "@/api";
+import { getDiary } from "@/api";
 
 export default {
   namespaced: true,
   state: {
-    data: {},
+    data: [],
     loading: true,
   },
   mutations: {
     SET_LOADING(state, status) {
       state.loading = status;
     },
-    SET_DIARY(state, result) {
-      state.data = result;
+    ADD_DIARY(state, { response, term }) {
+      state.data.push({
+        termName: term.Name,
+        data: response.data,
+      });
     },
   },
   getters: {
     getDiary: (state) => {
-      return state.data;
-    },
-    getLoading: (state) => {
-      return state.loading;
+      return state;
     },
   },
   actions: {
-    fetchDiary: async ({ commit }) => {
+    fetchDiary: async ({ commit, state }, term) => {
+      if (state.data.find((item) => item.termName === term.Name)) return;
       commit("SET_LOADING", true);
       try {
-        commit("SET_DIARY", await api.diary());
+        commit("ADD_DIARY", { response: await getDiary(term.Id), term });
       } finally {
         commit("SET_LOADING", false);
       }

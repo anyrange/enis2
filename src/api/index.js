@@ -36,18 +36,18 @@ export function login(user) {
 export function refreshCaptcha() {
   return api.get("login/captchaRefresh");
 }
-export function terms() {
+export function getTerms() {
   return api.get("dashboard/terms");
 }
-export function diary(id) {
+export function getDiary(id) {
   return api.get(`dashboard/terms/${id}`);
 }
-export function subject(journalId, evalId) {
+export function getSubject(journalId, evalId) {
   return api
     .get(`dashboard/info?journalId=${journalId}&evalId=${evalId}`)
     .then((r) => r.data);
 }
-export function grades() {
+export function getGrades() {
   return api.get("dashboard/grades").then((r) => r.data);
 }
 

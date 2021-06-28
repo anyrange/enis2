@@ -1,27 +1,21 @@
 <template>
-  <nav
-    class="w-full border-b-2 border-gray-300-spotify dark:border-gray-600-spotify"
-  >
-    <tabs v-if="!loadingTerms" v-model="currentTerm">
-      <!-- <tab
-        v-for="(term, index) in terms"
-        :key="term"
-        :name="term.Name"
-        @click="getDiary(term)"
-      >
+  <nav class="nav-bar">
+    <tabs v-if="!terms.loading" v-model="currentTerm">
+      <tab v-for="(term, index) in terms.data" :key="term" :name="term.Id">
         {{ getTermLable(index + 1) }}
-      </tab> -->
-
-      <tab name="1">I</tab>
-      <tab name="2">II</tab>
-      <tab name="3">III</tab>
-      <tab name="4">IV</tab>
-
-      <tab name="tabel">
-        <tabel-icon />
+      </tab>
+      <tab name="grades">
+        <grades-icon />
       </tab>
     </tabs>
   </nav>
+  <div class="flex flex-col divide-y border-black p-2">
+    <span> DIARY_LOADING: {{ diary.loading }} </span>
+    <span> TERMS_LOADING: {{ terms.loading }} </span>
+    <span> GRADES_LOADING: {{ grades.loading }} </span>
+    <span> CURRENT_TERM: {{ currentTerm }} </span>
+    <span> SELECTED_TERM: {{ selectedTerm }}</span>
+  </div>
   <section class="flex w-full justify-center p-4">
     <div
       class="flex flex-col w-3/5 py-2 divide-y divide-gray-700-spotify rounded-sm dark:bg-gray-800-spotify"
@@ -54,14 +48,12 @@
 </template>
 
 <script>
-/* eslint-disable no-unused-vars */
 import Tabs from "@/components/Tabs";
 import Tab from "@/components/Tab";
 import BaseButton from "@/components/BaseButton.vue";
-import TabelIcon from "@/components/icons/TabelIcon.vue";
+import GradesIcon from "@/components/icons/GradesIcon.vue";
 import LinearProgress from "@/components/LinearProgress.vue";
 import { mapActions, mapGetters } from "vuex";
-// import { terms, diary, subject, grades } from "@/api";
 
 export default {
   name: "Dashboard",
@@ -69,28 +61,56 @@ export default {
     Tabs,
     Tab,
     BaseButton,
-    TabelIcon,
+    GradesIcon,
     LinearProgress,
   },
   data() {
     return {
-      currentTerm: "4",
+      currentTerm: "",
     };
   },
   computed: {
     ...mapGetters({
       terms: "terms/getTerms",
-      loadingTerms: "terms/getLoading",
+      diary: "diary/getDiary",
+      grades: "grades/getGrades",
     }),
+    selectedTerm() {
+      return this.terms.data.find((item) => item.Id === this.currentTerm);
+    },
+  },
+  watch: {
+    currentTerm(value) {
+      if (value === "grades") return this.fetchGrades();
+      this.fetchDiary(this.selectedTerm);
+    },
   },
   methods: {
     ...mapActions({
       logout: "logout",
       fetchTerms: "terms/fetchTerms",
+      fetchDiary: "diary/fetchDiary",
+      fetchGrades: "grades/fetchGrades",
     }),
+    getTermLable(index) {
+      const GREEK_NUMERALS = {
+        1: "I",
+        2: "II",
+        3: "III",
+        4: "IV",
+      };
+      return GREEK_NUMERALS[index];
+    },
   },
-  created() {
-    this.fetchTerms();
+  async created() {
+    await this.fetchTerms();
+    this.currentTerm = this.terms.data[this.terms.data.length - 1].Id;
   },
 };
 </script>
+
+<style lang="postcss" scoped>
+.nav-bar {
+  @apply w-full border-b-2 border-gray-300 dark:border-gray-600-spotify;
+}
+</style>

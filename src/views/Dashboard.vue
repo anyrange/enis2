@@ -242,7 +242,7 @@
 
 <script>
 import { mapActions } from "vuex";
-import { terms, diary, subject, grades } from "@/api";
+import { getTerms, getDiary, getSubject, getGrades } from "@/api";
 
 export default {
   data() {
@@ -304,7 +304,7 @@ export default {
     },
     async fetchTerms() {
       try {
-        this.terms = await terms();
+        this.terms = await getTerms();
         this.getDiary(this.terms[this.terms.length - 1]);
         this.loadingTerms = false;
       } catch (error) {
@@ -321,7 +321,7 @@ export default {
       this.$q.loading.show();
       this.loading = true;
       try {
-        const response = await diary(id);
+        const response = await getDiary(id);
         this.diary.push({
           termName: termName,
           data: response.data,
@@ -340,11 +340,11 @@ export default {
         return (this.selectedSubject.empty = true);
       }
       try {
-        this.selectedSubject.SAU = await subject(
+        this.selectedSubject.SAU = await getSubject(
           subj.JournalId,
           subj.Evaluations[0].Id
         );
-        this.selectedSubject.SAT = await subject(
+        this.selectedSubject.SAT = await getSubject(
           subj.JournalId,
           subj.Evaluations[1].Id
         );
@@ -355,7 +355,7 @@ export default {
     async getGrades() {
       if (!this.grades.length) {
         this.$q.loading.show();
-        this.grades = await grades();
+        this.grades = await getGrades();
         this.$q.loading.hide();
       }
     },

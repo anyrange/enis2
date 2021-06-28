@@ -1,4 +1,4 @@
-import { getTerms } from "@/api";
+import { getGrades } from "@/api";
 
 export default {
   namespaced: true,
@@ -10,21 +10,21 @@ export default {
     SET_LOADING(state, status) {
       state.loading = status;
     },
-    SET_TERMS(state, result) {
+    SET_GRADES(state, result) {
       state.data = result;
     },
   },
   getters: {
-    getTerms: (state) => {
+    getGrades: (state) => {
       return state;
     },
   },
   actions: {
-    fetchTerms: async ({ commit, state }) => {
+    fetchGrades: async ({ commit, state }) => {
       if (state.data.length) return;
       commit("SET_LOADING", true);
       try {
-        commit("SET_TERMS", await getTerms());
+        commit("SET_GRADES", await getGrades());
       } finally {
         commit("SET_LOADING", false);
       }
