@@ -8,6 +8,7 @@ import "./assets/styles.css";
 import VWave from "v-wave";
 import Toast from "vue-toastification";
 import "vue-toastification/dist/index.css";
+import { clickOutside } from "./directives";
 
 import "quasar/dist/quasar.css";
 import "@quasar/extras/material-icons/material-icons.css";
@@ -23,6 +24,8 @@ app.use(Quasar, {
     Dark,
   },
 });
+
+app.directive("click-outside", clickOutside);
 
 app
   .use(store)
