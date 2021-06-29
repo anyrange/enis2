@@ -20,12 +20,14 @@
             label="Ваш ИИН"
             autofocus
             :theme="theme"
+            :error="errors.user.login"
           />
           <base-input
             v-model="user.password"
             type="password"
             label="Ваш пароль"
             :theme="theme"
+            :error="errors.user.password"
           />
           <transition name="fade">
             <div
@@ -110,8 +112,14 @@ export default {
       },
       captcha: "",
       city: {},
-      errors: {},
+      errors: {
+        user: {
+          login: "",
+          password: "",
+        },
+      },
       showModal: false,
+      validationStarted: false,
     };
   },
   computed: {
@@ -119,23 +127,59 @@ export default {
       savedCity: "getCity",
       theme: "getTheme",
     }),
+    formValidated() {
+      if (!this.errors.user.login && !this.errors.user.password) return true;
+      return false;
+    },
+  },
+  watch: {
+    "user.login"(value) {
+      this.validateLogin(value);
+    },
+    "user.password"(value) {
+      this.validatePassword(value);
+    },
   },
   methods: {
     ...mapActions(["toggleTheme", "login", "setCity"]),
+    validateLogin(value) {
+      if (!this.validationStarted) return;
+      if (value.length !== 12) {
+        this.errors.user.login = "Неверный формат";
+      } else {
+        this.errors.user.login = "";
+      }
+    },
+    validatePassword(value) {
+      if (!this.validationStarted) return;
+      if (value.length < 6) {
+        this.errors.user.password = "Неверный формат";
+      } else {
+        this.errors.user.password = "";
+      }
+    },
+    validateForm() {
+      this.validationStarted = true;
+      this.validateLogin(this.user.login);
+      this.validatePassword(this.user.password);
+    },
     async updateCaptcha() {
       this.captcha = await refreshCaptcha();
     },
     async submit() {
-      this.loading = true;
-      try {
-        await this.login(this.user);
-      } catch (error) {
-        if (error.response.data.data) {
-          this.captcha = error.response.data.data.base64img;
-          this.user.captchaInput = "";
+      this.validateForm();
+      if (this.formValidated) {
+        try {
+          this.loading = true;
+          await this.login(this.user);
+        } catch (error) {
+          if (error.response.data.data) {
+            this.captcha = error.response.data.data.base64img;
+            this.user.captchaInput = "";
+          }
+        } finally {
+          this.loading = false;
         }
-      } finally {
-        this.loading = false;
       }
     },
   },
