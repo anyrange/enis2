@@ -1,6 +1,9 @@
 <template>
   <q-layout view="lHh Lpr lFf" container style="height: 100vh">
     <router-view />
+    <div>
+      TEST
+    </div>
   </q-layout>
 </template>
 
