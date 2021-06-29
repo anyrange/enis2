@@ -1,380 +1,116 @@
 <template>
-  <q-header
-    bordered
-    :class="$q.dark.isActive ? 'header_dark' : 'header_normal'"
-    v-if="!loadingTerms"
-  >
-    <q-tabs
-      v-model="current_term"
-      class="text-grey"
-      active-color="primary"
-      indicator-color="primary"
+  <nav class="nav-bar">
+    <tabs v-if="!terms.loading" v-model="currentTerm">
+      <tab v-for="(term, index) in terms.data" :key="term" :name="term.Id">
+        {{ getTermLable(index + 1) }}
+      </tab>
+      <tab name="grades">
+        <grades-icon />
+      </tab>
+    </tabs>
+  </nav>
+  <div class="flex flex-col divide-y border-black p-2">
+    <span> DIARY_LOADING: {{ diary.loading }} </span>
+    <span> TERMS_LOADING: {{ terms.loading }} </span>
+    <span> GRADES_LOADING: {{ grades.loading }} </span>
+    <span> CURRENT_TERM: {{ currentTerm }} </span>
+    <span> SELECTED_TERM: {{ selectedTerm }}</span>
+  </div>
+  <section class="flex w-full justify-center p-4">
+    <div
+      class="flex flex-col w-3/5 py-2 divide-y divide-gray-700-spotify rounded-sm dark:bg-gray-800-spotify"
     >
-      <q-tab
-        v-for="(term, index) in terms"
-        :key="index"
-        :label="getTermLable(index + 1)"
-        :name="term.Name"
-        :ripple="false"
-        @click="getDiary(term)"
-      />
-      <q-tab
-        name="grades"
-        icon="table_view"
-        :ripple="false"
-        @click="getGrades()"
-      />
-    </q-tabs>
-  </q-header>
-  <q-page-container v-if="!loading">
-    <q-page class="flex flex-center">
-      <q-card class="lg:w-1/3 xl:w-1/4" flat>
-        <q-list bordered separator v-if="current_term !== 'grades'">
-          <q-item
-            v-for="subject in currentTermMarks"
-            :key="subject"
-            class="q-my-sm"
-            clickable
-            @click="selectSubject(subject)"
-          >
-            <q-item-section>
-              <q-item-label>{{ subject.Name }}</q-item-label>
-              <q-item-label class="text-subtitle2">
-                {{ subject.Score }}%
-              </q-item-label>
-              <q-linear-progress
-                :value="subject.Score / 100"
-                rounded
-                :color="getStrengthColor(subject.Score)"
-                class="q-mt-sm"
-              />
-            </q-item-section>
-            <q-item-section side>
-              <q-item-label class="text-weight-bold">
-                {{ subject.Mark }}
-              </q-item-label>
-            </q-item-section>
-          </q-item>
-        </q-list>
-        <q-list v-else>
-          <q-item v-for="item in grades" :key="item.SubjectName">
-            <q-card
-              style="border-radius: 10px; width: 100%"
-              :class="{ 'grade-card-mobile': !$q.screen.gt.sm }"
-              flat
-              bordered
-            >
-              <q-card-section>
-                <div class="row justify-between">
-                  <div class="col">
-                    <div
-                      class="text-h5 text-weight-medium"
-                      style="display: inline-block;width: 100%;white-space: nowrap;overflow: hidden !important;text-overflow: ellipsis;"
-                    >
-                      {{ item.SubjectName }}
-                    </div>
-                  </div>
-                  <div class="col">
-                    <div class="row justify-end q-gutter-md">
-                      <div v-if="item.Exam !== 'none'">
-                        <div class="column items-center">
-                          <div class="col">
-                            <div class="text-h5 text-weight-medium">5</div>
-                          </div>
-                          <div class="col">
-                            <div class="text-h7">Экзамен</div>
-                          </div>
-                        </div>
-                      </div>
-                      <div v-if="item.Final !== 'none'">
-                        <div class="column items-center">
-                          <div class="col">
-                            <div class="text-h5 text-weight-medium">
-                              {{ item.Final }}
-                            </div>
-                          </div>
-                          <div class="col">
-                            <div class="text-h7">Итоговая</div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="q-mt-lg">
-                  <div class="row justify-between">
-                    <template v-if="item.FirstHalfYear === 'none'">
-                      <div class="column items-center">
-                        <div class="text-subtitle2">I</div>
-                        <div class="text-subtitle1">
-                          {{ formatScore(item.FirstPeriod) }}
-                        </div>
-                      </div>
-                      <div class="column items-center">
-                        <div class="text-subtitle2">II</div>
-                        <div class="text-subtitle1">
-                          {{ formatScore(item.SecondPeriod) }}
-                        </div>
-                      </div>
-                      <div class="column items-center">
-                        <div class="text-subtitle2">III</div>
-                        <div class="text-subtitle1">
-                          {{ formatScore(item.ThirdPeriod) }}
-                        </div>
-                      </div>
-                      <div class="column items-center">
-                        <div class="text-subtitle2">IV</div>
-                        <div class="text-subtitle1">
-                          {{ formatScore(item.ForthPeriod) }}
-                        </div>
-                      </div>
-                    </template>
-                    <template v-else>
-                      <div class="column items-center">
-                        <div class="text-subtitle2">I и II</div>
-                        <div class="text-subtitle1">
-                          {{ formatScore(item.FirstHalfYear) }}
-                        </div>
-                      </div>
-                      <div class="column items-center">
-                        <div class="text-subtitle2">III и IV</div>
-                        <div class="text-subtitle1">
-                          {{ formatScore(item.SecondHalfYear) }}
-                        </div>
-                      </div>
-                    </template>
-                    <div class="column items-center">
-                      <div class="text-subtitle2">
-                        Годовая
-                      </div>
-                      <div class="text-subtitle1">
-                        {{ formatScore(item.Year) }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </q-card-section>
-            </q-card>
-          </q-item>
-        </q-list>
-      </q-card>
-      <q-dialog v-model="modalOpened" @hide="selectedSubject = {}">
-        <q-card style="width: 700px; max-width: 80vw;">
-          <q-tabs
-            v-model="subjectTab"
-            align="justify"
-            class="text-grey"
-            active-color="primary"
-            indicator-color="primary"
-          >
-            <q-tab name="sau" label="СОР" />
-            <q-tab name="sat" label="СОЧ" />
-          </q-tabs>
-          <q-separator />
-          <q-tab-panels v-model="subjectTab" animated>
-            <q-tab-panel name="sau">
-              <q-list separator>
-                <q-item
-                  v-for="item in selectedSubject.SAU"
-                  :key="item.RubricId"
-                  class="q-my-sm"
-                >
-                  <q-item-section>
-                    <q-item-label>{{ item.Name }}</q-item-label>
-                    <q-linear-progress
-                      :value="item.Score / item.MaxScore"
-                      rounded
-                      :color="
-                        getStrengthColor((item.Score / item.MaxScore) * 100)
-                      "
-                      class="q-mt-sm"
-                    />
-                  </q-item-section>
-                  <q-item-section side>
-                    <q-item-label class="text-weight-bold">
-                      {{ item.Score }} / {{ item.MaxScore }}
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-tab-panel>
-            <q-tab-panel name="sat">
-              <q-list separator>
-                <q-item
-                  v-for="item in selectedSubject.SAT"
-                  :key="item.RubricId"
-                  class="q-my-sm"
-                >
-                  <q-item-section>
-                    <q-item-label>{{ item.Name }}</q-item-label>
-                    <q-linear-progress
-                      :value="item.Score / item.MaxScore"
-                      rounded
-                      :color="
-                        getStrengthColor((item.Score / item.MaxScore) * 100)
-                      "
-                      class="q-mt-sm"
-                    />
-                  </q-item-section>
-                  <q-item-section side>
-                    <q-item-label class="text-weight-bold">
-                      {{ item.Score }} / {{ item.MaxScore }}
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-tab-panel>
-          </q-tab-panels>
-        </q-card>
-      </q-dialog>
-    </q-page>
-    <q-page-sticky position="bottom" :offset="[18, 18]">
-      <q-btn
-        color="red"
-        icon="logout"
-        label="Выйти"
-        rounded
-        @click="logout()"
-      />
-    </q-page-sticky>
-  </q-page-container>
+      <!--  -->
+      <div
+        class="flex flex-row py-2 px-3 gap-3 justify-between items-center cursor-pointer duration-200 hover:bg-gray-100 dark:hover:bg-gray-600-spotify"
+      >
+        <div class="flex flex-col flex-grow">
+          <div class="text-sm leading-snug">
+            Английский язык
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="font-medium">
+              85.63%
+            </span>
+            <linear-progress :value="85.63" />
+          </div>
+        </div>
+        <span class="text-right font-semibold text-base">5</span>
+      </div>
+      <!--  -->
+    </div>
+  </section>
+  <div class="fixed bottom-8 inset-x-0">
+    <div class="flex justify-center">
+      <base-button label="Выйти" rounded color="negative" @click="logout()" />
+    </div>
+  </div>
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import { getTerms, getDiary, getSubject, getGrades } from "@/api";
+import Tabs from "@/components/Tabs";
+import Tab from "@/components/Tab";
+import BaseButton from "@/components/BaseButton.vue";
+import GradesIcon from "@/components/icons/GradesIcon.vue";
+import LinearProgress from "@/components/LinearProgress.vue";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
+  name: "Dashboard",
+  components: {
+    Tabs,
+    Tab,
+    BaseButton,
+    GradesIcon,
+    LinearProgress,
+  },
   data() {
     return {
-      loading: true,
-      loadingTerms: true,
-      diary: [],
-      grades: [],
-      terms: [],
-      current_term: "",
-      modalOpened: false,
-      subjectTab: "sau",
-      selectedSubject: {
-        empty: false,
-        SAU: {},
-        SAT: {},
-      },
+      currentTerm: "",
     };
   },
   computed: {
-    currentTermMarks() {
-      return this.diary.find((t) => this.current_term === t.termName).data;
+    ...mapGetters({
+      terms: "terms/getTerms",
+      diary: "diary/getDiary",
+      grades: "grades/getGrades",
+    }),
+    selectedTerm() {
+      return this.terms.data.find((item) => item.Id === this.currentTerm);
+    },
+  },
+  watch: {
+    currentTerm(value) {
+      if (value === "grades") return this.fetchGrades();
+      this.fetchDiary(this.selectedTerm);
     },
   },
   methods: {
-    ...mapActions(["logout"]),
-    disconnect() {
-      this.$q.loading.hide();
-    },
-    sortByScore(array) {
-      return array.sort((a, b) => {
-        return b.Score - a.Score;
-      });
-    },
-    formatScore(score) {
-      if (score === "true") return "Зачёт";
-      if (score === "false") return "Незачёт";
-      return score;
-    },
-    getStrengthColor(score) {
-      const roundedScore = Math.ceil(score);
-      if (roundedScore >= 85) return "positive";
-      if (roundedScore >= 65) return "warning";
-      return "negative";
-    },
+    ...mapActions({
+      logout: "logout",
+      fetchTerms: "terms/fetchTerms",
+      fetchDiary: "diary/fetchDiary",
+      fetchGrades: "grades/fetchGrades",
+    }),
     getTermLable(index) {
-      switch (index) {
-        case 1:
-          return "I";
-        case 2:
-          return "II";
-        case 3:
-          return "III";
-        case 4:
-          return "IV";
-        default:
-          break;
-      }
-    },
-    async fetchTerms() {
-      try {
-        this.terms = await getTerms();
-        this.getDiary(this.terms[this.terms.length - 1]);
-        this.loadingTerms = false;
-      } catch (error) {
-        console.log(error);
-        this.disconnect();
-      }
-    },
-    async getDiary(term) {
-      const id = term.Id;
-      const termName = term.Name;
-
-      if (this.diary.find((term) => termName === term.termName)) return;
-
-      this.$q.loading.show();
-      this.loading = true;
-      try {
-        const response = await getDiary(id);
-        this.diary.push({
-          termName: termName,
-          data: response.data,
-        });
-        this.current_term = termName;
-      } catch {
-        this.disconnect();
-      } finally {
-        this.loading = false;
-        this.$q.loading.hide();
-      }
-    },
-    async selectSubject(subj) {
-      this.modalOpened = true;
-      if (!subj.Evaluations[0]?.Id || !subj.Evaluations[1]?.Id) {
-        return (this.selectedSubject.empty = true);
-      }
-      try {
-        this.selectedSubject.SAU = await getSubject(
-          subj.JournalId,
-          subj.Evaluations[0].Id
-        );
-        this.selectedSubject.SAT = await getSubject(
-          subj.JournalId,
-          subj.Evaluations[1].Id
-        );
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    async getGrades() {
-      if (!this.grades.length) {
-        this.$q.loading.show();
-        this.grades = await getGrades();
-        this.$q.loading.hide();
-      }
+      const GREEK_NUMERALS = {
+        1: "I",
+        2: "II",
+        3: "III",
+        4: "IV",
+      };
+      return GREEK_NUMERALS[index];
     },
   },
-  created() {
-    this.$q.loading.show();
-    this.fetchTerms();
+  async created() {
+    await this.fetchTerms();
+    this.currentTerm = this.terms.data[this.terms.data.length - 1].Id;
   },
 };
 </script>
 
-<style>
-.header_normal {
-  background: #fff;
-}
-.header_dark {
-  background: #1d1d1d;
-}
-.grade-card-mobile {
-  max-width: 350px;
+<style lang="postcss" scoped>
+.nav-bar {
+  @apply w-full border-b-2 border-gray-300 dark:border-gray-600-spotify;
 }
 </style>

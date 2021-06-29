@@ -2,6 +2,9 @@
 
 #app {
   font-family: "Inter", sans-serif;
+}
+
+body {
   @apply bg-white text-black dark:text-white dark:bg-gray-900-spotify antialiased;
 }
 

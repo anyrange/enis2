@@ -23,22 +23,6 @@ const routes = [
     },
   },
   {
-    path: "/new/",
-    name: "_login",
-    component: () => import("@/views/new/Login.vue"),
-    beforeEnter(to, from, next) {
-      authenticated() ? next({ name: "_dashboard" }) : next();
-    },
-  },
-  {
-    path: "/new/home",
-    name: "_dashboard",
-    component: () => import("@/views/new/Dashboard.vue"),
-    beforeEnter(to, from, next) {
-      authenticated() ? next() : next({ name: "_login" });
-    },
-  },
-  {
     path: "/:pathMatch(.*)*",
     redirect: { name: "login" },
   },

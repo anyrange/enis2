@@ -1,222 +1,194 @@
 <template>
-  <q-page-container>
-    <q-page class="flex flex-center">
-      <q-card class="lg:w-1/3 xl:w-1/4" flat bordered>
-        <q-form @submit="submit" greedy>
-          <q-card-section>
-            <div class="q-mb-md flex row items-center z">
-              <svg
-                style="height: 70px;weight: 70px;"
-                viewBox="0 0 300 300"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M171.609 299.179C244.213 288.679 300 226.052 300 150.364C300 67.3203 232.843 0 150 0C82.0628 0 24.6744 45.2743 6.22249 107.367C14.4101 106.379 22.1125 106.43 26.7241 107.023C47.6567 110.291 67.2908 121.27 81.1884 137.201C81.7577 134.8 81.7503 132.323 81.7429 129.839C81.7371 127.884 81.7313 125.924 82.0071 123.995C83.4501 113.907 87.0763 103.434 92.3393 94.7143C111.111 63.6132 154.938 55.4171 185.531 73.0601C193.356 77.5728 200.531 83.8355 205.728 91.2695C207.303 93.5233 208.68 95.8665 210.045 98.1897C213.314 103.755 216.516 109.205 222.222 113.036C230.592 118.654 243.126 122.924 253.181 120.396C254.115 120.161 255.062 119.91 256.016 119.658C258.503 118.998 261.036 118.327 263.5 117.898C264.839 117.666 266.529 117.648 267.28 119.011C268.19 120.663 267.286 123.018 266.571 124.57C264.435 129.203 260.942 132.337 256.621 134.896C244.305 142.188 227.658 143.877 215.916 134.904C215.525 139.698 213.792 144.253 212.017 148.684C208.263 158.055 201.848 166.908 193.557 172.773C179.616 182.633 159.868 183.687 144.826 175.792C140.478 173.51 136.693 170.16 133.465 166.482C123.155 154.732 120.012 135.353 126.665 121.125C132.899 107.794 151.481 101.008 163.744 110.52C172.946 117.657 173.501 133.475 164.296 140.916C162.219 142.594 159.493 144.076 156.865 144.617C156.235 144.747 155.58 144.78 154.924 144.814C153.822 144.871 152.718 144.927 151.733 145.441C149.238 146.744 149.372 148.932 150.874 150.978C158.578 161.477 174.904 159.693 183.05 150.882C193.176 139.932 194.404 120.223 187.543 107.345C183.957 100.614 177.843 95.0824 171.198 91.4486C165.677 88.4298 158.029 85.7698 151.703 85.539C131.979 84.819 113.295 99.517 106.91 117.68C96.111 148.399 115.872 176.747 133.089 201.446C135.696 205.187 138.246 208.844 140.622 212.413C157.752 238.146 171.743 268.109 171.609 299.179Z"
-                  fill="#0071E5"
-                />
-                <path
-                  d="M171.609 299.179C244.213 288.679 300 226.052 300 150.364C300 67.3203 232.843 0 150 0C82.0628 0 24.6744 45.2743 6.22249 107.367C14.4101 106.379 22.1125 106.43 26.7241 107.023C47.6567 110.291 67.2908 121.27 81.1884 137.201C81.7577 134.8 81.7503 132.323 81.7429 129.839C81.7371 127.884 81.7313 125.924 82.0071 123.995C83.4501 113.907 87.0763 103.434 92.3393 94.7143C111.111 63.6132 154.938 55.4171 185.531 73.0601C193.356 77.5728 200.531 83.8355 205.728 91.2695C207.303 93.5233 208.68 95.8665 210.045 98.1897C213.314 103.755 216.516 109.205 222.222 113.036C230.592 118.654 243.126 122.924 253.181 120.396C254.115 120.161 255.062 119.91 256.016 119.658C258.503 118.998 261.036 118.327 263.5 117.898C264.839 117.666 266.529 117.648 267.28 119.011C268.19 120.663 267.286 123.018 266.571 124.57C264.435 129.203 260.942 132.337 256.621 134.896C244.305 142.188 227.658 143.877 215.916 134.904C215.525 139.698 213.792 144.253 212.017 148.684C208.263 158.055 201.848 166.908 193.557 172.773C179.616 182.633 159.868 183.687 144.826 175.792C140.478 173.51 136.693 170.16 133.465 166.482C123.155 154.732 120.012 135.353 126.665 121.125C132.899 107.794 151.481 101.008 163.744 110.52C172.946 117.657 173.501 133.475 164.296 140.916C162.219 142.594 159.493 144.076 156.865 144.617C156.235 144.747 155.58 144.78 154.924 144.814C153.822 144.871 152.718 144.927 151.733 145.441C149.238 146.744 149.372 148.932 150.874 150.978C158.578 161.477 174.904 159.693 183.05 150.882C193.176 139.932 194.404 120.223 187.543 107.345C183.957 100.614 177.843 95.0824 171.198 91.4486C165.677 88.4298 158.029 85.7698 151.703 85.539C131.979 84.819 113.295 99.517 106.91 117.68C96.111 148.399 115.872 176.747 133.089 201.446C135.696 205.187 138.246 208.844 140.622 212.413C157.752 238.146 171.743 268.109 171.609 299.179Z"
-                  fill="url(#paint0_linear)"
-                />
-                <path
-                  d="M135.145 300C59.2757 292.523 0 228.383 0 150.364C0 141.005 0.852919 131.846 2.48508 122.961C11.9133 125.574 21.1008 128.533 30.1639 132.446C44.9662 138.838 59.0352 147.209 71.4422 157.545C109.588 189.326 128.342 235.722 133.417 284.181C133.604 285.968 133.859 287.745 134.115 289.522C134.517 292.318 134.919 295.116 135.056 297.96C135.089 298.64 135.119 299.32 135.145 300Z"
-                  fill="#0071E5"
-                />
-                <path
-                  d="M135.145 300C59.2757 292.523 0 228.383 0 150.364C0 141.005 0.852919 131.846 2.48508 122.961C11.9133 125.574 21.1008 128.533 30.1639 132.446C44.9662 138.838 59.0352 147.209 71.4422 157.545C109.588 189.326 128.342 235.722 133.417 284.181C133.604 285.968 133.859 287.745 134.115 289.522C134.517 292.318 134.919 295.116 135.056 297.96C135.089 298.64 135.119 299.32 135.145 300Z"
-                  fill="url(#paint1_linear)"
-                />
-                <defs>
-                  <linearGradient
-                    id="paint0_linear"
-                    x1="150"
-                    y1="0"
-                    x2="150"
-                    y2="300.728"
-                    gradientUnits="userSpaceOnUse"
-                  >
-                    <stop stop-color="#0071E5" />
-                    <stop offset="1" stop-color="#4AC3F5" />
-                  </linearGradient>
-                  <linearGradient
-                    id="paint1_linear"
-                    x1="150"
-                    y1="0"
-                    x2="150"
-                    y2="300.728"
-                    gradientUnits="userSpaceOnUse"
-                  >
-                    <stop stop-color="#0071E5" />
-                    <stop offset="1" stop-color="#4AC3F5" />
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div class="flex column items-start q-ml-md">
-                <div class="text-h5 text-weight-medium">
-                  enis
-                  <q-badge align="middle" outline color="primary">v2.0</q-badge>
-                </div>
-                <div class="text-subtitle1">- удобный, быстрый, адаптивный</div>
-              </div>
+  <div class="flex h-screen">
+    <div class="m-auto">
+      <form @submit.prevent="submit">
+        <div class="login-form">
+          <div class="flex gap-4 items-center mb-2">
+            <app-icon class="w-16 h-16 flex-none" />
+            <div class="flex flex-col">
+              <h1 class="text-2xl font-medium">
+                enis
+              </h1>
+              <h2 class="text-base">
+                - удобный, быстрый, адаптивный
+              </h2>
             </div>
-            <q-input
-              type="number"
-              autofocus
-              unelevated
-              v-model="user.login"
-              label="Ваш ИИН"
-              mask="############"
-              :rules="[
-                (val) =>
-                  (val && val.length === 12) ||
-                  'ИИН должен содержать 12 символов',
-              ]"
-              :lazy-rules="'ondemand'"
-              no-error-icon
-            />
-            <q-input
-              type="password"
-              unelevated
-              v-model="user.password"
-              label="Ваш пароль"
-              :rules="[
-                (val) =>
-                  (val &&
-                    val.match(
-                      `[A-za-z0-9!,@,#,$,%,^,&,*,(,),-,=,_,+,~]{6,}`
-                    )) ||
-                  'Неверный формат',
-              ]"
-              :lazy-rules="'ondemand'"
-              no-error-icon
-            />
-            <template v-if="captcha">
-              <img :src="`data:image/png;base64,${captcha}`" />
-              <q-input
-                autofocus
-                type="text"
-                unelevated
-                label="Каптча"
-                v-model="user.captchaInput"
-                no-error-icon
-              />
-            </template>
-            <q-select
-              class="q-my-sm"
-              filled
-              v-model="city"
-              unelevated
-              :options="citiesList"
-              options-cover
-              stack-label
-              @input="saveCity()"
-              label="Школа"
-            />
-          </q-card-section>
-          <q-card-actions class="q-px-md">
-            <q-btn
-              type="submit"
-              unelevated
-              color="primary"
-              size="md"
-              class="full-width"
-              label="Войти"
-              ref="submitBtn"
-              :loading="loading"
-            />
-          </q-card-actions>
-          <div class="q-px-md q-mb-sm flex justify-center">
-            <q-btn
-              aria-label="theme toggler"
-              class="q-mr-xs"
-              flat
-              round
-              @click="toggleTheme()"
-              :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
-            />
-            <q-btn
-              aria-label="github repository"
-              right
-              class="flex-end"
-              type="a"
-              target="_blank"
-              round
-              flat
-              rel="noreferrer"
-              href="https://github.com/anyrange/enis2"
-            >
-              <q-icon size="1.5rem">
-                <svg
-                  aria-hidden="true"
-                  focusable="false"
-                  data-prefix="fab"
-                  data-icon="github"
-                  class="svg-inline--fa fa-github fa-w-16"
-                  role="img"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 496 512"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"
-                  ></path>
-                </svg>
-              </q-icon>
-            </q-btn>
           </div>
-        </q-form>
-      </q-card>
-    </q-page>
-  </q-page-container>
+          <base-input
+            v-model.text="user.login"
+            type="number"
+            label="Ваш ИИН"
+            autofocus
+            :theme="theme"
+            :error="v$.user.login?.$errors[0]?.$message"
+          />
+          <base-input
+            v-model="user.password"
+            type="password"
+            label="Ваш пароль"
+            :theme="theme"
+            :error="v$.user.password?.$errors[0]?.$message"
+          />
+          <transition name="fade">
+            <div
+              v-if="captcha"
+              class="flex justify-between items-center gap-x-4"
+            >
+              <img
+                class="object-contain w-44 h-12 cursor-pointer select-none duration-150 hover:opacity-50"
+                @click="updateCaptcha()"
+                :src="`data:image/png;base64,${captcha}`"
+                alt="captcha"
+              />
+              <base-input
+                v-model="user.captchaInput"
+                type="text"
+                label="Каптча"
+                :theme="theme"
+              />
+            </div>
+          </transition>
+          <base-select
+            v-model="city"
+            @update="setCity(city)"
+            :options="$options.cities"
+            label="Школа"
+            class="-mt-2"
+          />
+          <base-button type="submit" :loading="loading" label="Войти" />
+          <div class="flex justify-between">
+            <a href="#" class="icon-button" @click="toggleTheme()">
+              <sun-icon v-if="theme === 'dark'" class="icon" />
+              <moon-icon v-else />
+            </a>
+            <a href="#" class="icon-button" @click="showModal = true">
+              <info-icon class="icon" />
+            </a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <modal :is-open="showModal" @close="showModal = false">
+    <template #header>
+      <h3>custom header</h3>
+    </template>
+  </modal>
 </template>
 
 <script>
+import BaseInput from "@/components/BaseInput.vue";
+import BaseButton from "@/components/BaseButton.vue";
+import BaseSelect from "@/components/BaseSelect.vue";
+import AppIcon from "@/components/icons/AppIcon.vue";
+import MoonIcon from "@/components/icons/MoonIcon.vue";
+import SunIcon from "@/components/icons/SunIcon.vue";
+import InfoIcon from "@/components/icons/InfoIcon.vue";
+import Modal from "@/components/Modal.vue";
 import { mapActions, mapGetters } from "vuex";
+import { refreshCaptcha } from "@/api";
+import useValidate from "@vuelidate/core";
+import {
+  required,
+  maxLength,
+  helpers,
+  minLength,
+  numeric,
+} from "@vuelidate/validators";
 import cities from "@/cities.json";
 
-const defaultCity = { value: "sms.pvl.nis.edu.kz", label: "Павлодар ХБН" };
-const regExp = new RegExp(`[A-za-z0-9!,@,#,$,%,^,&,*,(,),-,=,_,+,~]{6,}`);
-
 export default {
+  name: "login",
+  components: {
+    BaseInput,
+    BaseButton,
+    BaseSelect,
+    Modal,
+    AppIcon,
+    MoonIcon,
+    SunIcon,
+    InfoIcon,
+  },
+  cities,
   data() {
     return {
+      v$: useValidate(),
       loading: false,
       user: {
         login: "",
         password: "",
         captchaInput: "",
       },
-      passwordRegex: regExp,
       captcha: "",
       city: {},
-      citiesList: cities,
+      errors: {},
+      showModal: false,
     };
   },
   computed: {
     ...mapGetters({
       savedCity: "getCity",
+      theme: "getTheme",
     }),
   },
-  created() {
-    this.city = this.savedCity || defaultCity;
+  validations() {
+    return {
+      user: {
+        login: {
+          required: helpers.withMessage(
+            "Значение не может быть пустым",
+            required
+          ),
+          minLength: helpers.withMessage("Неверный формат", minLength(12)),
+          maxLength: helpers.withMessage("Неверный формат", maxLength(12)),
+          numeric: helpers.withMessage("Неверный формат", numeric),
+        },
+        password: {
+          required: helpers.withMessage(
+            "Значение не может быть пустым",
+            required
+          ),
+          minLength: helpers.withMessage("Неверный формат", minLength(6)),
+        },
+      },
+    };
   },
   methods: {
-    ...mapActions(["login", "setCity", "toggleTheme"]),
+    ...mapActions(["toggleTheme", "login", "setCity"]),
+    async updateCaptcha() {
+      this.captcha = await refreshCaptcha();
+    },
     async submit() {
-      this.loading = true;
-      this.setCity(this.city);
-      try {
-        await this.login(this.user);
-      } catch (error) {
-        if (error.response.data.data) {
-          this.captcha = error.response.data.data.base64img;
-          this.user.captchaInput = "";
+      this.v$.$validate();
+      if (!this.v$.$error) {
+        this.loading = true;
+        try {
+          await this.login(this.user);
+        } catch (error) {
+          if (error.response.data.data) {
+            this.captcha = error.response.data.data.base64img;
+            this.user.captchaInput = "";
+          }
+        } finally {
+          this.loading = false;
         }
-      } finally {
-        this.loading = false;
       }
     },
   },
+  created() {
+    this.city = this.savedCity;
+  },
 };
 </script>
+
+<style lang="postcss" scoped>
+.login-form {
+  @apply flex flex-col gap-6 p-4 rounded-md border border-gray-200 dark:border-gray-600-spotify dark:bg-gray-800-spotify;
+}
+.icon-button {
+  @apply flex items-center justify-center w-9 h-9 p-1 rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600-spotify focus:ring-2 focus:outline-none;
+}
+.icon-button .icon {
+  @apply w-full h-full;
+}
+</style>
