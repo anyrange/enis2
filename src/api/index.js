@@ -1,7 +1,6 @@
 import axios from "axios";
 import $store from "@/store";
-import { useToast } from "vue-toastification";
-const toast = useToast();
+import { notification } from "@/notify.js";
 
 const api = axios.create({
   baseURL: process.env.VUE_APP_SERVER_URI,
@@ -22,9 +21,9 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response.data.status === 401) $store.dispatch("logout");
-    toast.error(error?.response?.data?.message || "Что-то пошло не так", {
-      timeout: 2500,
-      position: "bottom-left",
+    notification.show({
+      type: "danger",
+      message: error?.response?.data?.message || "Что-то пошло не так",
     });
     return Promise.reject(error);
   }
@@ -57,15 +56,18 @@ import {
   mockDiary,
   mockTerms,
   mockCaptcha,
-  mockUser,
   mockSubject,
   mockGrades,
 } from "./mockData.js";
 
 const mock = new MockAdapter(api, { delayResponse: 500 });
-mock.onPost("login").reply(200, mockUser, {
-  status: 200,
-});
+mock.onPost("login").reply(
+  200,
+  { success: true },
+  {
+    status: 200,
+  }
+);
 mock.onGet("login/captchaRefresh").reply(200, mockCaptcha, {
   status: 200,
 });
