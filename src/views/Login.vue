@@ -20,14 +20,12 @@
             label="Ваш ИИН"
             autofocus
             :theme="theme"
-            :error="v$.user.login?.$errors[0]?.$message"
           />
           <base-input
             v-model="user.password"
             type="password"
             label="Ваш пароль"
             :theme="theme"
-            :error="v$.user.password?.$errors[0]?.$message"
           />
           <transition name="fade">
             <div
@@ -87,14 +85,6 @@ import InfoIcon from "@/components/icons/InfoIcon.vue";
 import Modal from "@/components/Modal.vue";
 import { mapActions, mapGetters } from "vuex";
 import { refreshCaptcha } from "@/api";
-import useValidate from "@vuelidate/core";
-import {
-  required,
-  maxLength,
-  helpers,
-  minLength,
-  numeric,
-} from "@vuelidate/validators";
 import cities from "@/cities.json";
 
 export default {
@@ -112,7 +102,6 @@ export default {
   cities,
   data() {
     return {
-      v$: useValidate(),
       loading: false,
       user: {
         login: "",
@@ -131,47 +120,22 @@ export default {
       theme: "getTheme",
     }),
   },
-  validations() {
-    return {
-      user: {
-        login: {
-          required: helpers.withMessage(
-            "Значение не может быть пустым",
-            required
-          ),
-          minLength: helpers.withMessage("Неверный формат", minLength(12)),
-          maxLength: helpers.withMessage("Неверный формат", maxLength(12)),
-          numeric: helpers.withMessage("Неверный формат", numeric),
-        },
-        password: {
-          required: helpers.withMessage(
-            "Значение не может быть пустым",
-            required
-          ),
-          minLength: helpers.withMessage("Неверный формат", minLength(6)),
-        },
-      },
-    };
-  },
   methods: {
     ...mapActions(["toggleTheme", "login", "setCity"]),
     async updateCaptcha() {
       this.captcha = await refreshCaptcha();
     },
     async submit() {
-      this.v$.$validate();
-      if (!this.v$.$error) {
-        this.loading = true;
-        try {
-          await this.login(this.user);
-        } catch (error) {
-          if (error.response.data.data) {
-            this.captcha = error.response.data.data.base64img;
-            this.user.captchaInput = "";
-          }
-        } finally {
-          this.loading = false;
+      this.loading = true;
+      try {
+        await this.login(this.user);
+      } catch (error) {
+        if (error.response.data.data) {
+          this.captcha = error.response.data.data.base64img;
+          this.user.captchaInput = "";
         }
+      } finally {
+        this.loading = false;
       }
     },
   },

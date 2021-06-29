@@ -39,11 +39,4 @@ module.exports = {
       swDest: "service-worker.js",
     },
   },
-  pluginOptions: {
-    quasar: {
-      importStrategy: "kebab",
-      rtlSupport: false,
-    },
-  },
-  transpileDependencies: ["quasar"],
 };

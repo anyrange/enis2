@@ -80,9 +80,6 @@ export default {
     handleInput(value) {
       this.$emit("update:modelValue", value);
     },
-    handleType(e) {
-      console.log(e);
-    },
   },
 };
 </script>
