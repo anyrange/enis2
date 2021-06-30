@@ -50,5 +50,5 @@ app.register(autoLoad, {
 
 app.listen(PORT, "0.0.0.0", (err) => {
   if (err) return console.log(err);
-  console.info(`App listening on: http://localhost:${PORT}`);
+  console.info(`App is alive. Docs on: http://localhost:${PORT}/doc`);
 });
