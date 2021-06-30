@@ -18,7 +18,9 @@ const plugin = fp(async function plugin(fastify) {
     }
 
     if (code)
-      return reply.code(code || 500).send({ message, statusCode: code || 500 });
+      return reply
+        .code(typeof code === "number" ? code : 500)
+        .send({ message, statusCode: code || 500 });
 
     reply
       .code(500)

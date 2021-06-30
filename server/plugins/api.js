@@ -17,8 +17,12 @@ export default fp(async function plugin(fastify) {
         throw err;
       }
 
-      const json = await response.json();
+      if (
+        response.headers.raw()["content-type"][0] !== "text/json; charset=utf-8"
+      )
+        return;
 
+      const json = await response.json();
       return json;
     }
   );

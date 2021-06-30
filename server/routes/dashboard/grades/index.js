@@ -50,12 +50,11 @@ export default async function(fastify) {
         fastify.api({
           method: "POST",
           cookie,
-          url: `https://${domain}/Ref/GetOrganizations`,
+          url: `https://${domain}/reportcard/GetOrganizations`,
         }),
       ]);
 
       const actualYear = schoolYears.data.find((year) => year.Data.IsActual);
-
       params.append("schoolYearId", actualYear.Id);
       params.append("organizationId", organization.data[0].Id);
       params.append("organizationInternalId", organization.data[0].Id);
