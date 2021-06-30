@@ -27,7 +27,6 @@ if (process.env.NODE_ENV !== "production") {
       info: {
         title: "ENIS2",
         description: "ENIS2 API documentation",
-        version: "0.1.0",
       },
     },
     uiConfig: {
