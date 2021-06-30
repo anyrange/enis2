@@ -1,6 +1,5 @@
-import fetch from "node-fetch";
-import { parseCookies } from "../../includes/parseCookies.js";
 import { URLSearchParams } from "url";
+import fetch from "node-fetch";
 
 export default async function(fastify) {
   const querystring = fastify.getSchema("domain");
@@ -18,6 +17,28 @@ export default async function(fastify) {
             captchaInput: { type: "string" },
           },
         },
+        response: {
+          200: {
+            type: "object",
+            properties: {
+              message: { type: "string" },
+              statusCode: { type: "number" },
+            },
+          },
+          400: {
+            type: "object",
+            properties: {
+              message: { type: "string" },
+              statusCode: { type: "number" },
+              data: {
+                type: "object",
+                properties: {
+                  base64img: { type: "string" },
+                },
+              },
+            },
+          },
+        },
       },
     },
     async (req, reply) => {
@@ -26,39 +47,24 @@ export default async function(fastify) {
       params.append("password", req.body.password);
       params.append("captchaInput", req.body.captchaInput);
 
-      const cookie = Object.entries(req.cookies)
-        .map((cookie) => cookie.join("="))
-        .join("; ");
+      const cookie = fastify.cookieStringify(req.cookies);
 
-      const response = await fetch(
-        `https://${req.query.city}/root/Account/LogOn`,
-        {
-          method: "POST",
-          headers: { cookie },
-          body: params,
-        }
-      );
-
-      const body = await response.json();
-      const cookies = parseCookies(response);
-
-      const url = new URL(process.env.FRONTEND_URI);
-      const year = 60 * 60 * 24 * 365;
-
-      cookies.forEach((cookie) => {
-        reply.setCookie(cookie.name, cookie.value, {
-          path: "/",
-          sameSite: "strict",
-          httpOnly: true,
-          secure: true,
-          domain: url.hostname,
-          maxAge: year,
-        });
+      const res = await fetch(`https://${req.query.city}/root/Account/LogOn`, {
+        method: "POST",
+        headers: { cookie },
+        body: params,
       });
 
-      if (!body.success) return reply.code(403).send(body);
+      const body = await res.json();
+      const cookies = fastify.cookieParse(res);
 
-      reply.code(200).send(body);
+      cookies.forEach(({ name, value }) => {
+        reply.setCookie(name, value, fastify.cookieOptions);
+      });
+
+      const statusCode = body.success ? 200 : 400;
+      body.statusCode = statusCode;
+      reply.code(statusCode).send(body);
     }
   );
 }

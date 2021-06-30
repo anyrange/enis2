@@ -37,6 +37,8 @@ export default fp(async function plugin(fastify) {
         throw err;
       }
 
+      json.statusCode = response.status;
+      json.cookies = fastify.cookieParse(response);
       return json;
     }
   );

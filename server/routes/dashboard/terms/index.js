@@ -3,13 +3,28 @@ import { URLSearchParams } from "url";
 export default async function(fastify) {
   fastify.get(
     "",
-    { schema: { querystring: fastify.getSchema("domain") } },
+    {
+      schema: {
+        description: "Terms of current year",
+        querystring: fastify.getSchema("domain"),
+        response: {
+          200: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                Name: { type: "string" },
+                Id: { type: "string" },
+              },
+            },
+          },
+        },
+      },
+    },
     async (req, reply) => {
       const city = req.query.city;
 
-      const cookie = Object.entries(req.cookies)
-        .map((cookie) => cookie.join("="))
-        .join("; ");
+      const cookie = fastify.cookieStringify(req.cookies);
 
       const dates = await fastify.api({
         url: `https://${city}/Ref/GetSchoolYears?fullData=true`,
@@ -18,10 +33,8 @@ export default async function(fastify) {
 
       const params = new URLSearchParams();
 
-      params.append(
-        "schoolYearId",
-        dates.data?.find((date) => date.Data.IsActual).Id
-      );
+      const actualYear = dates.data?.find((date) => date.Data.IsActual);
+      params.append("schoolYearId", actualYear.Id);
 
       const periods = await fastify.api({
         method: "POST",

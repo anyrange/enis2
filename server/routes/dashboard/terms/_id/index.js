@@ -1,6 +1,5 @@
 import fetch from "node-fetch";
 import { URLSearchParams } from "url";
-import { parseCookies } from "../../../../includes/parseCookies.js";
 
 export default async function(fastify) {
   fastify.get(
@@ -13,19 +12,42 @@ export default async function(fastify) {
           required: ["id"],
           properties: { id: { type: "string", minLength: 36, maxLength: 36 } },
         },
+        response: {
+          200: {
+            type: "object",
+            properties: {
+              statusCode: { type: "number" },
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    Name: { type: "string" },
+                    JournalId: { type: "string" },
+                    Score: { type: "number" },
+                    Mark: { type: "number" },
+                    Id: { type: "string" },
+                    Evaluations: {
+                      type: "array",
+                      items: {
+                        type: "string",
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     },
     async (req, reply) => {
       const city = req.query.city;
-
-      let cookie = Object.entries(req.cookies)
-        .map((cookie) => cookie.join("="))
-        .join("; ");
+      let cookie = fastify.cookieStringify(req.cookies);
 
       const params = new URLSearchParams();
       params.append("periodId", req.params.id);
 
-      console.log(params);
       const parallel = await fastify.api({
         url: `https://${city}/JceDiary/GetParallels`,
         method: "POST",
@@ -66,25 +88,13 @@ export default async function(fastify) {
         body: params,
       });
 
-      const newCookies = parseCookies(cookieResponse);
-      const smsCookie =
-        newCookies && newCookies.find((cookie) => cookie.name !== "lang");
+      const newCookies = fastify.cookieParse(cookieResponse);
 
-      if (smsCookie) {
-        cookie = cookie + "; " + smsCookie.name + "=" + smsCookie.value;
+      if (newCookies.length) {
+        const [name, value] = newCookies[0];
+        cookie += "; " + name + "=" + value;
 
-        const url = new URL(process.env.FRONTEND_URI);
-
-        const year = 60 * 60 * 24 * 365;
-
-        reply.setCookie(smsCookie.name, smsCookie.value, {
-          path: "/",
-          sameSite: "strict",
-          secure: true,
-          domain: url.hostname,
-          httpOnly: true,
-          maxAge: year,
-        });
+        reply.setCookie(name, value, fastify.cookieOptions);
       }
 
       const periodsData = await fastify.api({
@@ -94,7 +104,15 @@ export default async function(fastify) {
         cookie,
       });
 
-      reply.header("Cache-Control", "public, max-age=900").send(periodsData);
+      reply.header("Cache-Control", "public, max-age=900").send({
+        data: periodsData.data.map((el) => {
+          return {
+            ...el,
+            Evaluations: el.Evaluations.map((el2) => el2.Id),
+          };
+        }),
+        statusCode: periodsData.statusCode,
+      });
     }
   );
 }

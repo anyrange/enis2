@@ -14,6 +14,22 @@ export default async function(fastify) {
             city: fastify.getSchema("city"),
           },
         },
+        response: {
+          200: {
+            statusCode: { type: "number" },
+            data: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  Name: { type: "string" },
+                  Score: { type: "number" },
+                  MaxScore: { type: "number" },
+                },
+              },
+            },
+          },
+        },
       },
     },
     async (req, reply) => {
@@ -21,9 +37,7 @@ export default async function(fastify) {
       params.append("journalId", req.query.journalId);
       params.append("evalId", req.query.evalId);
 
-      const cookie = Object.entries(req.cookies)
-        .map((cookie) => cookie.join("="))
-        .join("; ");
+      const cookie = fastify.cookieStringify(req.cookies);
 
       const response = await fastify.api({
         url: `https://${req.query.city}/Jce/Diary/GetResultByEvalution`,

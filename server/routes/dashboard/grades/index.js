@@ -10,8 +10,7 @@ export default async function(fastify) {
           200: {
             type: "object",
             properties: {
-              success: { type: "boolean" },
-              message: { type: "string" },
+              statusCode: { type: "string" },
               data: {
                 type: "array",
                 items: {
@@ -39,9 +38,7 @@ export default async function(fastify) {
     async (req, reply) => {
       const domain = req.query.city;
       const params = new URLSearchParams();
-      const cookie = Object.entries(req.cookies)
-        .map((cookie) => cookie.join("="))
-        .join("; ");
+      const cookie = fastify.cookieStringify(req.cookies);
 
       const [schoolYears, organization] = await Promise.all([
         fastify.api({
