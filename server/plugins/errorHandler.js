@@ -17,10 +17,10 @@ const plugin = fp(async function plugin(fastify) {
       return reply.code(statusCode).send({ message, statusCode });
     }
 
-    if (code)
-      return reply
-        .code(typeof code === "number" ? code : 500)
-        .send({ message, statusCode: code || 500 });
+    if (code === "ETIMEDOUT")
+      return reply.code(503).send({ message: "Try again", statusCode: code });
+
+    if (code) return reply.code(code).send({ message, statusCode: 500 });
 
     reply
       .code(500)

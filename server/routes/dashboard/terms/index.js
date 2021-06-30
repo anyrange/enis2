@@ -17,6 +17,7 @@ export default async function(fastify) {
       });
 
       const params = new URLSearchParams();
+
       params.append(
         "schoolYearId",
         dates.data?.find((date) => date.Data.IsActual).Id
@@ -29,7 +30,7 @@ export default async function(fastify) {
         cookie,
       });
 
-      reply.code(200).send(periods.data);
+      reply.header("Cache-Control", "public, max-age=900").send(periods.data);
     }
   );
 }

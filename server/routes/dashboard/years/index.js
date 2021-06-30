@@ -14,7 +14,7 @@ export default async function(fastify) {
         cookie,
       });
 
-      reply.code(200).send(data);
+      reply.header("Cache-Control", "public, max-age=900").send(data);
     }
   );
 }

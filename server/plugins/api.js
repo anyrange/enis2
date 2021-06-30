@@ -19,10 +19,24 @@ export default fp(async function plugin(fastify) {
 
       if (
         response.headers.raw()["content-type"][0] !== "text/json; charset=utf-8"
-      )
-        return;
+      ) {
+        const message = await response.text();
+        const err = new Error(message);
+        err.code =
+          message ===
+          "Сессия пользователя была завершена, перезагрузите страницу"
+            ? 401
+            : 500;
+        throw err;
+      }
 
       const json = await response.json();
+      if (!json.success) {
+        const err = new Error(json.message);
+        err.code = 500;
+        throw err;
+      }
+
       return json;
     }
   );

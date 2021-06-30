@@ -25,6 +25,7 @@ export default async function(fastify) {
       const params = new URLSearchParams();
       params.append("periodId", req.params.id);
 
+      console.log(params);
       const parallel = await fastify.api({
         url: `https://${city}/JceDiary/GetParallels`,
         method: "POST",
@@ -93,7 +94,7 @@ export default async function(fastify) {
         cookie,
       });
 
-      reply.code(200).send(periodsData);
+      reply.header("Cache-Control", "public, max-age=900").send(periodsData);
     }
   );
 }

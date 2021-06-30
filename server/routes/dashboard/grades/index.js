@@ -1,3 +1,5 @@
+import fetch from "node-fetch";
+
 export default async function(fastify) {
   fastify.get(
     "",
@@ -95,9 +97,8 @@ export default async function(fastify) {
         url: `https://${domain}/reportcard/GetUrl`,
       });
 
-      await fastify.api({
-        cookie,
-        url,
+      await fetch(url, {
+        headers: { cookie },
       });
 
       const grades = await fastify.api({
@@ -112,7 +113,7 @@ export default async function(fastify) {
           grade.IsNotChosen && grade.ComponentName === "Инвариантный компонент"
       );
 
-      reply.code(200).send(grades);
+      reply.header("Cache-Control", "public, max-age=900").send(grades);
     }
   );
 }

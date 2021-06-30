@@ -32,7 +32,7 @@ export default async function(fastify) {
         cookie,
       });
 
-      reply.code(200).send(response);
+      reply.header("Cache-Control", "public, max-age=900").send(response);
     }
   );
 }
