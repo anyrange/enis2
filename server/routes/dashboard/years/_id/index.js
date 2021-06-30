@@ -26,17 +26,14 @@ export default async function(fastify) {
       },
     },
     async (req, reply) => {
-      const city = req.query.city;
-
       const cookie = fastify.cookieStringify(req.cookies);
 
       const params = new URLSearchParams();
-
       params.append("schoolYearId", req.params.id);
 
       const periods = await fastify.api({
         method: "POST",
-        url: `https://${city}/Ref/GetPeriods`,
+        url: `https://sms.${req.query.city}.nis.edu.kz/Ref/GetPeriods`,
         body: params,
         cookie,
       });

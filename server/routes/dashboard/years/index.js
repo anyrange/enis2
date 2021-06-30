@@ -20,18 +20,16 @@ export default async function(fastify) {
       },
     },
     async (req, reply) => {
-      const city = req.query.city;
-
       const cookie = fastify.cookieStringify(req.cookies);
 
-      const { data } = await fastify.api({
-        url: `https://${city}/Ref/GetSchoolYears?fullData=true`,
+      const { data: years } = await fastify.api({
+        url: `https://sms.${req.query.city}.nis.edu.kz/Ref/GetSchoolYears?fullData=true`,
         cookie,
       });
 
       reply.header("Cache-Control", "public, max-age=900").send(
-        data.map((el) => {
-          return { Name: el.Name, Id: el.Id, isActual: el.Data.IsActual };
+        years.map((year) => {
+          return { Name: year.Name, Id: year.Id, isActual: year.Data.IsActual };
         })
       );
     }

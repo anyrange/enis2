@@ -36,7 +36,8 @@ export default async function(fastify) {
       },
     },
     async (req, reply) => {
-      const domain = req.query.city;
+      const baseUrl = `https://sms.${req.query.city}.nis.edu.kz`;
+
       const params = new URLSearchParams();
       const cookie = fastify.cookieStringify(req.cookies);
 
@@ -44,12 +45,12 @@ export default async function(fastify) {
         fastify.api({
           method: "POST",
           cookie,
-          url: `https://${domain}/Ref/GetSchoolYears`,
+          url: `${baseUrl}/Ref/GetSchoolYears`,
         }),
         fastify.api({
           method: "POST",
           cookie,
-          url: `https://${domain}/reportcard/GetOrganizations`,
+          url: `${baseUrl}/reportcard/GetOrganizations`,
         }),
       ]);
 
@@ -62,7 +63,7 @@ export default async function(fastify) {
         method: "POST",
         body: params,
         cookie,
-        url: `https://${domain}/reportcard/GetParallels`,
+        url: `${baseUrl}/reportcard/GetParallels`,
       });
 
       params.append("parallelId", parallels.data[0].Id);
@@ -71,7 +72,7 @@ export default async function(fastify) {
         method: "POST",
         body: params,
         cookie,
-        url: `https://${domain}/reportcard/GetKlasses`,
+        url: `${baseUrl}/reportcard/GetKlasses`,
       });
 
       params.append("klassId", klasses.data[0].Id);
@@ -80,7 +81,7 @@ export default async function(fastify) {
         method: "POST",
         body: params,
         cookie,
-        url: `https://${domain}/reportcard/GetStudents`,
+        url: `${baseUrl}/reportcard/GetStudents`,
       });
 
       params.append("personId", students.data[0].Id);
@@ -91,7 +92,7 @@ export default async function(fastify) {
         method: "POST",
         body: params,
         cookie,
-        url: `https://${domain}/reportcard/GetUrl`,
+        url: `${baseUrl}/reportcard/GetUrl`,
       });
 
       await fetch(url, {
@@ -102,7 +103,7 @@ export default async function(fastify) {
         method: "POST",
         body: params,
         cookie,
-        url: `https://${domain}/ReportCardByStudent/GetData`,
+        url: `${baseUrl}/ReportCardByStudent/GetData`,
       });
 
       grades.data = grades.data.filter(

@@ -22,12 +22,12 @@ export default async function(fastify) {
       },
     },
     async (req, reply) => {
-      const city = req.query.city;
+      const baseUrl = `https://sms.${req.query.city}.nis.edu.kz/Ref`;
 
       const cookie = fastify.cookieStringify(req.cookies);
 
       const dates = await fastify.api({
-        url: `https://${city}/Ref/GetSchoolYears?fullData=true`,
+        url: `${baseUrl}/GetSchoolYears?fullData=true`,
         cookie,
       });
 
@@ -38,7 +38,7 @@ export default async function(fastify) {
 
       const periods = await fastify.api({
         method: "POST",
-        url: `https://${city}/Ref/GetPeriods`,
+        url: `${baseUrl}/GetPeriods`,
         body: params,
         cookie,
       });

@@ -49,11 +49,14 @@ export default async function(fastify) {
 
       const cookie = fastify.cookieStringify(req.cookies);
 
-      const res = await fetch(`https://${req.query.city}/root/Account/LogOn`, {
-        method: "POST",
-        headers: { cookie },
-        body: params,
-      });
+      const res = await fetch(
+        `https://sms.${req.query.city}.nis.edu.kz/root/Account/LogOn`,
+        {
+          method: "POST",
+          headers: { cookie },
+          body: params,
+        }
+      );
 
       const body = await res.json();
       const cookies = fastify.cookieParse(res);

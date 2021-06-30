@@ -26,7 +26,6 @@ export default async function(fastify) {
                     JournalId: { type: "string" },
                     Score: { type: "number" },
                     Mark: { type: "number" },
-                    Id: { type: "string" },
                     Evaluations: {
                       type: "array",
                       items: {
@@ -42,14 +41,15 @@ export default async function(fastify) {
       },
     },
     async (req, reply) => {
-      const city = req.query.city;
+      const baseUrl = `https://sms.${req.query.city}.nis.edu.kz`;
+
       let cookie = fastify.cookieStringify(req.cookies);
 
       const params = new URLSearchParams();
       params.append("periodId", req.params.id);
 
       const parallel = await fastify.api({
-        url: `https://${city}/JceDiary/GetParallels`,
+        url: `${baseUrl}/JceDiary/GetParallels`,
         method: "POST",
         body: params,
         cookie,
@@ -58,7 +58,7 @@ export default async function(fastify) {
       params.append("parallelId", parallel.data[0].Id);
 
       const klasses = await fastify.api({
-        url: `https://${city}/JceDiary/GetKlasses`,
+        url: `${baseUrl}/JceDiary/GetKlasses`,
         method: "POST",
         body: params,
         cookie,
@@ -67,7 +67,7 @@ export default async function(fastify) {
       params.append("klassId", klasses.data[0].Id);
 
       const student = await fastify.api({
-        url: `https://${city}/JceDiary/GetStudents`,
+        url: `${baseUrl}/JceDiary/GetStudents`,
         method: "POST",
         body: params,
         cookie,
@@ -76,7 +76,7 @@ export default async function(fastify) {
       params.append("studentId", student.data[0].Id);
 
       const diaryLink = await fastify.api({
-        url: `https://${city}/JceDiary/GetJceDiary`,
+        url: `${baseUrl}/JceDiary/GetJceDiary`,
         method: "POST",
         body: params,
         cookie,
@@ -98,7 +98,7 @@ export default async function(fastify) {
       }
 
       const periodsData = await fastify.api({
-        url: `https://${city}/Jce/Diary/GetSubjects`,
+        url: `${baseUrl}/Jce/Diary/GetSubjects`,
         method: "POST",
         body: params,
         cookie,

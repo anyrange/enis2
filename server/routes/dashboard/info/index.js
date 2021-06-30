@@ -40,7 +40,7 @@ export default async function(fastify) {
       const cookie = fastify.cookieStringify(req.cookies);
 
       const response = await fastify.api({
-        url: `https://${req.query.city}/Jce/Diary/GetResultByEvalution`,
+        url: `https://sms.${req.query.city}.nis.edu.kz/Jce/Diary/GetResultByEvalution`,
         method: "POST",
         body: params,
         cookie,
