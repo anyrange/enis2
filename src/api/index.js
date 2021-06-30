@@ -7,13 +7,11 @@ const api = axios.create({
   withCredentials: true,
 });
 
-/*
 api.interceptors.request.use((config) => {
   const queryCharacter = config.url.includes("&") ? "&" : "?";
   config.url = `${config.url}${queryCharacter}city=${$store.getters.getCity.value}`;
   return config;
 });
-*/
 
 api.interceptors.response.use(
   (response) => {
@@ -50,42 +48,47 @@ export function getGrades() {
   return api.get("dashboard/grades").then((r) => r.data);
 }
 
-/* MOCKS */
-import MockAdapter from "axios-mock-adapter";
-import {
-  mockDiary,
-  mockTerms,
-  mockCaptcha,
-  mockSubject,
-  mockGrades,
-} from "./mockData.js";
-
-const mock = new MockAdapter(api, { delayResponse: 500 });
-mock.onPost("login").reply(
-  200,
-  { success: true },
-  {
-    status: 200,
-  }
-);
-mock.onGet("login/captchaRefresh").reply(200, mockCaptcha, {
-  status: 200,
-});
-mock.onGet("dashboard/terms").reply(200, mockTerms, {
-  status: 200,
-});
-mock.onGet(new RegExp("terms/*")).reply((config) => {
-  const match = (id) => config.url.includes(id);
-  if (match("term1id")) return [200, mockDiary[0]];
-  if (match("term2id")) return [200, mockDiary[1]];
-  if (match("term3id")) return [200, mockDiary[2]];
-  if (match("term4id")) return [200, mockDiary[3]];
-});
-mock.onGet("dashboard/info?journalId=1&evalId=1").reply(200, {
-  data: mockSubject,
-  status: 200,
-});
-mock.onGet("dashboard/grades").reply(200, {
-  data: mockGrades,
-  status: 200,
-});
+/* MOCK API */
+if (process.env.NODE_ENV === "development") {
+  (async () => {
+    const MockAdapter = require("axios-mock-adapter");
+    const mocks = await import("./mockData.js");
+    const mock = new MockAdapter(api, {
+      delayResponse: 500,
+    });
+    mock.onPost("login?city=sms.pvl.nis.edu.kz").reply(
+      200,
+      { success: true },
+      {
+        status: 200,
+      }
+    );
+    mock
+      .onGet("login/captchaRefresh?city=sms.pvl.nis.edu.kz")
+      .reply(200, mocks.mockCaptcha, {
+        status: 200,
+      });
+    mock
+      .onGet("dashboard/terms?city=sms.pvl.nis.edu.kz")
+      .reply(200, mocks.mockTerms, {
+        status: 200,
+      });
+    mock.onGet(new RegExp("terms/*")).reply((config) => {
+      const match = (id) => config.url.includes(id);
+      if (match("term1id")) return [200, mocks.mockDiary[0]];
+      if (match("term2id")) return [200, mocks.mockDiary[1]];
+      if (match("term3id")) return [200, mocks.mockDiary[2]];
+      if (match("term4id")) return [200, mocks.mockDiary[3]];
+    });
+    mock
+      .onGet("dashboard/info?journalId=1&evalId=1&city=sms.pvl.nis.edu.kz")
+      .reply(200, {
+        data: mocks.mockSubject,
+        status: 200,
+      });
+    mock.onGet("dashboard/grades?city=sms.pvl.nis.edu.kz").reply(200, {
+      data: mocks.mockGrades,
+      status: 200,
+    });
+  })();
+}
