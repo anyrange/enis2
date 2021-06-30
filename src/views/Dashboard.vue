@@ -9,34 +9,34 @@
       </tab>
     </tabs>
   </nav>
-  <div class="flex flex-col divide-y border-black p-2">
-    <span> DIARY_LOADING: {{ diary.loading }} </span>
-    <span> TERMS_LOADING: {{ terms.loading }} </span>
-    <span> GRADES_LOADING: {{ grades.loading }} </span>
-    <span> CURRENT_TERM: {{ currentTerm }} </span>
-    <span> SELECTED_TERM: {{ selectedTerm }}</span>
-  </div>
   <section class="flex w-full justify-center p-4">
-    <div
-      class="flex flex-col w-3/5 py-2 divide-y divide-gray-700-spotify rounded-sm dark:bg-gray-800-spotify"
-    >
+    <div class="diary-list">
       <!--  -->
-      <div
-        class="flex flex-row py-2 px-3 gap-3 justify-between items-center cursor-pointer duration-200 hover:bg-gray-100 dark:hover:bg-gray-600-spotify"
-      >
-        <div class="flex flex-col flex-grow">
-          <div class="text-sm leading-snug">
-            Английский язык
+      <template v-if="currentTerm !== 'grades'">
+        <div
+          v-for="subject in currentTermDiary"
+          :key="subject"
+          class="diary-list-item"
+        >
+          <div class="flex flex-col flex-grow">
+            <div class="text-sm leading-snug">
+              {{ subject.Name }}
+            </div>
+            <div class="flex flex-col gap-1">
+              <span class="font-medium">
+                {{ subject.Score }}
+              </span>
+              <linear-progress :value="subject.Score" />
+            </div>
           </div>
-          <div class="flex flex-col gap-1">
-            <span class="font-medium">
-              85.63%
-            </span>
-            <linear-progress :value="85.63" />
-          </div>
+          <span class="text-right font-semibold text-base">
+            {{ subject.Mark }}
+          </span>
         </div>
-        <span class="text-right font-semibold text-base">5</span>
-      </div>
+      </template>
+      <template v-else>
+        GRADES
+      </template>
       <!--  -->
     </div>
   </section>
@@ -75,14 +75,22 @@ export default {
       diary: "diary/getDiary",
       grades: "grades/getGrades",
     }),
-    selectedTerm() {
-      return this.terms.data.find((item) => item.Id === this.currentTerm);
+    currentTermDiary() {
+      const foundItem = this.diary.data.find((item) => {
+        return item.termId === this.currentTerm;
+      });
+      if (foundItem instanceof Object) return foundItem.data;
+      return [];
     },
   },
   watch: {
     currentTerm(value) {
-      if (value === "grades") return this.fetchGrades();
-      this.fetchDiary(this.selectedTerm);
+      this.setCurrentTerm(value);
+      if (value === "grades") {
+        this.fetchGrades();
+      } else {
+        this.fetchDiary(value);
+      }
     },
   },
   methods: {
@@ -91,6 +99,7 @@ export default {
       fetchTerms: "terms/fetchTerms",
       fetchDiary: "diary/fetchDiary",
       fetchGrades: "grades/fetchGrades",
+      setCurrentTerm: "terms/setCurrentTerm",
     }),
     getTermLable(index) {
       const GREEK_NUMERALS = {
@@ -104,7 +113,11 @@ export default {
   },
   async created() {
     await this.fetchTerms();
-    this.currentTerm = this.terms.data[this.terms.data.length - 1].Id;
+    if (this.terms.selected) {
+      this.currentTerm = this.terms.selected;
+    } else {
+      this.currentTerm = this.terms.data[this.terms.data.length - 1].Id;
+    }
   },
 };
 </script>
@@ -112,5 +125,11 @@ export default {
 <style lang="postcss" scoped>
 .nav-bar {
   @apply w-full border-b-2 border-gray-300 dark:border-gray-600-spotify;
+}
+.diary-list {
+  @apply flex flex-col w-3/5 py-2 divide-y dark:divide-gray-700-spotify rounded-sm dark:bg-gray-800-spotify;
+}
+.diary-list-item {
+  @apply flex flex-row py-2 px-3 gap-3 justify-between items-center cursor-pointer duration-200 hover:bg-gray-100 dark:hover:bg-gray-600-spotify;
 }
 </style>

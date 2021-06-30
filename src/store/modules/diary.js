@@ -10,9 +10,9 @@ export default {
     SET_LOADING(state, status) {
       state.loading = status;
     },
-    ADD_DIARY(state, { response, term }) {
+    ADD_DIARY(state, { response, termId }) {
       state.data.push({
-        termName: term.Name,
+        termId: termId,
         data: response.data,
       });
     },
@@ -23,11 +23,11 @@ export default {
     },
   },
   actions: {
-    fetchDiary: async ({ commit, state }, term) => {
-      if (state.data.find((item) => item.termName === term.Name)) return;
+    fetchDiary: async ({ commit, state }, termId) => {
+      if (state.data.find((item) => item.termId === termId)) return;
       commit("SET_LOADING", true);
       try {
-        commit("ADD_DIARY", { response: await getDiary(term.Id), term });
+        commit("ADD_DIARY", { response: await getDiary(termId), termId });
       } finally {
         commit("SET_LOADING", false);
       }
