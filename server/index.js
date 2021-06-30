@@ -21,8 +21,19 @@ app.register(import("fastify-cors"), {
 app.register(import("fastify-cookie"), { secret });
 
 if (process.env.NODE_ENV !== "production") {
-  app.ready(() => {
-    console.log(app.printRoutes({ commonPrefix: false }));
+  app.register(import("fastify-swagger"), {
+    routePrefix: "/doc",
+    swagger: {
+      info: {
+        title: "ENIS2",
+        description: "ENIS2 API documentation",
+        version: "0.1.0",
+      },
+    },
+    uiConfig: {
+      deepLinking: true,
+    },
+    exposeRoute: true,
   });
 }
 
