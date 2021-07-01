@@ -1,19 +1,22 @@
 <template>
   <router-view />
-  <update-notification />
   <notifications />
 </template>
 
 <script>
 import Notifications from "@/components/Notifications.vue";
-import UpdateNotification from "@/components/UpdateNotification";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "App",
   components: {
     Notifications,
-    UpdateNotification,
+  },
+  data() {
+    return {
+      refreshing: false,
+      registration: null,
+    };
   },
   computed: {
     ...mapGetters({ theme: "getTheme" }),
@@ -32,9 +35,42 @@ export default {
   },
   methods: {
     ...mapActions(["setTheme"]),
+    showRefreshUI(e) {
+      this.registration = e.detail;
+      this.$notify.show({
+        type: "success",
+        message: "Обновление доступно",
+        progress: false,
+        closable: false,
+        actions: [
+          {
+            title: "Обновить",
+            handler: () => {
+              this.refreshApp();
+            },
+          },
+        ],
+      });
+    },
+    refreshApp() {
+      if (!this.registration || !this.registration.waiting) {
+        return;
+      }
+      this.registration.waiting.postMessage("skipWaiting");
+    },
   },
   created() {
     this.setTheme();
+  },
+  mounted() {
+    document.addEventListener("swUpdated", this.showRefreshUI, { once: true });
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (this.refreshing) return;
+        this.refreshing = true;
+        window.location.reload();
+      });
+    }
   },
 };
 </script>
