@@ -21,9 +21,13 @@ export default {
   },
   actions: {
     login: async ({ commit }, credentials) => {
-      const response = await login(credentials);
-      commit("SET_USER", response.success);
-      $router.push({ name: "dashboard" });
+      try {
+        await login(credentials);
+        commit("SET_USER", true);
+        $router.push({ name: "dashboard" });
+      } catch {
+        commit("SET_USER", false);
+      }
     },
     logout: ({ commit }) => {
       commit("REMOVE_USER");
