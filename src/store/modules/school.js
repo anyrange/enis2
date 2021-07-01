@@ -2,7 +2,7 @@ export default {
   namespaced: false,
   state: {
     city: {
-      value: "sms.pvl.nis.edu.kz",
+      value: "pvl",
       label: "Павлодар ХБН",
     },
   },
