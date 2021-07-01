@@ -1,17 +1,17 @@
 <template>
-  <div>
-    <label class="bs-label">
+  <div class="base-select-container">
+    <label class="base-select-label">
       {{ label }}
     </label>
-    <div class="bs-box">
+    <div class="base-select">
       <button
+        class="base-select-button"
         type="button"
-        class="bs-button"
         @click="toggleDropdown()"
         v-click-outside="closeDropdown"
       >
         {{ modelValue.label }}
-        <span class="bs-button-icon">
+        <span class="base-select-button-icon">
           <svg
             class="h-5 w-5 text-gray-400"
             xmlns="http://www.w3.org/2000/svg"
@@ -32,23 +32,23 @@
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
       >
-        <ul v-if="dropdownOpened" tabindex="-1" class="bs-list" ref="kal">
+        <ul v-if="dropdownOpened" tabindex="-1" class="base-select-list">
           <li
-            class="bs-list-item"
+            class="base-select-list-item"
             :class="[
               option.value === modelValue.value
-                ? 'bs-list-item-active'
-                : 'bs-list-item-default',
+                ? 'base-select-list-item-active'
+                : 'base-select-list-item-default',
             ]"
             v-for="option in options"
             :key="option"
             @click="handleClick(option)"
           >
             <span
-              class="bs-list-item-label"
+              class="base-select-list-item-label"
               :class="[
                 option.value === modelValue.value
-                  ? 'bs-list-item-label-active'
+                  ? 'base-select-list-item-label-active'
                   : '',
               ]"
             >
@@ -100,43 +100,46 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.bs-list::-webkit-scrollbar {
+.base-select-container {
+  @apply flex flex-col gap-2;
+}
+.base-select-list::-webkit-scrollbar {
   @apply w-2 dark:bg-gray-700-spotify bg-gray-300;
 }
-.bs-list::-webkit-scrollbar-thumb {
+.base-select-list::-webkit-scrollbar-thumb {
   @apply dark:bg-gray-450-spotify bg-gray-400;
 }
-.bs-label {
+.base-select-label {
   @apply text-base font-medium select-none text-gray-600-spotify dark:text-gray-500-spotify;
 }
-.bs-box {
-  @apply mt-1 relative;
+.base-select {
+  @apply relative;
 }
 .bs-bg-default {
   @apply bg-gray-50 dark:bg-gray-600-spotify;
 }
-.bs-button {
+.base-select-button {
   @apply bs-bg-default relative w-full text-sm border border-gray-200 dark:border-gray-800-spotify rounded-sm shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500;
 }
-.bs-button-icon {
+.base-select-button-icon {
   @apply absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none;
 }
-.bs-list {
+.base-select-list {
   @apply bs-bg-default absolute w-full z-10 mt-1 shadow-lg max-h-56 rounded-sm py-1 ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none;
 }
-.bs-list-item {
+.base-select-list-item {
   @apply text-gray-900 dark:text-gray-100 text-sm cursor-pointer select-none relative py-2 pr-9 duration-200;
 }
-.bs-list-item-active {
+.base-select-list-item-active {
   @apply hover:bg-opacity-10 hover:bg-blue-500;
 }
-.bs-list-item-default {
+.base-select-list-item-default {
   @apply hover:bg-opacity-10 hover:bg-gray-500;
 }
-.bs-list-item-label {
+.base-select-list-item-label {
   @apply ml-3 font-normal block truncate;
 }
-.bs-list-item-label-active {
+.base-select-list-item-label-active {
   @apply text-blue-500;
 }
 </style>

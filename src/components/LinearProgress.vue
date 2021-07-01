@@ -36,7 +36,7 @@ export default {
 
 <style lang="postcss">
 .l-progress-container {
-  @apply w-full dark:bg-gray-600-spotify rounded-full;
+  @apply w-full dark:bg-gray-600-spotify bg-gray-200 rounded-full;
 }
 .l-progress-bar {
   @apply h-1 rounded-l-full;

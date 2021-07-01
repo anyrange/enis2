@@ -2,10 +2,13 @@
 
 #app {
   font-family: "Inter", sans-serif;
+  @apply no-tap-highlight bg-white text-black dark:text-white dark:bg-gray-900-spotify antialiased;
 }
 
-body {
-  @apply bg-white text-black dark:text-white dark:bg-gray-900-spotify antialiased;
+@media only screen and (max-width: 1024px) {
+  .no-tap-highlight {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  }
 }
 
 .fade-enter-active,

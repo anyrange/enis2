@@ -1,7 +1,7 @@
 <template>
-  <div class="flex justify-center items-center dark:bg-gray-800-spotify">
+  <ul class="tabs">
     <slot />
-  </div>
+  </ul>
 </template>
 
 <script>
@@ -29,3 +29,9 @@ export default {
   },
 };
 </script>
+
+<style lang="postcss" scoped>
+.tabs {
+  @apply flex justify-between items-center;
+}
+</style>

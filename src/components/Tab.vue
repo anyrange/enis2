@@ -1,17 +1,13 @@
 <template>
-  <a
+  <li
     v-if="visible"
-    href="#"
     class="tab"
-    v-wave
-    :class="[
-      isActive ? 'active-tab' : 'default-tab',
-      disabled ? 'disabled-tab' : '',
-    ]"
+    :class="tabClass"
     @click="activateTab(name)"
+    v-wave
   >
     <slot />
-  </a>
+  </li>
 </template>
 
 <script>
@@ -39,6 +35,13 @@ export default {
     },
   },
   computed: {
+    tabClass() {
+      return {
+        "active-tab": this.isActive,
+        "default-tab": !this.isActive,
+        "disabled-tab": this.disabled,
+      };
+    },
     active() {
       return this.state.active();
     },
@@ -62,6 +65,6 @@ export default {
   @apply text-gray-500-spotify hover:bg-gray-100 dark:hover:bg-gray-700-spotify;
 }
 .disabled-tab {
-  @apply opacity-40 cursor-not-allowed;
+  @apply opacity-40 pointer-events-none;
 }
 </style>
