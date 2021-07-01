@@ -91,7 +91,7 @@ export default async function(fastify) {
       const newCookies = fastify.cookieParse(cookieResponse);
 
       if (newCookies.length) {
-        const [name, value] = newCookies[0];
+        const { name, value } = newCookies[0];
         cookie += "; " + name + "=" + value;
 
         reply.setCookie(name, value, fastify.cookieOptions);

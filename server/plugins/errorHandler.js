@@ -20,7 +20,7 @@ const plugin = fp(async function plugin(fastify) {
     if (code === "ETIMEDOUT")
       return reply.code(503).send({ message: "Try again", statusCode: code });
 
-    if (code) return reply.code(code).send({ message, statusCode: 500 });
+    if (code) return reply.code(code).send({ message, statusCode: code });
 
     reply
       .code(500)

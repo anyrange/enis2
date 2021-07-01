@@ -21,19 +21,31 @@ export default fp(async function plugin(fastify) {
         response.headers.raw()["content-type"][0] !== "text/json; charset=utf-8"
       ) {
         const message = await response.text();
-        const err = new Error(message);
-        err.code =
+
+        const expired =
           message ===
-          "Сессия пользователя была завершена, перезагрузите страницу"
-            ? 401
-            : 500;
+          "Сессия пользователя была завершена, перезагрузите страницу";
+
+        const err = new Error(
+          expired ? "Сессия пользователя была завершена" : message
+        );
+
+        err.code = expired ? 401 : 500;
         throw err;
       }
 
       const json = await response.json();
+
       if (!json.success) {
-        const err = new Error(json.message);
-        err.code = 500;
+        const expired =
+          json.message ===
+          "Время работы с дневником завершено. Для продолжения необходимо обновить модуль";
+
+        const err = new Error(
+          expired ? "Время работы с дневником завершено" : json.message
+        );
+
+        err.code = expired ? 401 : 500;
         throw err;
       }
 
