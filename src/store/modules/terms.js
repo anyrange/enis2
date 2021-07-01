@@ -1,12 +1,16 @@
 import { getTerms } from "@/api";
 
-export default {
-  namespaced: true,
-  state: {
+const defaultState = () => {
+  return {
     data: [],
     selected: "",
     loading: true,
-  },
+  };
+};
+
+export default {
+  namespaced: true,
+  state: defaultState(),
   mutations: {
     SET_LOADING(state, status) {
       state.loading = status;
@@ -16,6 +20,9 @@ export default {
     },
     SET_TERMS(state, result) {
       state.data = result;
+    },
+    CLEAR_STATE(state) {
+      Object.assign(state, defaultState());
     },
   },
   getters: {
@@ -35,6 +42,9 @@ export default {
       } finally {
         commit("SET_LOADING", false);
       }
+    },
+    clearTerms: ({ commit }) => {
+      commit("CLEAR_STATE");
     },
   },
 };

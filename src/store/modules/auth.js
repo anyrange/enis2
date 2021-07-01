@@ -29,11 +29,12 @@ export default {
         commit("SET_USER", false);
       }
     },
-    logout: ({ commit }) => {
+    logout: ({ commit, dispatch }) => {
       commit("REMOVE_USER");
+      dispatch("terms/clearTerms");
+      dispatch("diary/clearDiary");
+      dispatch("grades/clearGrades");
       $router.push({ name: "login" });
-      localStorage.clear();
-      location.reload();
     },
   },
 };
