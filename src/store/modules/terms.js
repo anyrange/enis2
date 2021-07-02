@@ -21,7 +21,7 @@ export default {
     SET_TERMS(state, result) {
       state.data = result;
     },
-    CLEAR_STATE(state) {
+    CLEAR_TERMS(state) {
       Object.assign(state, defaultState());
     },
   },
@@ -42,9 +42,6 @@ export default {
       } finally {
         commit("SET_LOADING", false);
       }
-    },
-    clearTerms: ({ commit }) => {
-      commit("CLEAR_STATE");
     },
   },
 };

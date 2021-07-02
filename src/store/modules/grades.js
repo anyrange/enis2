@@ -17,7 +17,7 @@ export default {
     SET_GRADES(state, result) {
       state.data = result;
     },
-    CLEAR_STATE(state) {
+    CLEAR_GRADES(state) {
       Object.assign(state, defaultState());
     },
   },
@@ -34,9 +34,6 @@ export default {
       } finally {
         commit("SET_LOADING", false);
       }
-    },
-    clearGrades: ({ commit }) => {
-      commit("CLEAR_STATE");
     },
   },
 };

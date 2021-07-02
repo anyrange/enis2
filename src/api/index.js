@@ -52,17 +52,11 @@ export function getGrades() {
 if (process.env.NODE_ENV === "development") {
   (async () => {
     const MockAdapter = require("axios-mock-adapter");
-    const mocks = await import("./mockData.js");
+    const mocks = require("./mockData.js");
     const mock = new MockAdapter(api, {
       delayResponse: 500,
     });
-    mock.onPost("login?city=pvl").reply(
-      200,
-      { success: true },
-      {
-        status: 200,
-      }
-    );
+    mock.onPost("login?city=pvl").reply(200);
     mock.onGet("login/captchaRefresh?city=pvl").reply(200, mocks.mockCaptcha, {
       status: 200,
     });

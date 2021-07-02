@@ -30,7 +30,7 @@ export default {
         });
       }
     },
-    CLEAR_STATE(state) {
+    CLEAR_DIARY(state) {
       Object.assign(state, defaultState());
     },
   },
@@ -49,9 +49,6 @@ export default {
       } finally {
         commit("SET_LOADING", false);
       }
-    },
-    clearDiary: ({ commit }) => {
-      commit("CLEAR_STATE");
     },
   },
 };

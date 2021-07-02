@@ -11,7 +11,7 @@
           >
             {{ getTermLable(index + 1) }}
           </tab>
-          <tab name="grades">
+          <tab name="grades" :disabled="diary.loading">
             <grades-icon />
           </tab>
         </tabs>
@@ -26,6 +26,7 @@
               v-for="subject in currentTermDiary"
               :key="subject"
               class="diary-item"
+              @click="showSubject(subject)"
             >
               <div class="diary-item-content">
                 <div class="diary-item-content-subject">
@@ -156,6 +157,7 @@ export default {
   data() {
     return {
       currentTerm: "",
+      subjectModalOpened: false,
     };
   },
   computed: {
@@ -163,6 +165,7 @@ export default {
       terms: "terms/getTerms",
       diary: "diary/getDiary",
       grades: "grades/getGrades",
+      subject: "subject/getSubject",
     }),
     currentTermDiary() {
       const foundItem = this.diary.data.find((item) => {
@@ -188,6 +191,7 @@ export default {
       fetchTerms: "terms/fetchTerms",
       fetchDiary: "diary/fetchDiary",
       fetchGrades: "grades/fetchGrades",
+      fetchSubject: "subject/fetchSubject",
       setCurrentTerm: "terms/setCurrentTerm",
     }),
     getTermLable(index) {
@@ -203,6 +207,10 @@ export default {
       if (score === "true") return "Зачёт";
       if (score === "false") return "Незачёт";
       return score;
+    },
+    showSubject(subject) {
+      this.subjectModalOpened = true;
+      this.fetchSubject(subject);
     },
   },
   async created() {
@@ -231,7 +239,7 @@ export default {
   margin: 0 auto;
 }
 .content {
-  @apply flex w-full justify-center p-2 overflow-y-auto;
+  @apply flex w-full justify-center overflow-y-auto;
 }
 .content-list {
   @apply flex flex-col content-list-list-width divide-y dark:divide-gray-700-spotify rounded-sm;
@@ -246,13 +254,14 @@ export default {
   @apply dark:bg-gray-450-spotify bg-gray-400-spotify;
 }
 .footer {
-  @apply fixed bottom-8 inset-x-0;
+  margin: 0 auto;
+  @apply fixed bottom-8 inset-x-0 w-0;
 }
 .footer-content {
   @apply flex justify-center;
 }
 .diary-item {
-  @apply flex flex-row py-2 px-3 gap-3 justify-between items-center cursor-pointer duration-200 dark:bg-gray-800-spotify hover:bg-gray-100 dark:hover:bg-gray-600-spotify;
+  @apply flex flex-row py-2 px-3 gap-3 justify-between items-center cursor-pointer duration-200 dark:bg-gray-800-spotify hover:bg-gray-100 dark:hover:bg-gray-700-spotify;
 }
 .diary-item-content {
   @apply flex flex-col flex-grow;
