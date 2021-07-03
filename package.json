@@ -3,7 +3,6 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "heroku-postbuild": "echo Skip builds on Heroku",
     "serve": "vue-cli-service serve --port 3004",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
