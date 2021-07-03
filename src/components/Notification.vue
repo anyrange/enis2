@@ -42,6 +42,7 @@
 
 <script>
 export default {
+  name: "Notification",
   props: {
     notification: {
       type: Object,

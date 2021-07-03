@@ -23,7 +23,7 @@ export default {
   },
   watch: {
     theme: {
-      handler: function() {
+      handler: function () {
         if (this.theme === "dark") {
           document.documentElement.classList.add("dark");
         } else {

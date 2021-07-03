@@ -21,6 +21,7 @@ import Notification from "@/components/Notification";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
+  name: "Notifications",
   components: {
     Notification,
   },

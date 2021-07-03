@@ -23,6 +23,12 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: "Spinner",
+};
+</script>
+
 <style lang="postcss">
 .loading-spinner {
   @apply opacity-80 h-80 flex items-center justify-center;

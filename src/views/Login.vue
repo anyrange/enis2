@@ -5,12 +5,8 @@
         <div class="app-container">
           <app-icon class="app-icon" />
           <div class="app-meta">
-            <h1 class="app-meta-title">
-              enis
-            </h1>
-            <h2 class="app-meta-description">
-              - удобный, быстрый, адаптивный
-            </h2>
+            <h1 class="app-meta-title">enis</h1>
+            <h2 class="app-meta-description">- удобный, быстрый, адаптивный</h2>
           </div>
         </div>
         <base-input
@@ -51,10 +47,16 @@
           label="Школа"
           class="-mt-2"
         />
-        <base-button w-full type="submit" :loading="loading" label="Войти" />
+        <base-button
+          w-full
+          type="submit"
+          color="primary"
+          :loading="loading"
+          label="Войти"
+        />
         <div class="bottom-options">
           <a href="#" class="icon-button" @click="toggleTheme()">
-            <sun-icon v-if="theme === 'dark'" class="icon" />
+            <sun-icon v-if="theme === 'dark'" />
             <moon-icon v-else />
           </a>
           <a href="#" class="icon-button" @click="showModal = true">
@@ -85,7 +87,7 @@ import { refreshCaptcha } from "@/api";
 import cities from "@/cities.json";
 
 export default {
-  name: "login",
+  name: "Login",
   components: {
     BaseInput,
     BaseButton,
@@ -186,7 +188,7 @@ export default {
 
 <style lang="postcss" scoped>
 .login-wrapper {
-  @apply flex h-screen;
+  @apply flex flex-col h-screen dark:bg-gray-900-spotify;
 }
 .login-container {
   @apply m-auto;

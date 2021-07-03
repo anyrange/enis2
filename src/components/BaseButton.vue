@@ -31,7 +31,12 @@
         ></path>
       </svg>
       <template v-else>
-        {{ label }}
+        <template v-if="label">
+          {{ label }}
+        </template>
+        <template v-else>
+          <slot></slot>
+        </template>
       </template>
     </button>
   </div>
@@ -39,11 +44,12 @@
 
 <script>
 export default {
+  name: "BaseButton",
   props: {
     color: {
       type: String,
       required: false,
-      default: "primary",
+      default: "",
     },
     type: {
       type: String,
@@ -84,6 +90,16 @@ export default {
       required: false,
       default: false,
     },
+    round: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    flat: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     buttonClass() {
@@ -94,6 +110,9 @@ export default {
         "base-button-outlined": this.outlined,
         "base-button-fullwidth": this.wFull,
         "base-button-disabled": this.disabled,
+        "base-button-round": this.round,
+        "base-button-default": !this.round,
+        "base-button-flat": this.flat,
       };
     },
   },
@@ -105,10 +124,16 @@ export default {
   @apply flex gap-2 items-center;
 }
 .base-button {
-  @apply flex items-center rounded-sm justify-center px-10 py-2 uppercase text-center select-none text-sm font-medium focus:outline-none focus:ring-2 shadow;
+  @apply flex items-center rounded-sm justify-center uppercase text-center select-none text-sm font-medium focus:outline-none shadow-md;
 }
 .base-button-title {
   @apply select-none;
+}
+.base-button-round {
+  @apply h-9 w-9 rounded-full;
+}
+.base-button-default {
+  @apply w-24 h-9;
 }
 .base-button-disabled {
   @apply opacity-20;
@@ -119,13 +144,16 @@ export default {
 .base-button-rounded {
   @apply rounded-full;
 }
+.base-button-flat {
+  @apply hover:bg-gray-200 dark:hover:bg-gray-800-spotify bg-white dark:bg-gray-700-spotify;
+}
 .base-button-primary {
-  @apply focus:ring-blue-200 dark:focus:ring-blue-400 text-white bg-blue-500;
+  @apply focus:ring-blue-200 focus:ring-2 dark:focus:ring-blue-400 text-white bg-blue-500 hover:bg-blue-600;
 }
 .base-button-negative {
-  @apply focus:ring-red-200 dark:focus:ring-red-800 text-white bg-red-500 hover:bg-red-600;
+  @apply focus:ring-red-200 focus:ring-2 dark:focus:ring-red-800 text-white bg-red-500 hover:bg-red-600;
 }
 .base-button-outlined {
-  @apply border border-white hover:bg-white hover:bg-opacity-50;
+  @apply border border-gray-100 dark:border-gray-600-spotify;
 }
 </style>
