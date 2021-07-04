@@ -67,6 +67,7 @@ export default async function(fastify) {
 
       const statusCode = body.success ? 200 : 400;
       body.statusCode = statusCode;
+      body.data = Object.assign({}, body.data);
       reply.code(statusCode).send(body);
     }
   );
