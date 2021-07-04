@@ -45,9 +45,13 @@ app.register(autoLoad, {
 app.register(autoLoad, {
   dir: join(__dirname, "routes"),
   routeParams: true,
+  autoHooks: true,
+  cascadeHooks: true,
 });
 
 app.listen(PORT, "0.0.0.0", (err) => {
   if (err) return console.log(err);
   console.info(`App is alive. Docs on: http://localhost:${PORT}/doc`);
 });
+
+process.on("unhandledRejection", (error) => console.error(error));

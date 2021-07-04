@@ -111,7 +111,7 @@ export default async function(fastify) {
           grade.IsNotChosen && grade.ComponentName === "Инвариантный компонент"
       );
 
-      reply.header("Cache-Control", "public, max-age=900").send(grades);
+      reply.send(grades);
     }
   );
 }

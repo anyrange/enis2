@@ -104,7 +104,7 @@ export default async function(fastify) {
         cookie,
       });
 
-      reply.header("Cache-Control", "public, max-age=900").send({
+      reply.send({
         data: periodsData.data.map((el) => {
           return {
             ...el,

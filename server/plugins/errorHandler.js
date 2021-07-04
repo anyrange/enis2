@@ -1,9 +1,5 @@
 import fp from "fastify-plugin";
 
-process.on("unhandledRejection", (error) => {
-  console.log(error);
-});
-
 const plugin = fp(async function plugin(fastify) {
   fastify.setNotFoundHandler((req, reply) => {
     reply.code(404).send({ message: "Service not found", statusCode: 404 });
@@ -18,7 +14,9 @@ const plugin = fp(async function plugin(fastify) {
     }
 
     if (code === "ETIMEDOUT")
-      return reply.code(503).send({ message: "Try again", statusCode: code });
+      return reply
+        .code(503)
+        .send({ message: "Попробуйте снова", statusCode: code });
 
     if (code) return reply.code(code).send({ message, statusCode: code });
 

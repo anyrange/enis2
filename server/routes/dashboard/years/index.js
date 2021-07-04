@@ -27,7 +27,7 @@ export default async function(fastify) {
         cookie,
       });
 
-      reply.header("Cache-Control", "public, max-age=900").send(
+      reply.send(
         years.map((year) => {
           return { Name: year.Name, Id: year.Id, isActual: year.Data.IsActual };
         })
