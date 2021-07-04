@@ -47,7 +47,7 @@ Due to the fact that during the development of `enis2` the original client was u
 
 Starting the app will let you investigate the API via Swagger by getting detailed information about endpoints, and their request/response schemes at [http://localhost:8887/doc](http://localhost:8887/doc)
 
-![Swagger](https://i.imgur.com/eudgwlB.png)
+![Swagger](https://i.imgur.com/fULUHZr.png)
 
 ## Contributing
 
