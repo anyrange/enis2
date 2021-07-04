@@ -25,8 +25,9 @@ export default {
         await login(credentials);
         commit("SET_USER", true);
         $router.push({ name: "dashboard" });
-      } catch {
+      } catch (err) {
         commit("SET_USER", false);
+        return Promise.reject(err);
       }
     },
     logout: ({ commit }) => {
