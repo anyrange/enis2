@@ -4,20 +4,54 @@
 
 > Unofficial NIS client, inspired by [enis](https://github.com/superhooman/enis)
 
-## Development
+## Running Locally
 
-### Setup environemnt
+### Installation
+
+Clone this repository
 
 ```bash
-$ git clone https://github.com/anyrange/enis2.git
-$ cd enis2 && npm install
-$ cd server && npm install && cd ..
-$ npm run dev
+git clone https://github.com/anyrange/enis2.git
+cd enis2
+```
+
+Install **client** dependencies in root folder, and **server** dependencies in [server](/server/) folder
+
+```bash
+npm install && cd server
+npm install && cd ..
+```
+
+Run client and server concurrently
+
+```bash
+npm run dev
+```
+
+Or separately using commands
+
+```bash
+npm run serve
+npm run server
 ```
 
 ### Environment variables
 
-Rename [.env.example](/.env.example) to `.env` and don't forget to set your variables
+Rename [.env.example](/.env.example) to `.env` and set your variables or keep the default
+
+### Mock API
+
+Due to the fact that during the development of `enis2` the original client was unavailable, mock date was added and enabled by default in development mode, you can comment it out or leave it on
+
+### API documentation
+
+Starting the app will let you investigate the API via Swagger by getting detailed information about endpoints, and their request/response schemes at [http://localhost:8887/doc](http://localhost:8887/doc)
+
+![Swagger](https://i.imgur.com/eudgwlB.png)
+
+## Contributing
+
+Contributions are welcome. Just submit a pull request or open an issue
 
 ## License
 
