@@ -4,8 +4,8 @@ const defaultState = () => {
   return {
     SAU: [],
     SAT: [],
-    isEmpty: true,
-    loading: true,
+    isEmpty: false,
+    loading: false,
   };
 };
 

@@ -4,7 +4,7 @@ const defaultState = () => {
   return {
     data: [],
     selected: "",
-    loading: true,
+    loading: false,
   };
 };
 

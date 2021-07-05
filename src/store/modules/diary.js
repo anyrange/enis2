@@ -7,7 +7,7 @@ function checkIfExists(array, key, value) {
 const defaultState = () => {
   return {
     data: [],
-    loading: true,
+    loading: false,
   };
 };
 

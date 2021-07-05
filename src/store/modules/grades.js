@@ -3,7 +3,7 @@ import { getGrades } from "@/api";
 const defaultState = () => {
   return {
     data: [],
-    loading: true,
+    loading: false,
   };
 };
 
@@ -28,7 +28,7 @@ export default {
   },
   actions: {
     fetchGrades: async ({ commit, state }) => {
-      if (!state.data) commit("SET_LOADING", true);
+      if (!state.data.length) commit("SET_LOADING", true);
       try {
         commit("SET_GRADES", await getGrades());
       } finally {
