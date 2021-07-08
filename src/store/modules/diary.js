@@ -1,8 +1,8 @@
 import { getDiary } from "@/api";
 
-function checkIfExists(array, key, value) {
+const checkIfExists = (array, key, value) => {
   return array.findIndex((item) => item[key] === value);
-}
+};
 
 const defaultState = () => {
   return {

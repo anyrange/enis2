@@ -8,8 +8,9 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+  const savedCity = $store.getters["preferences/getCity"].value;
   const queryCharacter = config.url.includes("&") ? "&" : "?";
-  config.url = `${config.url}${queryCharacter}city=${$store.getters.getCity.value}`;
+  config.url = config.url + queryCharacter + "city=" + savedCity;
   return config;
 });
 

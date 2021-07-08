@@ -27,11 +27,14 @@ export default {
   },
   computed: {
     ...mapGetters({
-      notifications: "getNotifications",
+      notifications: "notify/getNotifications",
     }),
   },
   methods: {
-    ...mapActions(["resetNotifications", "removeNotification"]),
+    ...mapActions({
+      resetNotifications: "notify/resetNotifications",
+      removeNotification: "notify/removeNotification",
+    }),
   },
   created() {
     this.resetNotifications();

@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import $store from "@/store";
 
 const authenticated = () => {
-  return $store.getters.isAuthenticated;
+  return $store.getters["auth/isAuthenticated"];
 };
 
 const routes = [

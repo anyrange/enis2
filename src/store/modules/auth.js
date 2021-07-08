@@ -2,7 +2,7 @@ import { login } from "@/api";
 import $router from "@/router";
 
 export default {
-  namespaced: false,
+  namespaced: true,
   state: {
     user: false,
   },
@@ -32,10 +32,10 @@ export default {
     },
     logout: ({ commit }) => {
       commit("REMOVE_USER");
-      commit("terms/CLEAR_TERMS");
-      commit("diary/CLEAR_DIARY");
-      commit("grades/CLEAR_GRADES");
-      commit("subject/CLEAR_SUBJECT");
+      commit("terms/CLEAR_TERMS", null, { root: true });
+      commit("diary/CLEAR_DIARY", null, { root: true });
+      commit("grades/CLEAR_GRADES", null, { root: true });
+      commit("subject/CLEAR_SUBJECT", null, { root: true });
       $router.push({ name: "login" });
     },
   },

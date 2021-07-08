@@ -41,7 +41,7 @@
       </main>
       <footer class="footer">
         <div class="footer-content">
-          <base-button round flat outlined @click="toggleTheme()">
+          <base-button round flat @click="toggleTheme()">
             <sun-icon v-if="theme === 'dark'" />
             <moon-icon v-else />
           </base-button>
@@ -94,7 +94,8 @@ export default {
       diary: "diary/getDiary",
       grades: "grades/getGrades",
       subject: "subject/getSubject",
-      theme: "getTheme",
+      savedTab: "preferences/getSelectedTab",
+      theme: "preferences/getTheme",
     }),
     loading() {
       return this.terms.loading || this.diary.loading || this.grades.loading;
@@ -110,16 +111,16 @@ export default {
     },
   },
   watch: {
-    currentTab(value) {
-      this.setCurrentTerm(value);
-      this.showTab(value);
+    currentTab(newValue) {
+      this.setTab(newValue);
+      this.showTab(newValue);
     },
   },
   methods: {
     ...mapActions({
-      logout: "logout",
-      toggleTheme: "toggleTheme",
-      setCurrentTerm: "terms/setCurrentTerm",
+      logout: "auth/logout",
+      toggleTheme: "preferences/toggleTheme",
+      setTab: "preferences/setTab",
       fetchTerms: "terms/fetchTerms",
       fetchDiary: "diary/fetchDiary",
       fetchGrades: "grades/fetchGrades",
@@ -137,18 +138,18 @@ export default {
     sortByScore(array) {
       return array.sort((a, b) => b.Score - a.Score);
     },
-    showTab(tab) {
-      tab === "grades" ? this.fetchGrades() : this.fetchDiary(tab);
+    async showTab(tab) {
+      tab === "grades" ? await this.fetchGrades() : await this.fetchDiary(tab);
     },
-    showSubject(subject) {
+    async showSubject(subject) {
       this.subjectModalOpened = true;
-      this.fetchSubject(subject);
+      await this.fetchSubject(subject);
       console.log(this.subject);
     },
   },
   async created() {
     await this.fetchTerms();
-    this.currentTab = this.terms.selected || this.lastTermId;
+    this.currentTab = this.savedTab || this.lastTermId;
   },
 };
 </script>

@@ -1,4 +1,4 @@
-import $store from "@/store/";
+import $store from "@/store";
 
 /**
  * @param {('info'|'success'|'warning'|'danger')} type
@@ -13,7 +13,7 @@ const notification = {
     closable = true,
     actions,
   }) => {
-    $store.dispatch("addNotification", {
+    $store.dispatch("notify/addNotification", {
       message,
       type,
       delay,
@@ -23,7 +23,7 @@ const notification = {
     });
   },
   reset: () => {
-    $store.dispatch("resetNotifications");
+    $store.dispatch("notify/resetNotifications");
   },
 };
 

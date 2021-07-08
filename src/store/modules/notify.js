@@ -1,14 +1,14 @@
 export default {
-  namespaced: false,
+  namespaced: true,
   state: {
     notifications: [],
   },
   mutations: {
-    ADD_NOTIFICATION(state, payload) {
-      state.notifications.push(payload);
+    ADD_NOTIFICATION(state, notification) {
+      state.notifications.push(notification);
     },
-    REMOVE_NOTIFICATION(state, payload) {
-      const index = state.notifications.indexOf(payload);
+    REMOVE_NOTIFICATION(state, notification) {
+      const index = state.notifications.indexOf(notification);
       state.notifications.splice(index, 1);
     },
     RESET_NOTIFICATIONS(state) {

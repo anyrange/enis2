@@ -49,6 +49,7 @@
         />
         <base-button
           w-full
+          v-wave
           type="submit"
           color="primary"
           :loading="loading"
@@ -66,11 +67,7 @@
       </form>
     </div>
   </div>
-  <modal :is-open="showModal" @close="showModal = false">
-    <template #header>
-      <h3>custom header</h3>
-    </template>
-  </modal>
+  <modal :is-open="showModal" @close="showModal = false"></modal>
 </template>
 
 <script>
@@ -121,8 +118,8 @@ export default {
   },
   computed: {
     ...mapGetters({
-      savedCity: "getCity",
-      theme: "getTheme",
+      savedCity: "preferences/getCity",
+      theme: "preferences/getTheme",
     }),
     formValidated() {
       if (!this.errors.user.login && !this.errors.user.password) return true;
@@ -138,7 +135,11 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["toggleTheme", "login", "setCity"]),
+    ...mapActions({
+      login: "auth/login",
+      setCity: "preferences/setCity",
+      toggleTheme: "preferences/toggleTheme",
+    }),
     validateLogin(value) {
       if (!this.validationStarted) return;
       if (value.length !== 12) {
@@ -191,7 +192,7 @@ export default {
   @apply flex flex-col h-screen dark:bg-gray-900-spotify;
 }
 .login-container {
-  @apply m-auto;
+  @apply m-auto w-full sm:w-3/5 md:w-1/2 lg:w-2/6 xl:w-1/4 2xl:w-1/5;
 }
 .app-container {
   @apply flex gap-4 items-center mb-2;

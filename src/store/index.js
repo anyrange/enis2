@@ -9,6 +9,7 @@ requireModule.keys().forEach((fileName) => {
   modules[moduleName] = {
     ...requireModule(fileName).default,
   };
+  modules[moduleName].namespaced = true;
 });
 
 export default createStore({

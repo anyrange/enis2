@@ -19,7 +19,9 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({ theme: "getTheme" }),
+    ...mapGetters({
+      theme: "preferences/getTheme",
+    }),
   },
   watch: {
     theme: {
@@ -34,7 +36,9 @@ export default {
     },
   },
   methods: {
-    ...mapActions(["setTheme"]),
+    ...mapActions({
+      setTheme: "preferences/setTheme",
+    }),
     showRefreshUI(e) {
       this.registration = e.detail;
       this.$notify.show({
@@ -68,6 +72,7 @@ export default {
       navigator.serviceWorker.addEventListener("controllerchange", () => {
         if (this.refreshing) return;
         this.refreshing = true;
+        window.localStorage.clear();
         window.location.reload();
       });
     }
