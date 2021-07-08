@@ -19,11 +19,11 @@ api.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    if (error.response.data.statusCode === 401) $store.dispatch("logout");
     notification.show({
       type: "danger",
       message: error?.response?.data?.message || "Что-то пошло не так",
     });
+    if (error.response.data.statusCode === 401) $store.dispatch("auth/logout");
     return Promise.reject(error);
   }
 );

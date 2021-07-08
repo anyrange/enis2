@@ -22,6 +22,9 @@ export default {
     SET_CITY(state, city) {
       state.city = city;
     },
+    CLEAR_TAB(state) {
+      Object.assign(state, { selectedTab: defaultState().selectedTab });
+    },
   },
   getters: {
     getSelectedTab: (state) => {
