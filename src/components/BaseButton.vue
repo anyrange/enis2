@@ -75,11 +75,6 @@ export default {
       required: false,
       default: false,
     },
-    outlined: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     disabled: {
       type: Boolean,
       required: false,
@@ -107,7 +102,6 @@ export default {
         "base-button-primary": this.color === "primary",
         "base-button-negative": this.color === "negative",
         "base-button-rounded": this.rounded,
-        "base-button-outlined": this.outlined,
         "base-button-fullwidth": this.wFull,
         "base-button-disabled": this.disabled,
         "base-button-round": this.round,
@@ -124,7 +118,7 @@ export default {
   @apply flex gap-2 items-center;
 }
 .base-button {
-  @apply flex items-center rounded-sm justify-center uppercase text-center select-none text-sm font-medium focus:outline-none shadow-md;
+  @apply flex items-center rounded-sm justify-center uppercase text-center select-none text-sm font-medium focus:outline-none focus:ring-2 shadow-md;
 }
 .base-button-title {
   @apply select-none;
@@ -133,7 +127,7 @@ export default {
   @apply h-9 w-9 rounded-full;
 }
 .base-button-default {
-  @apply w-24 h-9;
+  @apply h-9 px-4;
 }
 .base-button-disabled {
   @apply opacity-20;
@@ -145,15 +139,12 @@ export default {
   @apply rounded-full;
 }
 .base-button-flat {
-  @apply hover:bg-gray-200 dark:hover:bg-gray-800-spotify bg-white dark:bg-gray-700-spotify;
+  @apply hover:bg-gray-100 dark:hover:bg-gray-800-spotify bg-white dark:bg-gray-700-spotify;
 }
 .base-button-primary {
-  @apply focus:ring-blue-200 focus:ring-2 dark:focus:ring-blue-400 text-white bg-blue-500 hover:bg-blue-600;
+  @apply focus:ring-blue-200 dark:focus:ring-blue-400 text-white bg-blue-500 hover:bg-blue-600;
 }
 .base-button-negative {
-  @apply focus:ring-red-200 focus:ring-2 dark:focus:ring-red-800 text-white bg-red-500 hover:bg-red-600;
-}
-.base-button-outlined {
-  @apply border border-gray-100 dark:border-gray-600-spotify;
+  @apply focus:ring-red-200 dark:focus:ring-red-800 text-white bg-red-500 hover:bg-red-600;
 }
 </style>
