@@ -25,7 +25,6 @@
                 v-for="item in sortByScore(currentTermDiary)"
                 :key="item"
                 :subject="item"
-                :disabled="!item.Score"
                 @click="showSubject(item)"
               />
             </template>
@@ -54,6 +53,16 @@
         </div>
       </footer>
     </div>
+    <modal :show="subjectModalOpened" @close="subjectModalOpened = false">
+      <div class="subject-section-wrapper">
+        <subject-diary :hoverable="false" :subject="subject.data.current" />
+        <spinner v-if="subject.loading" />
+        <template v-else>
+          <subject-sections label="СОР" :subject="subject.data.SAU" />
+          <subject-sections label="СОЧ" :subject="subject.data.SAT" />
+        </template>
+      </div>
+    </modal>
   </div>
 </template>
 
@@ -62,8 +71,10 @@ import Tabs from "@/components/Tabs";
 import Tab from "@/components/Tab";
 import BaseButton from "@/components/BaseButton";
 import Spinner from "@/components/Spinner";
+import Modal from "@/components/Modal";
 import SubjectDiary from "@/components/SubjectDiary";
 import SubjectGrades from "@/components/SubjectGrades";
+import SubjectSections from "@/components/SubjectSections";
 import GradesIcon from "@/components/icons/GradesIcon";
 import MoonIcon from "@/components/icons/MoonIcon";
 import SunIcon from "@/components/icons/SunIcon";
@@ -79,8 +90,10 @@ export default {
     Spinner,
     SubjectDiary,
     SubjectGrades,
+    SubjectSections,
     MoonIcon,
     SunIcon,
+    Modal,
   },
   data() {
     return {
@@ -144,7 +157,6 @@ export default {
     async showSubject(subject) {
       this.subjectModalOpened = true;
       await this.fetchSubject(subject);
-      console.log(this.subject);
     },
   },
   async created() {
@@ -162,7 +174,7 @@ export default {
   @apply flex-1 flex flex-col overflow-y-hidden;
 }
 .header {
-  @apply w-full z-20 sticky top-0 bg-white dark:bg-gray-800-spotify border-b-2 border-gray-300 dark:border-gray-600-spotify;
+  @apply w-full sticky top-0 bg-white dark:bg-gray-800-spotify border-b-2 border-gray-300 dark:border-gray-600-spotify;
 }
 .header-tabs {
   @apply w-full md:w-1/2;
@@ -182,6 +194,12 @@ export default {
 }
 .content-list-list-width {
   @apply sm:w-3/4 md:w-1/2 xl:w-1/4 w-full;
+}
+.subject-section-wrapper {
+  @apply flex flex-col gap-2;
+}
+.subject-section-placeholder {
+  @apply rounded dark:bg-gray-800-spotify bg-gray-200 w-full h-36;
 }
 .footer {
   left: 50%;

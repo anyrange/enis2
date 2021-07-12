@@ -5,6 +5,7 @@ const defaultState = () => {
     data: {
       SAU: [],
       SAT: [],
+      current: {},
     },
     loading: false,
   };
@@ -21,6 +22,9 @@ export default {
       state.data.SAU = SAU;
       state.data.SAT = SAT;
     },
+    SET_CURRENT(state, data) {
+      state.data.current = data;
+    },
     CLEAR_SUBJECT(state) {
       Object.assign(state, defaultState());
     },
@@ -33,6 +37,7 @@ export default {
   actions: {
     fetchSubject: async ({ commit }, subject) => {
       commit("SET_LOADING", true);
+      commit("SET_CURRENT", subject);
       try {
         commit("SET_SUBJECT", {
           SAU: await getSubject(subject.JournalId, subject.Evaluations[0]),
