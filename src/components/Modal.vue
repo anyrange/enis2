@@ -1,50 +1,64 @@
 <template>
-  <transition name="modal">
-    <div v-if="isOpen" class="fixed z-10 inset-0">
-      <div @click="close" class="items-end justify-center text-center">
+  <teleport to="body">
+    <transition
+      enter-active-class="transition ease-out duration-200 transform"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition ease-in duration-100 transform"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div class="absolute inset-0 bg-black bg-opacity-40" v-show="show">
         <div
-          class="
-            fixed
-            inset-0
-            bg-gray-700-spotify bg-opacity-50
-            transition-opacity
-          "
-          aria-hidden="true"
-        />
-        <span class="inline-block align-middle h-screen" aria-hidden="true">
-          &#8203;
-        </span>
-        <div
-          @click.stop
-          class="
-            inline-block
-            bg-white
-            rounded
-            text-left
-            overflow-hidden
-            shadow-xl
-            transform
-            transition-all
-            sm:my-8
-            align-middle
-            sm:max-w-lg
-            sm:w-full
-          "
+          @click="close"
+          class="fixed inset-0 flex items-center justify-center"
         >
-          <div class="bg-white p-4">
-            <slot></slot>
-          </div>
+          <transition
+            enter-active-class="transition ease-out duration-200 transform"
+            enter-from-class="opacity-0 translate-y-10 scale-95"
+            enter-to-class="opacity-100 translate-y-0 scale-100"
+            leave-active-class="ease-in duration-100"
+            leave-from-class="opacity-100 translate-y-0 scale-100"
+            leave-to-class="opacity-50 translate-y-10 scale-50"
+          >
+            <div
+              @click.stop
+              class="
+                relative
+                bg-gray-100
+                dark:bg-gray-900-spotify
+                rounded
+                text-left
+                overflow-hidden
+                shadow-xl
+                transform
+                transition-all
+                align-middle
+                sm:max-w-lg
+                w-full
+                p-2
+                mr-0
+                sm:mr-2
+              "
+              role="dialog"
+              aria-modal="true"
+              v-show="show"
+              aria-labelledby="modal-headline"
+            >
+              <slot></slot>
+            </div>
+          </transition>
         </div>
       </div>
-    </div>
-  </transition>
+    </transition>
+  </teleport>
 </template>
 
 <script>
 export default {
   name: "Modal",
   props: {
-    isOpen: {
+    show: {
       type: Boolean,
       required: true,
     },
@@ -60,7 +74,7 @@ export default {
   },
   methods: {
     handleKeydown(e) {
-      if (this.isOpen && e.key === "Escape") {
+      if (this.show && e.key === "Escape") {
         this.close();
       }
     },
