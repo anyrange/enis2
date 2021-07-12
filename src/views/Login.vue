@@ -60,25 +60,27 @@
             <sun-icon v-if="theme === 'dark'" />
             <moon-icon v-else />
           </a>
-          <a href="#" class="icon-button" @click="showModal = true">
-            <info-icon class="icon" />
+          <a
+            class="icon-button"
+            href="https://github.com/anyrange/enis2"
+            target="_blank"
+          >
+            <github-icon class="icon" />
           </a>
         </div>
       </form>
     </div>
   </div>
-  <modal :is-open="showModal" @close="showModal = false"></modal>
 </template>
 
 <script>
-import BaseInput from "@/components/BaseInput.vue";
-import BaseButton from "@/components/BaseButton.vue";
-import BaseSelect from "@/components/BaseSelect.vue";
-import AppIcon from "@/components/icons/AppIcon.vue";
-import MoonIcon from "@/components/icons/MoonIcon.vue";
-import SunIcon from "@/components/icons/SunIcon.vue";
-import InfoIcon from "@/components/icons/InfoIcon.vue";
-import Modal from "@/components/Modal.vue";
+import BaseInput from "@/components/BaseInput";
+import BaseButton from "@/components/BaseButton";
+import BaseSelect from "@/components/BaseSelect";
+import AppIcon from "@/components/icons/AppIcon";
+import MoonIcon from "@/components/icons/MoonIcon";
+import SunIcon from "@/components/icons/SunIcon";
+import GithubIcon from "@/components/icons/GithubIcon";
 import { mapActions, mapGetters } from "vuex";
 import { refreshCaptcha } from "@/api";
 import cities from "@/cities.json";
@@ -89,11 +91,10 @@ export default {
     BaseInput,
     BaseButton,
     BaseSelect,
-    Modal,
     AppIcon,
     MoonIcon,
     SunIcon,
-    InfoIcon,
+    GithubIcon,
   },
   cities,
   data() {
@@ -112,7 +113,6 @@ export default {
           password: "",
         },
       },
-      showModal: false,
       validationStarted: false,
     };
   },

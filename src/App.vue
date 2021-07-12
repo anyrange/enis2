@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import Notifications from "@/components/Notifications.vue";
+import Notifications from "@/components/Notifications";
 import { mapGetters, mapActions } from "vuex";
 
 export default {
