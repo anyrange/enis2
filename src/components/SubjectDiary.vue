@@ -1,5 +1,5 @@
 <template>
-  <div class="item" :class="subjectClass">
+  <div class="item" :class="itemClass">
     <div class="item-container">
       <h3 class="item-subject">{{ subject.Name }}</h3>
       <div class="item-bottom">
@@ -7,9 +7,10 @@
           <span class="item-title">
             {{ beforeDecimal }}
           </span>
-          <span class="item-subtitle" v-show="afterDecimal"
-            >.{{ afterDecimal }}%
+          <span class="item-subtitle" v-show="afterDecimal">
+            .{{ afterDecimal }}
           </span>
+          <span class="item-subtitle">%</span>
         </div>
         <div>
           <span class="item-subtitle">оценка </span>
@@ -33,18 +34,13 @@ export default {
       type: Object,
       required: true,
     },
-    disabled: {
+    hoverable: {
       type: Boolean,
-      required: true,
-      default: false,
+      required: false,
+      default: true,
     },
   },
   computed: {
-    subjectClass() {
-      return {
-        "item-disabled": this.disabled,
-      };
-    },
     beforeDecimal() {
       return (this.subject.Score + "").split(".")[0];
     },
@@ -53,6 +49,9 @@ export default {
     },
     valueRounded() {
       return Math.ceil(this.subject.Score);
+    },
+    itemClass() {
+      return this.hoverable ? "item-hoverable" : "";
     },
     barClass() {
       const roundedScore = this.valueRounded;
@@ -71,10 +70,10 @@ export default {
 
 <style lang="postcss" scoped>
 .item {
-  @apply flex flex-col rounded shadow-sm cursor-pointer bg-white dark:bg-gray-800-spotify hover:bg-gray-50 dark:hover:bg-gray-700-spotify;
+  @apply flex flex-col rounded shadow bg-white dark:bg-gray-800-spotify;
 }
-.item-disabled {
-  @apply pointer-events-none;
+.item-hoverable {
+  @apply cursor-pointer hover:bg-gray-400 hover:bg-opacity-10 dark:hover:bg-gray-700-spotify;
 }
 .item-container {
   @apply flex flex-col gap-2 p-2;
