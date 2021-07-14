@@ -3,17 +3,15 @@
   "version": "1.0.0",
   "author": "wsehl",
   "scripts": {
-    "heroku-postbuild": "echo Skip builds on Heroku",
     "serve": "vue-cli-service serve --port 3004",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "dev": "concurrently \"npm run serve\" \"npm run server\"",
-    "serve-build": "vue-cli-service serve --port 3004 --dest dist",
-    "server": "nodemon index.js --prefix server"
+    "lint": "vue-cli-service lint"
   },
   "dependencies": {
     "axios": "^0.21.1",
     "core-js": "^3.8.3",
+    "dotenv": "^10.0.0",
+    "dotenv-expand": "^5.1.0",
     "register-service-worker": "^1.7.2",
     "v-wave": "^1.2.8",
     "vue": "^3.0.4",
@@ -33,11 +31,29 @@
     "@vue/compiler-sfc": "^3.0.4",
     "autoprefixer": "^10.2.6",
     "axios-mock-adapter": "^1.19.0",
-    "concurrently": "^6.2.0",
     "eslint": "^7.20.0",
     "eslint-plugin-vue": "^7.2.0",
-    "nodemon": "^2.0.7",
     "postcss": "^8.3.5",
     "tailwindcss": "^2.2.4"
-  }
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "@babel/eslint-parser"
+    },
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ]
 }

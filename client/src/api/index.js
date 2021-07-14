@@ -50,34 +50,34 @@ export function getGrades() {
 }
 
 /* MOCK API */
-if (process.env.NODE_ENV === "development") {
-  (async () => {
-    const MockAdapter = require("axios-mock-adapter");
-    const mocks = require("./mockData.js");
-    const mock = new MockAdapter(api, {
-      delayResponse: 500,
-    });
-    mock.onPost("login?city=pvl").reply(200);
-    mock.onGet("login/captchaRefresh?city=pvl").reply(200, mocks.mockCaptcha, {
-      status: 200,
-    });
-    mock.onGet("dashboard/terms?city=pvl").reply(200, mocks.mockTerms, {
-      status: 200,
-    });
-    mock.onGet(new RegExp("terms/*")).reply((config) => {
-      const match = (id) => config.url.includes(id);
-      if (match("term1id")) return [200, mocks.mockDiary[0]];
-      if (match("term2id")) return [200, mocks.mockDiary[1]];
-      if (match("term3id")) return [200, mocks.mockDiary[2]];
-      if (match("term4id")) return [200, mocks.mockDiary[3]];
-    });
-    mock.onGet("dashboard/info?journalId=1&evalId=1&city=pvl").reply(200, {
-      data: mocks.mockSubject,
-      status: 200,
-    });
-    mock.onGet("dashboard/grades?city=pvl").reply(200, {
-      data: mocks.mockGrades,
-      status: 200,
-    });
-  })();
-}
+// if (process.env.NODE_ENV === "development") {
+//   (async () => {
+//     const MockAdapter = require("axios-mock-adapter");
+//     const mocks = require("./mockData.js");
+//     const mock = new MockAdapter(api, {
+//       delayResponse: 500,
+//     });
+//     mock.onPost("login?city=pvl").reply(200);
+//     mock.onGet("login/captchaRefresh?city=pvl").reply(200, mocks.mockCaptcha, {
+//       status: 200,
+//     });
+//     mock.onGet("dashboard/terms?city=pvl").reply(200, mocks.mockTerms, {
+//       status: 200,
+//     });
+//     mock.onGet(new RegExp("terms/*")).reply((config) => {
+//       const match = (id) => config.url.includes(id);
+//       if (match("term1id")) return [200, mocks.mockDiary[0]];
+//       if (match("term2id")) return [200, mocks.mockDiary[1]];
+//       if (match("term3id")) return [200, mocks.mockDiary[2]];
+//       if (match("term4id")) return [200, mocks.mockDiary[3]];
+//     });
+//     mock.onGet("dashboard/info?journalId=1&evalId=1&city=pvl").reply(200, {
+//       data: mocks.mockSubject,
+//       status: 200,
+//     });
+//     mock.onGet("dashboard/grades?city=pvl").reply(200, {
+//       data: mocks.mockGrades,
+//       status: 200,
+//     });
+//   })();
+// }

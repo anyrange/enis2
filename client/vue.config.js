@@ -1,3 +1,8 @@
+const dotenv = require("dotenv");
+const dotenvExpand = require("dotenv-expand");
+const variables = dotenv.config({ path: "../.env" });
+dotenvExpand(variables);
+
 module.exports = {
   pwa: {
     name: "enis2",

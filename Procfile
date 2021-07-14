@@ -1,1 +1,1 @@
-web: cd server && npm install --silent -no-fund && node .
+web: npm install --prefix server --silent -no-fund && npm start

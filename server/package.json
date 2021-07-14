@@ -5,7 +5,8 @@
   "author": "thaseyor",
   "type": "module",
   "scripts": {
-    "start": "node index.js"
+    "start": "node .",
+    "dev": "nodemon ."
   },
   "dependencies": {
     "dotenv": "^10.0.0",
@@ -16,5 +17,8 @@
     "fastify-plugin": "^3.0.0",
     "fastify-swagger": "^4.8.1",
     "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.12"
   }
 }
