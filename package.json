@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "heroku-postbuild": "echo Skip builds on Heroku"
+  }
+}
