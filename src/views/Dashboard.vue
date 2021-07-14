@@ -56,7 +56,7 @@
     <modal :show="subjectModalOpened" @close="subjectModalOpened = false">
       <div class="subject-section-wrapper">
         <subject-diary :hoverable="false" :subject="subject.data.current" />
-        <spinner v-if="subject.loading" />
+        <loader v-if="subject.loading" />
         <template v-else>
           <subject-sections label="СОР" :subject="subject.data.SAU" />
           <subject-sections label="СОЧ" :subject="subject.data.SAT" />
@@ -71,6 +71,7 @@ import Tabs from "@/components/Tabs";
 import Tab from "@/components/Tab";
 import BaseButton from "@/components/BaseButton";
 import Spinner from "@/components/Spinner";
+import Loader from "@/components/Loader";
 import Modal from "@/components/Modal";
 import SubjectDiary from "@/components/SubjectDiary";
 import SubjectGrades from "@/components/SubjectGrades";
@@ -88,6 +89,7 @@ export default {
     BaseButton,
     GradesIcon,
     Spinner,
+    Loader,
     SubjectDiary,
     SubjectGrades,
     SubjectSections,
