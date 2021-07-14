@@ -33,6 +33,11 @@ export default {
       type: [String, Number],
       required: true,
     },
+    max: {
+      type: Number,
+      required: false,
+      default: Infinity,
+    },
     label: {
       type: String,
       required: true,
@@ -78,7 +83,10 @@ export default {
   },
   methods: {
     handleInput(value) {
-      this.$emit("update:modelValue", value);
+      if (String(value).length <= this.max) {
+        this.$emit("update:modelValue", value);
+      }
+      this.$forceUpdate();
     },
   },
 };
@@ -111,6 +119,14 @@ export default {
 }
 .md-input {
   @apply w-full outline-none h-10 appearance-none focus:outline-none bg-transparent text-base dark:text-white;
+}
+.md-input::-webkit-outer-spin-button,
+.md-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.md-input[type="number"] {
+  -moz-appearance: textfield;
 }
 .md-input-error {
   @apply pointer-events-none active-text-color text-xs font-normal;

@@ -10,10 +10,11 @@
           </div>
         </div>
         <base-input
-          v-model.text="user.login"
+          v-model="user.login"
           type="number"
           label="Ваш ИИН"
           autofocus
+          :max="12"
           :theme="theme"
           :error="errors.user.login"
         />
