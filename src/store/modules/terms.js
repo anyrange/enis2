@@ -29,6 +29,7 @@ export default {
   actions: {
     fetchTerms: async ({ commit, state }) => {
       if (state.data.length) return;
+
       commit("SET_LOADING", true);
       try {
         commit("SET_TERMS", await getTerms());

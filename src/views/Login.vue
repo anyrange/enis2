@@ -6,7 +6,7 @@
           <app-icon class="app-icon" />
           <div class="app-meta">
             <h1 class="app-meta-title">enis</h1>
-            <h2 class="app-meta-description">- удобный, быстрый, адаптивный</h2>
+            <h2 class="app-meta-description">resurrected</h2>
           </div>
         </div>
         <base-input
