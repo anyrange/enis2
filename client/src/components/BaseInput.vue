@@ -47,19 +47,12 @@ export default {
       required: false,
       default: "",
     },
-    theme: {
-      type: [Boolean, String],
-      required: false,
-      default: "light",
-    },
   },
   emits: ["update:modelValue"],
   data() {
     return {
-      gray700: "#282828",
       gray500: "rgb(171, 171, 171)",
       blue500: "rgb(59, 130, 246)",
-      blue50: "#EFF6FF",
       red500: "rgb(239, 68, 68)",
     };
   },
@@ -71,14 +64,6 @@ export default {
     activeColor() {
       if (this.error) return this.red500;
       return this.blue500;
-    },
-    autofillColor() {
-      if (this.theme === "dark") return this.gray700;
-      return this.blue50;
-    },
-    autofillTextColor() {
-      if (this.theme === "dark") return "white";
-      return "black";
     },
   },
   methods: {
@@ -93,6 +78,14 @@ export default {
 </script>
 
 <style lang="postcss">
+html {
+  --autofill-color: #eff6ff;
+  --autofill-text-color: #000000;
+}
+html[data-theme="dark"] {
+  --autofill-color: #282828;
+  --autofill-text-color: #ffffff;
+}
 .active-text-color {
   color: v-bind(activeColor);
 }
@@ -105,12 +98,7 @@ export default {
 .default-border-color {
   border-color: v-bind(defaultColor);
 }
-.autofill-color {
-  -webkit-box-shadow: 0 0 0px 1000px v-bind(autofillColor) inset;
-}
-.autofill-text-color {
-  -webkit-text-fill-color: v-bind(autofillTextColor);
-}
+
 .md-input-wrapper {
   @apply flex flex-col gap-1;
 }
@@ -118,7 +106,7 @@ export default {
   @apply relative;
 }
 .md-input {
-  @apply w-full outline-none h-10 appearance-none focus:outline-none bg-transparent text-base dark:text-white;
+  @apply w-full outline-none h-10 appearance-none focus:outline-none bg-transparent text-base dark:text-white text-black;
 }
 .md-input::-webkit-outer-spin-button,
 .md-input::-webkit-inner-spin-button {
@@ -164,6 +152,8 @@ export default {
 .md-input:-webkit-autofill,
 .md-input:-webkit-autofill:hover,
 .md-input:-webkit-autofill:focus {
-  @apply autofill-color autofill-text-color;
+  -webkit-box-shadow: 0 0 0px 1000px var(--autofill-color) inset;
+  -webkit-text-fill-color: var(--autofill-text-color);
+  -webkit-text-color: var(--autofill-text-color);
 }
 </style>

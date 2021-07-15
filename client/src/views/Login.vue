@@ -15,14 +15,12 @@
           label="Ваш ИИН"
           autofocus
           :max="12"
-          :theme="theme"
           :error="errors.user.login"
         />
         <base-input
           v-model="user.password"
           type="password"
           label="Ваш пароль"
-          :theme="theme"
           :error="errors.user.password"
         />
         <transition name="fade">
@@ -37,7 +35,6 @@
               v-model="user.captchaInput"
               type="text"
               label="Каптча"
-              :theme="theme"
             />
           </div>
         </transition>
@@ -57,17 +54,10 @@
           label="Войти"
         />
         <div class="bottom-options">
-          <a href="#" class="icon-button" @click="toggleTheme()">
-            <sun-icon v-if="theme === 'dark'" />
-            <moon-icon v-else />
-          </a>
-          <a
-            class="icon-button"
-            href="https://github.com/anyrange/enis2"
-            target="_blank"
-          >
-            <github-icon class="icon" />
-          </a>
+          <theme-toggler />
+          <base-button round href="https://github.com/anyrange/enis2">
+            <github-icon />
+          </base-button>
         </div>
       </form>
     </div>
@@ -78,9 +68,8 @@
 import BaseInput from "@/components/BaseInput";
 import BaseButton from "@/components/BaseButton";
 import BaseSelect from "@/components/BaseSelect";
+import ThemeToggler from "@/components/ThemeToggler";
 import AppIcon from "@/components/icons/AppIcon";
-import MoonIcon from "@/components/icons/MoonIcon";
-import SunIcon from "@/components/icons/SunIcon";
 import GithubIcon from "@/components/icons/GithubIcon";
 import { mapActions, mapGetters } from "vuex";
 import { refreshCaptcha } from "@/api";
@@ -92,9 +81,8 @@ export default {
     BaseInput,
     BaseButton,
     BaseSelect,
+    ThemeToggler,
     AppIcon,
-    MoonIcon,
-    SunIcon,
     GithubIcon,
   },
   cities,
@@ -120,7 +108,6 @@ export default {
   computed: {
     ...mapGetters({
       savedCity: "preferences/getCity",
-      theme: "preferences/getTheme",
     }),
     formValidated() {
       if (!this.errors.user.login && !this.errors.user.password) return true;
@@ -139,7 +126,6 @@ export default {
     ...mapActions({
       login: "auth/login",
       setCity: "preferences/setCity",
-      toggleTheme: "preferences/toggleTheme",
     }),
     validateLogin(value) {
       if (!this.validationStarted) return;
@@ -195,6 +181,9 @@ export default {
 .login-container {
   @apply m-auto w-full sm:w-3/5 md:w-1/2 lg:w-2/6 xl:w-1/4 2xl:w-1/5;
 }
+.login-form {
+  @apply flex flex-col gap-6 p-4 rounded-md border border-gray-200 dark:border-gray-600-spotify dark:bg-gray-800-spotify;
+}
 .app-container {
   @apply flex gap-4 items-center mb-2;
 }
@@ -218,14 +207,5 @@ export default {
 }
 .bottom-options {
   @apply flex justify-between;
-}
-.login-form {
-  @apply flex flex-col gap-6 p-4 rounded-md border border-gray-200 dark:border-gray-600-spotify dark:bg-gray-800-spotify;
-}
-.icon-button {
-  @apply flex items-center justify-center w-9 h-9 p-1 rounded-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600-spotify focus:ring-2 focus:outline-none;
-}
-.icon-button .icon {
-  @apply w-full h-full;
 }
 </style>

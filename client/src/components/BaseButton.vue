@@ -7,7 +7,9 @@
       class="base-button"
       :type="type"
       :disabled="disabled || loading"
+      v-wave="ripple"
       :class="buttonClass"
+      @click.stop="handleClick($event)"
     >
       <svg
         v-if="loading"
@@ -49,12 +51,27 @@ export default {
     color: {
       type: String,
       required: false,
-      default: "",
+      default: "flat",
     },
     type: {
       type: String,
       required: false,
       default: "button",
+    },
+    ripple: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    href: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    target: {
+      type: String,
+      required: false,
+      default: "_blank",
     },
     label: {
       type: String,
@@ -90,24 +107,25 @@ export default {
       required: false,
       default: false,
     },
-    flat: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   computed: {
     buttonClass() {
       return {
         "base-button-primary": this.color === "primary",
         "base-button-negative": this.color === "negative",
+        "base-button-flat": this.color === "flat",
         "base-button-rounded": this.rounded,
         "base-button-fullwidth": this.wFull,
         "base-button-disabled": this.disabled,
         "base-button-round": this.round,
         "base-button-default": !this.round,
-        "base-button-flat": this.flat,
       };
+    },
+  },
+  methods: {
+    handleClick(event) {
+      this.$emit("click", event);
+      if (this.href) window.open(this.href, this.target);
     },
   },
 };
@@ -118,7 +136,7 @@ export default {
   @apply flex gap-2 items-center;
 }
 .base-button {
-  @apply flex items-center rounded-sm justify-center uppercase text-center select-none text-sm font-medium focus:outline-none focus:ring-2 shadow-md;
+  @apply flex rounded-sm duration-200 transition-colors items-center justify-center uppercase text-center select-none text-sm font-medium focus:outline-none focus:ring-2;
 }
 .base-button-title {
   @apply select-none;
@@ -139,7 +157,7 @@ export default {
   @apply rounded-full;
 }
 .base-button-flat {
-  @apply hover:bg-gray-100 dark:hover:bg-gray-800-spotify bg-white dark:bg-gray-700-spotify;
+  @apply hover:bg-black hover:bg-opacity-10;
 }
 .base-button-primary {
   @apply focus:ring-blue-200 dark:focus:ring-blue-400 text-white bg-blue-500 hover:bg-blue-600;

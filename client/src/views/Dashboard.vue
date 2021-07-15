@@ -40,10 +40,7 @@
       </main>
       <footer class="footer">
         <div class="footer-content">
-          <base-button round flat @click="toggleTheme()">
-            <sun-icon v-if="theme === 'dark'" />
-            <moon-icon v-else />
-          </base-button>
+          <theme-toggler />
           <base-button
             label="Выйти"
             rounded
@@ -73,12 +70,11 @@ import BaseButton from "@/components/BaseButton";
 import Spinner from "@/components/Spinner";
 import Loader from "@/components/Loader";
 import Modal from "@/components/Modal";
+import ThemeToggler from "@/components/ThemeToggler";
 import SubjectDiary from "@/components/SubjectDiary";
 import SubjectGrades from "@/components/SubjectGrades";
 import SubjectSections from "@/components/SubjectSections";
 import GradesIcon from "@/components/icons/GradesIcon";
-import MoonIcon from "@/components/icons/MoonIcon";
-import SunIcon from "@/components/icons/SunIcon";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
@@ -87,15 +83,14 @@ export default {
     Tabs,
     Tab,
     BaseButton,
-    GradesIcon,
     Spinner,
     Loader,
+    Modal,
+    ThemeToggler,
     SubjectDiary,
     SubjectGrades,
     SubjectSections,
-    MoonIcon,
-    SunIcon,
-    Modal,
+    GradesIcon,
   },
   data() {
     return {
@@ -110,7 +105,6 @@ export default {
       grades: "grades/getGrades",
       subject: "subject/getSubject",
       savedTab: "preferences/getSelectedTab",
-      theme: "preferences/getTheme",
     }),
     loading() {
       return this.terms.loading || this.diary.loading || this.grades.loading;
@@ -134,7 +128,6 @@ export default {
   methods: {
     ...mapActions({
       logout: "auth/logout",
-      toggleTheme: "preferences/toggleTheme",
       setTab: "preferences/setTab",
       fetchTerms: "terms/fetchTerms",
       fetchDiary: "diary/fetchDiary",
