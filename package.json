@@ -1,5 +1,16 @@
 {
+  "name": "enis2",
+  "version": "1.0.0",
   "scripts": {
+    "install-all": "cd client && npm install && cd ../server && npm install",
+    "serve": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "server": "npm run dev --prefix server",
+    "dev": "concurrently \"npm run serve\" \"npm run server\"",
     "heroku-postbuild": "echo Skip builds on Heroku"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^4.1.0"
   }
 }

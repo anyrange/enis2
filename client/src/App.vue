@@ -1,6 +1,8 @@
 <template>
-  <router-view />
-  <notifications />
+  <div>
+    <router-view />
+    <notifications />
+  </div>
 </template>
 
 <script>

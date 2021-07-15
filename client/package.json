@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "author": "wsehl",
   "scripts": {
-    "serve": "vue-cli-service serve --port 3004",
+    "dev": "vue-cli-service serve --port 3004",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
@@ -46,7 +46,8 @@
       "eslint:recommended"
     ],
     "parserOptions": {
-      "parser": "@babel/eslint-parser"
+      "parser": "@babel/eslint-parser",
+      "requireConfigFile": false
     },
     "rules": {}
   },
