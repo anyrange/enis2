@@ -14,5 +14,9 @@ requireModule.keys().forEach((fileName) => {
 
 export default createStore({
   modules,
-  plugins: [createPersistedState()],
+  plugins: [
+    createPersistedState({
+      paths: ["auth", "preferences", "terms", "diary", "grades"],
+    }),
+  ],
 });
