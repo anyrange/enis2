@@ -1,7 +1,7 @@
 <template>
   <div class="login-wrapper">
     <div class="login-container">
-      <form class="login-form" @submit.prevent="submit">
+      <form class="login-form" @submit.prevent="submit()">
         <div class="app-container">
           <app-icon class="app-icon" />
           <div class="app-meta">
@@ -12,14 +12,16 @@
         <base-input
           v-model="user.login"
           type="number"
-          label="Ваш ИИН"
+          autocomplete="username"
           autofocus
+          label="Ваш ИИН"
           :max="12"
           :error="errors.user.login"
         />
         <base-input
           v-model="user.password"
           type="password"
+          autocomplete="current-password"
           label="Ваш пароль"
           :error="errors.user.password"
         />
@@ -27,9 +29,9 @@
           <div v-if="captcha" class="captcha-container">
             <img
               class="captcha-img"
-              @click="updateCaptcha()"
-              :src="`data:image/png;base64,${captcha}`"
               alt="captcha"
+              :src="`data:image/png;base64,${captcha}`"
+              @click="updateCaptcha()"
             />
             <base-input
               v-model="user.captchaInput"
@@ -40,18 +42,17 @@
         </transition>
         <base-select
           v-model="city"
-          @update="setCity(city)"
-          :options="$options.cities"
-          label="Школа"
           class="-mt-2"
+          label="Школа"
+          :options="$options.cities"
+          @update="setCity(city)"
         />
         <base-button
-          w-full
-          v-wave
           type="submit"
+          w-full
           color="primary"
-          :loading="loading"
           label="Войти"
+          :loading="loading"
         />
         <div class="bottom-options">
           <theme-toggler />

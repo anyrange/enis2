@@ -82,23 +82,18 @@ html {
   --autofill-color: #eff6ff;
   --autofill-text-color: #000000;
 }
-html[data-theme="dark"] {
+html.dark {
   --autofill-color: #282828;
   --autofill-text-color: #ffffff;
 }
-.active-text-color {
+.md-input-active-color {
   color: v-bind(activeColor);
-}
-.active-border-color {
   border-color: v-bind(activeColor);
 }
-.default-text-color {
+.md-input-default-color {
   color: v-bind(defaultColor);
-}
-.default-border-color {
   border-color: v-bind(defaultColor);
 }
-
 .md-input-wrapper {
   @apply flex flex-col gap-1;
 }
@@ -106,7 +101,8 @@ html[data-theme="dark"] {
   @apply relative;
 }
 .md-input {
-  @apply w-full outline-none h-10 appearance-none focus:outline-none bg-transparent text-base dark:text-white text-black;
+  caret-color: var(--autofill-text-color);
+  @apply w-full h-10 appearance-none outline-none text-base bg-transparent focus:outline-none;
 }
 .md-input::-webkit-outer-spin-button,
 .md-input::-webkit-inner-spin-button {
@@ -117,23 +113,23 @@ html[data-theme="dark"] {
   -moz-appearance: textfield;
 }
 .md-input-error {
-  @apply pointer-events-none active-text-color text-xs font-normal;
+  @apply pointer-events-none text-xs font-normal md-input-active-color;
 }
 .md-label {
-  @apply absolute pointer-events-none block default-text-color text-base origin-top-left;
+  @apply absolute pointer-events-none block text-base origin-top-left md-input-default-color;
   transform: translate(0, -30px) scale(1);
   transition: color 200ms cubic-bezier(0, 0, 0.2, 1) 0ms,
     transform 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
 }
 .md-label-focus {
-  @apply origin-top-left active-text-color;
+  @apply origin-top-left md-input-active-color;
   transform: translate(0, -60px) scale(0.75);
 }
 .md-input-underline {
-  @apply border-b default-border-color;
+  @apply border-b md-input-default-color;
 }
 .md-input-underline:after {
-  @apply absolute left-0 right-0 pointer-events-none border-b-2 active-border-color;
+  @apply absolute left-0 right-0 pointer-events-none border-b-2 md-input-active-color;
   bottom: -0.05rem;
   content: "";
   transition: transform 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
@@ -154,6 +150,5 @@ html[data-theme="dark"] {
 .md-input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px var(--autofill-color) inset;
   -webkit-text-fill-color: var(--autofill-text-color);
-  -webkit-text-color: var(--autofill-text-color);
 }
 </style>
