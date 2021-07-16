@@ -1,7 +1,5 @@
 const dotenv = require("dotenv");
-const dotenvExpand = require("dotenv-expand");
-const variables = dotenv.config({ path: "../.env" });
-dotenvExpand(variables);
+dotenv.config({ path: "../.env" });
 
 module.exports = {
   pwa: {
