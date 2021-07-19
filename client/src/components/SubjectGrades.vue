@@ -4,11 +4,17 @@
       <span class="item-top-subject">
         {{ subject.SubjectName }}
       </span>
-      <div v-if="subject.Exam !== 'none'" class="item-top-box">
+      <div
+        v-if="subject.Exam !== 'none'"
+        class="item-top-box"
+      >
         <span class="item-top-box-mark">{{ subject.Exam }}</span>
         <span class="item-top-box-label">Экзамен</span>
       </div>
-      <div v-if="subject.Final !== 'none'" class="item-top-box">
+      <div
+        v-if="subject.Final !== 'none'"
+        class="item-top-box"
+      >
         <span class="item-top-box-mark">{{ subject.Final }}</span>
         <span class="item-top-box-label">Итоговая</span>
       </div>

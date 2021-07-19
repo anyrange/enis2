@@ -5,10 +5,10 @@
     </label>
     <div class="base-select">
       <button
+        v-click-outside="closeDropdown"
         class="base-select-button"
         type="button"
         @click="toggleDropdown()"
-        v-click-outside="closeDropdown"
       >
         {{ modelValue.label }}
         <span class="base-select-button-icon">
@@ -32,16 +32,20 @@
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
       >
-        <ul v-if="dropdownOpened" tabindex="-1" class="base-select-list">
+        <ul
+          v-if="dropdownOpened"
+          tabindex="-1"
+          class="base-select-list"
+        >
           <li
+            v-for="option in options"
+            :key="option"
             class="base-select-list-item"
             :class="[
               option.value === modelValue.value
                 ? 'base-select-list-item-active'
                 : 'base-select-list-item-default',
             ]"
-            v-for="option in options"
-            :key="option"
             @click="handleClick(option)"
           >
             <span
@@ -66,17 +70,19 @@ export default {
   name: "BaseSelect",
   props: {
     modelValue: {
+      type: Object,
       required: true,
     },
     label: {
       type: String,
-      required: false,
+      required: true,
     },
     options: {
       type: Array,
       required: true,
     },
   },
+  emits: ["update:modelValue", "update"],
   data() {
     return {
       dropdownOpened: false,

@@ -1,13 +1,16 @@
 <template>
   <div class="base-button-container">
-    <span v-if="title" class="base-button-title">
+    <span
+      v-if="title"
+      class="base-button-title"
+    >
       {{ title }}
     </span>
     <button
+      v-wave="ripple"
       class="base-button"
       :type="type"
       :disabled="disabled || loading"
-      v-wave="ripple"
       :class="buttonClass"
       @click.stop="handleClick($event)"
     >
@@ -25,19 +28,19 @@
           r="10"
           stroke="currentColor"
           stroke-width="4"
-        ></circle>
+        />
         <path
           class="opacity-75"
           fill="currentColor"
           d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-        ></path>
+        />
       </svg>
       <template v-else>
         <template v-if="label">
           {{ label }}
         </template>
         <template v-else>
-          <slot></slot>
+          <slot />
         </template>
       </template>
     </button>
@@ -76,6 +79,7 @@ export default {
     label: {
       type: String,
       required: false,
+      default: "",
     },
     title: {
       type: String,
@@ -108,6 +112,7 @@ export default {
       default: false,
     },
   },
+  emits: ['click'],
   computed: {
     buttonClass() {
       return {

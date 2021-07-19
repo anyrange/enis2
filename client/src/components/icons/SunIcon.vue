@@ -8,8 +8,16 @@
     fill="currentColor"
   >
     <g>
-      <rect fill="none" height="24" width="24" />
-      <rect fill="none" height="24" width="24" />
+      <rect
+        fill="none"
+        height="24"
+        width="24"
+      />
+      <rect
+        fill="none"
+        height="24"
+        width="24"
+      />
     </g>
     <g>
       <g>

@@ -8,10 +8,13 @@
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div class="absolute inset-0 bg-black bg-opacity-40" v-show="show">
+      <div
+        v-show="show"
+        class="absolute inset-0 bg-black bg-opacity-40"
+      >
         <div
-          @click="close"
           class="fixed inset-0 flex items-center justify-center"
+          @click="close"
         >
           <transition
             enter-active-class="transition ease-out duration-200 transform"
@@ -22,7 +25,7 @@
             leave-to-class="opacity-50 translate-y-10 scale-50"
           >
             <div
-              @click.stop
+              v-show="show"
               class="
                 relative
                 bg-gray-100
@@ -42,10 +45,10 @@
               "
               role="dialog"
               aria-modal="true"
-              v-show="show"
               aria-labelledby="modal-headline"
+              @click.stop
             >
-              <slot></slot>
+              <slot />
             </div>
           </transition>
         </div>

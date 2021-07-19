@@ -1,13 +1,21 @@
 <template>
-  <div class="item" :class="itemClass">
+  <div
+    class="item"
+    :class="itemClass"
+  >
     <div class="item-container">
-      <h3 class="item-subject">{{ subject.Name }}</h3>
+      <h3 class="item-subject">
+        {{ subject.Name }}
+      </h3>
       <div class="item-bottom">
         <div>
           <span class="item-title">
             {{ beforeDecimal }}
           </span>
-          <span class="item-subtitle" v-show="afterDecimal">
+          <span
+            v-show="afterDecimal"
+            class="item-subtitle"
+          >
             .{{ afterDecimal }}
           </span>
           <span class="item-subtitle">%</span>
@@ -18,8 +26,15 @@
         </div>
       </div>
     </div>
-    <div :class="barClass" class="item-progress-container">
-      <div class="item-progress-bar" :style="barStyle" :class="barClass">
+    <div
+      :class="barClass"
+      class="item-progress-container"
+    >
+      <div
+        class="item-progress-bar"
+        :style="barStyle"
+        :class="barClass"
+      >
         &nbsp;
       </div>
     </div>

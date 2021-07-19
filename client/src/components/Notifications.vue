@@ -10,8 +10,7 @@
         :key="notification"
         :notification="notification"
         @close-notification="removeNotification(notification)"
-      >
-      </notification>
+      />
     </transition-group>
   </div>
 </template>
@@ -30,14 +29,14 @@ export default {
       notifications: "notify/getNotifications",
     }),
   },
+  created() {
+    this.resetNotifications();
+  },
   methods: {
     ...mapActions({
       resetNotifications: "notify/resetNotifications",
       removeNotification: "notify/removeNotification",
     }),
-  },
-  created() {
-    this.resetNotifications();
   },
 };
 </script>

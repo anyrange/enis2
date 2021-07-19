@@ -2,22 +2,28 @@
   <div class="md-input-wrapper">
     <div class="md-input-box">
       <input
+        v-bind="$attrs"
+        :id="label"
         class="md-input"
         placeholder=" "
         autocomplete="false"
-        v-bind="$attrs"
-        :id="label"
         :value="modelValue"
         @input="handleInput($event.target.value)"
-      />
-      <label :for="label" class="md-label">
+      >
+      <label
+        :for="label"
+        class="md-label"
+      >
         {{ label }}
       </label>
       <div class="md-input-underline" />
     </div>
     <div class="h-2">
       <transition name="fade">
-        <p class="md-input-error" v-if="error">
+        <p
+          v-if="error"
+          class="md-input-error"
+        >
           {{ error }}
         </p>
       </transition>

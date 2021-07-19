@@ -1,5 +1,8 @@
 <template>
-  <base-button round @click="toggleTheme()">
+  <base-button
+    round
+    @click="toggleTheme()"
+  >
     <sun-icon v-if="theme === 'dark'" />
     <moon-icon v-else />
   </base-button>

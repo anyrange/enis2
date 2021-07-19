@@ -1,10 +1,10 @@
 <template>
   <li
     v-if="visible"
+    v-wave
     class="tab"
     :class="tabClass"
     @click="activateTab(name)"
-    v-wave
   >
     <slot />
   </li>
@@ -29,11 +29,6 @@ export default {
       required: false,
     },
   },
-  methods: {
-    activateTab(name) {
-      if (!this.disabled && name !== this.active) return this.selectTab(name);
-    },
-  },
   computed: {
     tabClass() {
       return {
@@ -48,6 +43,11 @@ export default {
     isActive() {
       if (this.name === this.active) return true;
       return false;
+    },
+  },
+  methods: {
+    activateTab(name) {
+      if (!this.disabled && name !== this.active) return this.selectTab(name);
     },
   },
 };
