@@ -123,6 +123,9 @@ export default {
       this.validatePassword(value);
     },
   },
+  created() {
+    this.city = this.savedCity;
+  },
   methods: {
     ...mapActions({
       login: "auth/login",
@@ -168,9 +171,6 @@ export default {
         }
       }
     },
-  },
-  created() {
-    this.city = this.savedCity;
   },
 };
 </script>

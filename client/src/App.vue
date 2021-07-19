@@ -37,6 +37,20 @@ export default {
       immediate: true,
     },
   },
+  created() {
+    this.setTheme();
+  },
+  mounted() {
+    document.addEventListener("swUpdated", this.showRefreshUI, { once: true });
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener("controllerchange", () => {
+        if (this.refreshing) return;
+        this.refreshing = true;
+        window.localStorage.clear();
+        window.location.reload();
+      });
+    }
+  },
   methods: {
     ...mapActions({
       setTheme: "preferences/setTheme",
@@ -64,20 +78,6 @@ export default {
       }
       this.registration.waiting.postMessage("skipWaiting");
     },
-  },
-  created() {
-    this.setTheme();
-  },
-  mounted() {
-    document.addEventListener("swUpdated", this.showRefreshUI, { once: true });
-    if (navigator.serviceWorker) {
-      navigator.serviceWorker.addEventListener("controllerchange", () => {
-        if (this.refreshing) return;
-        this.refreshing = true;
-        window.localStorage.clear();
-        window.location.reload();
-      });
-    }
   },
 };
 </script>

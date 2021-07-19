@@ -2,7 +2,7 @@
   <div class="layout">
     <div class="wrapper">
       <header class="header">
-        <tabs class="header-tabs" v-model="currentTab">
+        <tabs v-model="currentTab" class="header-tabs">
           <tab
             v-for="(term, index) in terms.data"
             :key="term"
@@ -125,6 +125,10 @@ export default {
       this.showTab(newValue);
     },
   },
+  async created() {
+    await this.fetchTerms();
+    this.currentTab = this.savedTab || this.lastTermId;
+  },
   methods: {
     ...mapActions({
       logout: "auth/logout",
@@ -153,10 +157,6 @@ export default {
       this.subjectModalOpened = true;
       await this.fetchSubject(subject);
     },
-  },
-  async created() {
-    await this.fetchTerms();
-    this.currentTab = this.savedTab || this.lastTermId;
   },
 };
 </script>
