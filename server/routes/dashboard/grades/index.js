@@ -10,7 +10,7 @@ export default async function(fastify) {
           200: {
             type: "object",
             properties: {
-              statusCode: { type: "string" },
+              statusCode: { type: "number" },
               data: {
                 type: "array",
                 items: {
