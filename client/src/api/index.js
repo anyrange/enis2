@@ -1,6 +1,6 @@
 import axios from "axios";
 import $store from "@/store";
-import { notification } from "@/notify.js";
+import { notify } from "@/services/notify";
 
 const api = axios.create({
   baseURL: process.env.VUE_APP_SERVER_URI,
@@ -19,7 +19,7 @@ api.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    notification.show({
+    notify.show({
       type: "danger",
       message: error?.response?.data?.message || "Что-то пошло не так",
     });

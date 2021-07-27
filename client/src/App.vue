@@ -8,6 +8,7 @@
 <script>
 import Notifications from "@/components/Notifications";
 import { mapGetters, mapActions } from "vuex";
+import { notify } from "@/services/notify";
 
 export default {
   name: "App",
@@ -57,7 +58,7 @@ export default {
     }),
     showRefreshUI(e) {
       this.registration = e.detail;
-      this.$notify.show({
+      notify.show({
         type: "success",
         message: "Обновление доступно",
         progress: false,
