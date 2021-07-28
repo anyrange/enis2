@@ -51,11 +51,10 @@
           </div>
         </transition>
         <base-select
-          v-model="city"
+          v-model="school"
           class="-mt-2"
           label="Школа"
-          :options="$options.cities"
-          @update="setCity(city)"
+          :options="$options.schools"
         />
         <base-button
           type="submit"
@@ -85,9 +84,9 @@ import BaseSelect from "@/components/BaseSelect";
 import ThemeToggler from "@/components/ThemeToggler";
 import AppIcon from "@/components/icons/AppIcon";
 import GithubIcon from "@/components/icons/GithubIcon";
-import { mapActions, mapGetters } from "vuex";
-import { refreshCaptcha } from "@/api";
-import cities from "@/cities.json";
+import { mapActions, mapMutations } from "vuex";
+import { refreshCaptcha, getUserCity } from "@/api";
+import schools from "@/schools.json";
 
 export default {
   name: "Login",
@@ -99,7 +98,7 @@ export default {
     AppIcon,
     GithubIcon,
   },
-  cities,
+  schools,
   data() {
     return {
       loading: false,
@@ -109,7 +108,6 @@ export default {
         captchaInput: "",
       },
       captcha: "",
-      city: {},
       errors: {
         user: {
           login: "",
@@ -120,9 +118,14 @@ export default {
     };
   },
   computed: {
-    ...mapGetters({
-      savedCity: "preferences/getCity",
-    }),
+    school: {
+      get() {
+        return this.$store.state.preferences.school;
+      },
+      set(value) {
+        this.setSchool(value);
+      },
+    },
     formValidated() {
       if (!this.errors.user.login && !this.errors.user.password) return true;
       return false;
@@ -136,14 +139,28 @@ export default {
       this.validatePassword(value);
     },
   },
-  created() {
-    this.city = this.savedCity;
+  async created() {
+    if (!this.isEmtyObject(this.school)) return;
+
+    const schoolsList = this.$options.schools;
+
+    const { city } = await getUserCity();
+
+    const predictedCity = schoolsList.find((item) => item.city === city);
+    const defaultCity = schoolsList.find((item) => item.default);
+
+    this.school = predictedCity || defaultCity;
   },
   methods: {
     ...mapActions({
       login: "auth/login",
-      setCity: "preferences/setCity",
     }),
+    ...mapMutations({
+      setSchool: "preferences/SET_SCHOOL",
+    }),
+    isEmtyObject(object) {
+      return Object.keys(object).length === 0 && object.constructor === Object;
+    },
     validateLogin(value) {
       if (!this.validationStarted) return;
       if (value.length !== 12) {

@@ -2,13 +2,15 @@ import axios from "axios";
 import $store from "@/store";
 import { notify } from "@/services/notify";
 
+const IPINFO_TOKEN = process.env.VUE_APP_IPINFO_TOKEN;
+
 const api = axios.create({
   baseURL: process.env.VUE_APP_SERVER_URI,
   withCredentials: true,
 });
 
 api.interceptors.request.use((config) => {
-  const savedCity = $store.getters["preferences/getCity"].value;
+  const savedCity = $store.getters["preferences/getSchool"].value;
   const queryCharacter = config.url.includes("&") ? "&" : "?";
   config.url = config.url + queryCharacter + "city=" + savedCity;
   return config;
@@ -47,6 +49,21 @@ export function getSubject(journalId, evalId) {
 }
 export function getGrades() {
   return api.get("dashboard/grades").then((r) => r.data);
+}
+export function getUserCity() {
+  if (process.env.NODE_ENV === "development") {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          city: "Pavldoar",
+        });
+      }, 300);
+    });
+  } else {
+    return axios
+      .get(`https://ipinfo.io/?token=${IPINFO_TOKEN}`)
+      .then((r) => r.data);
+  }
 }
 
 /* MOCK API */
