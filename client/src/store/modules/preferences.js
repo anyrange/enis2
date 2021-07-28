@@ -27,6 +27,9 @@ export default {
     getSelectedTab: (state) => {
       return state.selectedTab;
     },
+    getSchool: (state) => {
+      return state.school;
+    },
     getTheme: (state) => {
       return state.theme;
     },

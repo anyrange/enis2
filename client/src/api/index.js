@@ -3,6 +3,7 @@ import $store from "@/store";
 import { notify } from "@/services/notify";
 
 const IPINFO_TOKEN = process.env.VUE_APP_IPINFO_TOKEN;
+const isDev = process.env.NODE_ENV === "development" ? true : false;
 
 const api = axios.create({
   baseURL: process.env.VUE_APP_SERVER_URI,
@@ -51,7 +52,7 @@ export function getGrades() {
   return api.get("dashboard/grades").then((r) => r.data);
 }
 export function getUserCity() {
-  if (process.env.NODE_ENV === "development") {
+  if (isDev) {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
@@ -67,7 +68,7 @@ export function getUserCity() {
 }
 
 /* MOCK API */
-if (process.env.NODE_ENV === "development") {
+if (isDev) {
   (async () => {
     const MockAdapter = require("axios-mock-adapter");
     const mocks = require("./mockData.js");
