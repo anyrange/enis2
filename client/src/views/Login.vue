@@ -141,15 +141,15 @@ export default {
   },
   async created() {
     if (!this.isEmtyObject(this.school)) return;
-
     const schoolsList = this.$options.schools;
-
-    const { city } = await getUserCity();
-
-    const predictedCity = schoolsList.find((item) => item.city === city);
     const defaultCity = schoolsList.find((item) => item.default);
-
-    this.school = predictedCity || defaultCity;
+    try {
+      const { city } = await getUserCity();
+      const predictedCity = schoolsList.find((item) => item.city === city);
+      this.school = predictedCity || defaultCity;
+    } catch {
+      this.school = defaultCity;
+    }
   },
   methods: {
     ...mapActions({
