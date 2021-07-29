@@ -3,7 +3,7 @@ import $store from "@/store";
 import { notify } from "@/services/notify";
 
 const IPINFO_TOKEN = process.env.VUE_APP_IPINFO_TOKEN;
-const isDev = process.env.NODE_ENV === "development" ? true : false;
+const isDev = process.env.NODE_ENV === "development";
 
 const api = axios.create({
   baseURL: process.env.VUE_APP_SERVER_URI,
@@ -62,7 +62,7 @@ export function getUserCity() {
     });
   } else {
     return axios
-      .get(`https://ipinfo.io/?token=${IPINFO_TOKEN}`)
+      .get(`https://ipinfo.io/city?token=${IPINFO_TOKEN}`)
       .then((r) => r.data);
   }
 }

@@ -144,7 +144,7 @@ export default {
     const schoolsList = this.$options.schools;
     const defaultCity = schoolsList.find((item) => item.default);
     try {
-      const { city } = await getUserCity();
+      const city  = await getUserCity();
       const predictedCity = schoolsList.find((item) => item.city === city);
       this.school = predictedCity || defaultCity;
     } catch {
