@@ -11,7 +11,7 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const savedCity = $store.getters["preferences/getSchool"].value;
+  const savedCity = $store.getters["preferences/getCity"];
   const queryCharacter = config.url.includes("&") ? "&" : "?";
   config.url = config.url + queryCharacter + "city=" + savedCity;
   return config;
@@ -56,7 +56,7 @@ export function getUserCity() {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
-          city: "Pavldoar",
+          city: "Pavlodar",
         });
       }, 300);
     });
