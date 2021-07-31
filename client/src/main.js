@@ -12,8 +12,4 @@ const app = createApp(App);
 
 app.directive("click-outside", clickOutside);
 
-app
-  .use(store)
-  .use(router)
-  .use(VWave)
-  .mount("#app");
+app.use(store).use(router).use(VWave).mount("#app");

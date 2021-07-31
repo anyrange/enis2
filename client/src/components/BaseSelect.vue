@@ -32,11 +32,7 @@
         leave-from-class="opacity-100"
         leave-to-class="opacity-0"
       >
-        <ul
-          v-if="dropdownOpened"
-          tabindex="-1"
-          class="base-select-list"
-        >
+        <ul v-if="dropdownOpened" tabindex="-1" class="base-select-list">
           <li
             v-for="option in options"
             :key="option"

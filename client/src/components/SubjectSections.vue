@@ -3,11 +3,7 @@
     <h4 class="subject-part-title">
       {{ label }}
     </h4>
-    <div
-      v-for="item in subject"
-      :key="item"
-      class="subject-section-list"
-    >
+    <div v-for="item in subject" :key="item" class="subject-section-list">
       <span class="subject-section-title">
         {{ item.Name }}
       </span>

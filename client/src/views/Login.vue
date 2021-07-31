@@ -1,19 +1,12 @@
 <template>
   <div class="login-wrapper">
     <div class="login-container">
-      <form
-        class="login-form"
-        @submit.prevent="submit()"
-      >
+      <form class="login-form" @submit.prevent="submit()">
         <div class="app-container">
           <app-icon class="app-icon" />
           <div class="app-meta">
-            <h1 class="app-meta-title">
-              enis
-            </h1>
-            <h2 class="app-meta-description">
-              resurrected
-            </h2>
+            <h1 class="app-meta-title">enis</h1>
+            <h2 class="app-meta-description">resurrected</h2>
           </div>
         </div>
         <base-input
@@ -33,16 +26,13 @@
           :error="errors.user.password"
         />
         <transition name="fade">
-          <div
-            v-if="captcha"
-            class="captcha-container"
-          >
+          <div v-if="captcha" class="captcha-container">
             <img
               class="captcha-img"
               alt="captcha"
               :src="`data:image/png;base64,${captcha}`"
               @click="updateCaptcha()"
-            >
+            />
             <base-input
               v-model="user.captchaInput"
               type="text"
@@ -65,10 +55,7 @@
         />
         <div class="bottom-options">
           <theme-toggler />
-          <base-button
-            round
-            href="https://github.com/anyrange/enis2"
-          >
+          <base-button round href="https://github.com/anyrange/enis2">
             <github-icon />
           </base-button>
         </div>
@@ -144,7 +131,7 @@ export default {
     const schoolsList = this.$options.schools;
     const defaultCity = schoolsList.find((item) => item.default);
     try {
-      const city  = await getUserCity();
+      const city = await getUserCity();
       const predictedCity = schoolsList.find((item) => item.city === city);
       this.school = predictedCity || defaultCity;
     } catch {

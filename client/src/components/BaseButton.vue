@@ -1,9 +1,6 @@
 <template>
   <div class="base-button-container">
-    <span
-      v-if="title"
-      class="base-button-title"
-    >
+    <span v-if="title" class="base-button-title">
       {{ title }}
     </span>
     <button
@@ -112,7 +109,7 @@ export default {
       default: false,
     },
   },
-  emits: ['click'],
+  emits: ["click"],
   computed: {
     buttonClass() {
       return {

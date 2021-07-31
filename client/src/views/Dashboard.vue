@@ -2,10 +2,7 @@
   <div class="layout">
     <div class="wrapper">
       <header class="header">
-        <tabs
-          v-model="currentTab"
-          class="header-tabs"
-        >
+        <tabs v-model="currentTab" class="header-tabs">
           <tab
             v-for="(term, index) in terms.data"
             :key="term"
@@ -14,10 +11,7 @@
           >
             {{ getTermLable(index + 1) }}
           </tab>
-          <tab
-            name="grades"
-            :disabled="loading"
-          >
+          <tab name="grades" :disabled="loading">
             <grades-icon />
           </tab>
         </tabs>
@@ -56,25 +50,13 @@
         </div>
       </footer>
     </div>
-    <modal
-      :show="subjectModalOpened"
-      @close="subjectModalOpened = false"
-    >
+    <modal :show="subjectModalOpened" @close="subjectModalOpened = false">
       <div class="subject-section-wrapper">
-        <subject-diary
-          :hoverable="false"
-          :subject="subject.data.current"
-        />
+        <subject-diary :hoverable="false" :subject="subject.data.current" />
         <loader v-if="subject.loading" />
         <template v-else>
-          <subject-sections
-            label="СОР"
-            :subject="subject.data.SAU"
-          />
-          <subject-sections
-            label="СОЧ"
-            :subject="subject.data.SAT"
-          />
+          <subject-sections label="СОР" :subject="subject.data.SAU" />
+          <subject-sections label="СОЧ" :subject="subject.data.SAT" />
         </template>
       </div>
     </modal>

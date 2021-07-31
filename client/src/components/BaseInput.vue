@@ -9,21 +9,15 @@
         autocomplete="false"
         :value="modelValue"
         @input="handleInput($event.target.value)"
-      >
-      <label
-        :for="label"
-        class="md-label"
-      >
+      />
+      <label :for="label" class="md-label">
         {{ label }}
       </label>
       <div class="md-input-underline" />
     </div>
     <div class="h-2">
       <transition name="fade">
-        <p
-          v-if="error"
-          class="md-input-error"
-        >
+        <p v-if="error" class="md-input-error">
           {{ error }}
         </p>
       </transition>
