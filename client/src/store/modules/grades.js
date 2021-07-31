@@ -31,6 +31,8 @@ export default {
       if (!state.data.length) commit("SET_LOADING", true);
       try {
         commit("SET_GRADES", await getGrades());
+      } catch (err) {
+        return Promise.reject(err);
       } finally {
         commit("SET_LOADING", false);
       }

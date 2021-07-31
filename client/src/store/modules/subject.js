@@ -43,6 +43,8 @@ export default {
           SAU: await getSubject(subject.JournalId, subject.Evaluations[0]),
           SAT: await getSubject(subject.JournalId, subject.Evaluations[1]),
         });
+      } catch (err) {
+        return Promise.reject(err);
       } finally {
         commit("SET_LOADING", false);
       }

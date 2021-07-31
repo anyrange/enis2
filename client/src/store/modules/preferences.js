@@ -1,6 +1,6 @@
 const defaultState = () => {
   return {
-    selectedTab: "",
+    tab: "",
     theme: "",
     school: {},
   };
@@ -20,12 +20,12 @@ export default {
       state.school = school;
     },
     CLEAR_TAB(state) {
-      Object.assign(state, { selectedTab: defaultState().selectedTab });
+      Object.assign(state, { tab: defaultState().tab });
     },
   },
   getters: {
-    getSelectedTab: (state) => {
-      return state.selectedTab;
+    getTab: (state) => {
+      return state.tab;
     },
     getCity: (state) => {
       return state.school.value;
@@ -35,17 +35,14 @@ export default {
     },
   },
   actions: {
-    setTab: ({ commit }, tab) => {
-      commit("SET_TAB", tab);
-    },
     setTheme({ commit, getters }) {
       const cachedTheme = getters.getTheme;
-      const preferedTheme = window.matchMedia(
+      const hasDarkPreference = window.matchMedia(
         "(prefers-color-scheme: dark)"
       ).matches;
       if (cachedTheme) {
         commit("SET_THEME", cachedTheme);
-      } else if (preferedTheme) {
+      } else if (hasDarkPreference) {
         commit("SET_THEME", "dark");
       } else {
         commit("SET_THEME", "light");

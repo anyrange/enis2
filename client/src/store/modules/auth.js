@@ -36,6 +36,7 @@ export default {
       commit("diary/CLEAR_DIARY", null, { root: true });
       commit("grades/CLEAR_GRADES", null, { root: true });
       commit("subject/CLEAR_SUBJECT", null, { root: true });
+      commit("years/CLEAR_YEARS", null, { root: true });
       commit("preferences/CLEAR_TAB", null, { root: true });
       $router.push({ name: "login" });
     },

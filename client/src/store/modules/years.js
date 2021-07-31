@@ -1,4 +1,4 @@
-import { getTermsByYear } from "@/api";
+import { getYears } from "@/api";
 
 const defaultState = () => {
   return {
@@ -14,26 +14,29 @@ export default {
     SET_LOADING(state, status) {
       state.loading = status;
     },
-    SET_TERMS(state, result) {
+    SET_YEARS(state, result) {
       state.data = result;
     },
-    CLEAR_TERMS(state) {
+    SET_CURRENT_YEAR(state, res) {
+      state.currentYear = res;
+    },
+    CLEAR_YEARS(state) {
       Object.assign(state, defaultState());
     },
   },
   getters: {
-    getTerms: (state) => {
+    getYears: (state) => {
       return state;
     },
-    lastTermId: (state) => {
-      return state.data[state.data.length - 1].Id;
+    currentYearId: (state) => {
+      return state.data.find((year) => year.isActual).Id;
     },
   },
   actions: {
-    fetchTermsByYear: async ({ commit, state }, id) => {
+    fetchYears: async ({ commit, state }) => {
       if (!state.data.length) commit("SET_LOADING", true);
       try {
-        commit("SET_TERMS", await getTermsByYear(id));
+        commit("SET_YEARS", await getYears());
       } catch (err) {
         return Promise.reject(err);
       } finally {

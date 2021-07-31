@@ -20,19 +20,19 @@
         <section class="content-list">
           <spinner v-if="loading" />
           <template v-else>
-            <template v-if="currentTab !== 'grades'">
-              <subject-diary
-                v-for="item in sortByScore(currentTermDiary)"
-                :key="item"
-                :subject="item"
-                @click="showSubject(item)"
-              />
-            </template>
-            <template v-else>
+            <template v-if="currentTab === 'grades'">
               <subject-grades
                 v-for="item in grades.data"
                 :key="item"
                 :subject="item"
+              />
+            </template>
+            <template v-else>
+              <subject-diary
+                v-for="item in sortByScore(currentTermDiary(currentTab))"
+                :key="item"
+                :subject="item"
+                @click="showSubject(item)"
               />
             </template>
           </template>
@@ -75,7 +75,7 @@ import SubjectDiary from "@/components/SubjectDiary";
 import SubjectGrades from "@/components/SubjectGrades";
 import SubjectSections from "@/components/SubjectSections";
 import GradesIcon from "@/components/icons/GradesIcon";
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapMutations, mapGetters } from "vuex";
 
 export default {
   name: "Dashboard",
@@ -100,58 +100,58 @@ export default {
   },
   computed: {
     ...mapGetters({
+      years: "years/getYears",
       terms: "terms/getTerms",
       diary: "diary/getDiary",
       grades: "grades/getGrades",
       subject: "subject/getSubject",
-      savedTab: "preferences/getSelectedTab",
+      savedTab: "preferences/getTab",
+      lastTermId: "terms/lastTermId",
+      currentYearId: "years/currentYearId",
+      currentTermDiary: "diary/getDiaryByTermId",
     }),
     loading() {
-      return this.terms.loading || this.diary.loading || this.grades.loading;
-    },
-    lastTermId() {
-      return this.terms.data[this.terms.data.length - 1].Id;
-    },
-    currentTermDiary() {
-      const foundItem = this.diary.data.find((item) => {
-        return item.termId === this.currentTab;
-      });
-      return foundItem instanceof Object ? foundItem.data : [];
+      return (
+        this.years.loading ||
+        this.terms.loading ||
+        this.diary.loading ||
+        this.grades.loading
+      );
     },
   },
   watch: {
-    currentTab(newValue) {
-      this.setTab(newValue);
-      this.showTab(newValue);
+    async currentTab(id) {
+      try {
+        this.saveTab(id);
+        id === "grades" ? await this.fetchGrades() : await this.fetchDiary(id);
+      } catch {
+        this.currentTab = this.lastTermId;
+      }
     },
   },
   async created() {
-    await this.fetchTerms();
+    await this.fetchYears();
+    await this.fetchTermsByYear(this.currentYearId);
     this.currentTab = this.savedTab || this.lastTermId;
   },
   methods: {
     ...mapActions({
       logout: "auth/logout",
-      setTab: "preferences/setTab",
-      fetchTerms: "terms/fetchTerms",
       fetchDiary: "diary/fetchDiary",
       fetchGrades: "grades/fetchGrades",
       fetchSubject: "subject/fetchSubject",
+      fetchYears: "years/fetchYears",
+      fetchTermsByYear: "terms/fetchTermsByYear",
+    }),
+    ...mapMutations({
+      saveTab: "preferences/SET_TAB",
     }),
     getTermLable(index) {
-      const GREEK_NUMERALS = {
-        1: "I",
-        2: "II",
-        3: "III",
-        4: "IV",
-      };
+      const GREEK_NUMERALS = { 1: "I", 2: "II", 3: "III", 4: "IV" };
       return GREEK_NUMERALS[index];
     },
     sortByScore(array) {
-      return array.sort((a, b) => b.Score - a.Score);
-    },
-    async showTab(tab) {
-      tab === "grades" ? await this.fetchGrades() : await this.fetchDiary(tab);
+      return array.sort((firstEl, secondEl) => secondEl.Score - firstEl.Score);
     },
     async showSubject(subject) {
       this.subjectModalOpened = true;
