@@ -34,9 +34,9 @@ Due to the fact that during the development the original client was unavailable,
 
 ### API documentation
 
-Starting the app will let you investigate the API via Swagger by getting detailed information about endpoints, and their request/response schemas at [http://localhost:8887/doc](http://localhost:8887/doc)
+Starting the app will let you investigate the API via Swagger by getting detailed information about endpoints, and their request/response schemas at [http://localhost:8887/docs](http://localhost:8887/docs)
 
-![Swagger](https://i.imgur.com/fULUHZr.png)
+![Swagger](https://i.imgur.com/pPxuhW9.png)
 
 ## Contributing
 

@@ -17,9 +17,6 @@ export default {
     SET_YEARS(state, result) {
       state.data = result;
     },
-    SET_CURRENT_YEAR(state, res) {
-      state.currentYear = res;
-    },
     CLEAR_YEARS(state) {
       Object.assign(state, defaultState());
     },
