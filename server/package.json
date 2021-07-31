@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node .",
-    "dev": "nodemon ."
+    "dev": "env NODE_ENV=development nodemon ."
   },
   "dependencies": {
     "dotenv": "^10.0.0",

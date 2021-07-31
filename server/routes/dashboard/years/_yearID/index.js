@@ -1,6 +1,6 @@
 import { URLSearchParams } from "url";
 
-export default async function(fastify) {
+export default async function (fastify) {
   fastify.get(
     "",
     {
@@ -8,8 +8,10 @@ export default async function(fastify) {
         querystring: fastify.getSchema("domain"),
         params: {
           type: "object",
-          required: ["id"],
-          properties: { id: { type: "string", minLength: 36, maxLength: 36 } },
+          required: ["yearID"],
+          properties: {
+            yearID: { type: "string", minLength: 36, maxLength: 36 },
+          },
         },
         response: {
           200: {
@@ -23,13 +25,14 @@ export default async function(fastify) {
             },
           },
         },
+        tags: ["years"],
       },
     },
     async (req, reply) => {
       const cookie = fastify.cookieStringify(req.cookies);
 
       const params = new URLSearchParams();
-      params.append("schoolYearId", req.params.id);
+      params.append("schoolYearId", req.params.yearID);
 
       const periods = await fastify.api({
         method: "POST",

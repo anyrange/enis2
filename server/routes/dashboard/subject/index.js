@@ -1,6 +1,6 @@
 import { URLSearchParams } from "url";
 
-export default async function(fastify) {
+export default async function (fastify) {
   fastify.get(
     "",
     {
@@ -16,20 +16,18 @@ export default async function(fastify) {
         },
         response: {
           200: {
-            statusCode: { type: "number" },
-            data: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  Name: { type: "string" },
-                  Score: { type: "number" },
-                  MaxScore: { type: "number" },
-                },
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                Name: { type: "string" },
+                Score: { type: "number" },
+                MaxScore: { type: "number" },
               },
             },
           },
         },
+        tags: ["dashboard"],
       },
     },
     async (req, reply) => {
@@ -46,7 +44,7 @@ export default async function(fastify) {
         cookie,
       });
 
-      reply.send(response);
+      reply.send(response.data);
     }
   );
 }

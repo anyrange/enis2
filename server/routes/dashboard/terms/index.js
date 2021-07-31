@@ -19,6 +19,7 @@ export default async function(fastify) {
             },
           },
         },
+        tags: ["terms"],
       },
     },
     async (req, reply) => {

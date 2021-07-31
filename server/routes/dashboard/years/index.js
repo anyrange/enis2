@@ -17,6 +17,7 @@ export default async function(fastify) {
             },
           },
         },
+        tags: ["years"],
       },
     },
     async (req, reply) => {
@@ -27,6 +28,7 @@ export default async function(fastify) {
         cookie,
       });
 
+      console.log(years);
       reply.send(
         years.map((year) => {
           return { Name: year.Name, Id: year.Id, isActual: year.Data.IsActual };

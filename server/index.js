@@ -22,7 +22,7 @@ app.register(import("fastify-cookie"), { secret });
 
 if (process.env.NODE_ENV !== "production") {
   app.register(import("fastify-swagger"), {
-    routePrefix: "/doc",
+    routePrefix: "/docs",
     swagger: {
       info: {
         title: "ENIS2",
@@ -31,17 +31,15 @@ if (process.env.NODE_ENV !== "production") {
     },
     uiConfig: {
       deepLinking: true,
+      docExpansion: "none",
+      displayRequestDuration: true,
     },
     exposeRoute: true,
   });
 }
 
-app.register(autoLoad, {
-  dir: join(__dirname, "schema"),
-});
-app.register(autoLoad, {
-  dir: join(__dirname, "plugins"),
-});
+app.register(autoLoad, { dir: join(__dirname, "schema") });
+app.register(autoLoad, { dir: join(__dirname, "plugins") });
 app.register(autoLoad, {
   dir: join(__dirname, "routes"),
   routeParams: true,
@@ -51,7 +49,5 @@ app.register(autoLoad, {
 
 app.listen(PORT, "0.0.0.0", (err) => {
   if (err) return console.log(err);
-  console.info(`App is alive. Docs on: http://localhost:${PORT}/doc`);
+  console.info(`App is alive. Docs on: http://localhost:${PORT}/docs`);
 });
-
-process.on("unhandledRejection", (error) => console.error(error));

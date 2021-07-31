@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { URLSearchParams } from "url";
 
-export default async function(fastify) {
+export default async function (fastify) {
   fastify.get(
     "",
     {
@@ -9,35 +9,32 @@ export default async function(fastify) {
         querystring: fastify.getSchema("domain"),
         params: {
           type: "object",
-          required: ["id"],
-          properties: { id: { type: "string", minLength: 36, maxLength: 36 } },
+          required: ["termID"],
+          properties: {
+            termID: { type: "string", minLength: 36, maxLength: 36 },
+          },
         },
         response: {
           200: {
-            type: "object",
-            properties: {
-              statusCode: { type: "number" },
-              data: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    Name: { type: "string" },
-                    JournalId: { type: "string" },
-                    Score: { type: "number" },
-                    Mark: { type: "number" },
-                    Evaluations: {
-                      type: "array",
-                      items: {
-                        type: "string",
-                      },
-                    },
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                Name: { type: "string" },
+                JournalId: { type: "string" },
+                Score: { type: "number" },
+                Mark: { type: "number" },
+                Evaluations: {
+                  type: "array",
+                  items: {
+                    type: "string",
                   },
                 },
               },
             },
           },
         },
+        tags: ["terms"],
       },
     },
     async (req, reply) => {
@@ -46,7 +43,7 @@ export default async function(fastify) {
       let cookie = fastify.cookieStringify(req.cookies);
 
       const params = new URLSearchParams();
-      params.append("periodId", req.params.id);
+      params.append("periodId", req.params.termID);
 
       const parallel = await fastify.api({
         url: `${baseUrl}/JceDiary/GetParallels`,
@@ -104,15 +101,14 @@ export default async function(fastify) {
         cookie,
       });
 
-      reply.send({
-        data: periodsData.data.map((el) => {
+      reply.send(
+        periodsData.data.map((el) => {
           return {
             ...el,
             Evaluations: el.Evaluations.map((el2) => el2.Id),
           };
-        }),
-        statusCode: periodsData.statusCode,
-      });
+        })
+      );
     }
   );
 }

@@ -8,31 +8,26 @@ export default async function(fastify) {
         querystring: fastify.getSchema("domain"),
         response: {
           200: {
-            type: "object",
-            properties: {
-              statusCode: { type: "number" },
-              data: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    SubjectName: { type: "string" },
-                    FirstPeriod: { type: "string" },
-                    SecondPeriod: { type: "string" },
-                    FirstHalfYear: { type: "string" },
-                    ThirdPeriod: { type: "string" },
-                    ForthPeriod: { type: "string" },
-                    SecondHalfYear: { type: "string" },
-                    Exam: { type: "string" },
-                    Year: { type: "string" },
-                    Final: { type: "string" },
-                    IsNotChosen: { type: "boolean" },
-                  },
-                },
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                SubjectName: { type: "string" },
+                FirstPeriod: { type: "string" },
+                SecondPeriod: { type: "string" },
+                FirstHalfYear: { type: "string" },
+                ThirdPeriod: { type: "string" },
+                ForthPeriod: { type: "string" },
+                SecondHalfYear: { type: "string" },
+                Exam: { type: "string" },
+                Year: { type: "string" },
+                Final: { type: "string" },
+                IsNotChosen: { type: "boolean" },
               },
             },
           },
         },
+        tags: ["dashboard"],
       },
     },
     async (req, reply) => {
@@ -106,12 +101,13 @@ export default async function(fastify) {
         url: `${baseUrl}/ReportCardByStudent/GetData`,
       });
 
-      grades.data = grades.data.filter(
-        (grade) =>
-          grade.IsNotChosen && grade.ComponentName === "Инвариантный компонент"
+      reply.send(
+        grades.data.filter(
+          (grade) =>
+            grade.IsNotChosen &&
+            grade.ComponentName === "Инвариантный компонент"
+        )
       );
-
-      reply.send(grades);
     }
   );
 }
