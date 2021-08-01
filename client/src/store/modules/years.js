@@ -3,7 +3,7 @@ import { getYears } from "@/api";
 const defaultState = () => {
   return {
     data: [],
-    loading: false,
+    loading: true,
   };
 };
 

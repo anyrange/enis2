@@ -9,7 +9,7 @@ const checkIfExists = (array, key, value) => {
 const defaultState = () => {
   return {
     data: [],
-    loading: false,
+    loading: true,
   };
 };
 
