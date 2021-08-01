@@ -5,7 +5,7 @@ import { notify } from "@/services/notify";
 const isDev = process.env.NODE_ENV === "development";
 
 const IPINFO_TOKEN = process.env.VUE_APP_IPINFO_TOKEN;
-const SERVER_URL = process.env.VUE_APP_SERVER_URI;
+const SERVER_URL = process.env.VUE_APP_SERVER_URL;
 
 const ipinfo = axios.create({
   baseURL: "https://ipinfo.io",
@@ -40,7 +40,7 @@ api.interceptors.response.use(
       type: "danger",
       message: error?.response?.data?.message || "Что-то пошло не так",
     });
-    if (error.response.data.statusCode === 401) $store.dispatch("auth/logout");
+    if (error.response.status === 401) $store.dispatch("auth/logout");
     return Promise.reject(error);
   }
 );

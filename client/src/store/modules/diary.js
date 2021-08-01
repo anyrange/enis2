@@ -2,8 +2,7 @@ import { getDiary } from "@/api";
 
 const checkIfExists = (array, key, value) => {
   const index = array.findIndex((item) => item[key] === value);
-  if (index === -1) return false; // element doesn't exist
-  return index;
+  return index === -1 ? false : index;
 };
 
 const defaultState = () => {
@@ -33,12 +32,8 @@ export default {
     },
   },
   getters: {
-    getDiary: (state) => {
-      return state;
-    },
     getDiaryByTermId: (state) => (termId) => {
-      const foundItem = state.data.find((item) => item.termId === termId);
-      return foundItem instanceof Object ? foundItem.data : [];
+      return state.data.find((item) => item.termId === termId)?.data || [];
     },
   },
   actions: {

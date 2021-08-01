@@ -22,9 +22,6 @@ export default {
     },
   },
   getters: {
-    getTerms: (state) => {
-      return state;
-    },
     lastTermId: (state) => {
       return state.data[state.data.length - 1].Id;
     },

@@ -29,11 +29,6 @@ export default {
       Object.assign(state, defaultState());
     },
   },
-  getters: {
-    getSubject: (state) => {
-      return state;
-    },
-  },
   actions: {
     fetchSubject: async ({ commit }, subject) => {
       commit("SET_LOADING", true);

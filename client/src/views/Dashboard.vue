@@ -5,7 +5,7 @@
         <tabs v-model="currentTab" class="header-tabs">
           <tab
             v-for="(term, index) in terms.data"
-            :key="term"
+            :key="term.Id"
             :name="term.Id"
             :disabled="loading"
           >
@@ -75,7 +75,7 @@ import SubjectDiary from "@/components/SubjectDiary";
 import SubjectGrades from "@/components/SubjectGrades";
 import SubjectSections from "@/components/SubjectSections";
 import GradesIcon from "@/components/icons/GradesIcon";
-import { mapActions, mapMutations, mapGetters } from "vuex";
+import { mapActions, mapMutations, mapGetters, mapState } from "vuex";
 
 export default {
   name: "Dashboard",
@@ -98,13 +98,21 @@ export default {
       subjectModalOpened: false,
     };
   },
+  GREEK_NUMERALS: {
+    1: "I",
+    2: "II",
+    3: "III",
+    4: "IV",
+  },
   computed: {
+    ...mapState({
+      years: "years",
+      terms: "terms",
+      diary: "diary",
+      grades: "grades",
+      subject: "subject",
+    }),
     ...mapGetters({
-      years: "years/getYears",
-      terms: "terms/getTerms",
-      diary: "diary/getDiary",
-      grades: "grades/getGrades",
-      subject: "subject/getSubject",
       savedTab: "preferences/getTab",
       lastTermId: "terms/lastTermId",
       currentYearId: "years/currentYearId",
@@ -147,8 +155,7 @@ export default {
       saveTab: "preferences/SET_TAB",
     }),
     getTermLable(index) {
-      const GREEK_NUMERALS = { 1: "I", 2: "II", 3: "III", 4: "IV" };
-      return GREEK_NUMERALS[index];
+      return this.$options.GREEK_NUMERALS[index];
     },
     sortByScore(array) {
       return array.sort((firstEl, secondEl) => secondEl.Score - firstEl.Score);

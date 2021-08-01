@@ -22,9 +22,6 @@ export default {
     },
   },
   getters: {
-    getYears: (state) => {
-      return state;
-    },
     currentYearId: (state) => {
       return state.data.find((year) => year.isActual).Id;
     },

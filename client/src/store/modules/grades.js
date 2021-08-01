@@ -21,11 +21,6 @@ export default {
       Object.assign(state, defaultState());
     },
   },
-  getters: {
-    getGrades: (state) => {
-      return state;
-    },
-  },
   actions: {
     fetchGrades: async ({ commit, state }) => {
       if (!state.data.length) commit("SET_LOADING", true);

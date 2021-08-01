@@ -1,6 +1,6 @@
 import fp from "fastify-plugin";
 const plugin = fp(async function plugin(fastify) {
-  const url = new URL(process.env.FRONTEND_URI);
+  const url = new URL(process.env.FRONTEND_URL);
   const year = 60 * 60 * 24 * 365;
   fastify.decorate("cookieOptions", {
     path: "/",
