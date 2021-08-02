@@ -151,4 +151,7 @@ html.dark {
   -webkit-box-shadow: 0 0 0px 1000px var(--autofill-color) inset;
   -webkit-text-fill-color: var(--autofill-text-color);
 }
+.md-input:-webkit-autofill + .md-label-focus {
+  transform: translateY(0) scale(1);
+}
 </style>
