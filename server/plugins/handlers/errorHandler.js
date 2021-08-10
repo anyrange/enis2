@@ -24,16 +24,16 @@ const plugin = fp(async function plugin(fastify) {
 
 const validate = ({ validationContext, validation }) => {
   const result = validation[0];
+  const errorVar = result.dataPath.substring(1);
+  const message = `${errorVar} ${result.message}`;
 
   switch (validationContext) {
     case "querystring":
-      return `Invalid query parameters:${result.dataPath.substring(1)} ${
-        result.message
-      }`;
+      return `Invalid query parameters: ${message}`;
     case "params":
-      return `Invalid ${result.dataPath.substring(1)}`;
+      return `Invalid ${errorVar}`;
     case "body":
-      return `Invalid body: ${result.message}`;
+      return `Invalid body: ${message}`;
     default:
       return "Bad request";
   }
