@@ -1,5 +1,23 @@
 <template>
   <div class="login-wrapper">
+    <h1
+      class="
+        w-full
+        flex flex-row
+        fixed
+        top-0
+        justify-center
+        items-center
+        text-base
+        py-1
+        bg-blue-500
+        text-white
+      "
+    >
+      Пока в енише нет смысла (летом, либо тогда когда основной сервер не
+      работает) наш сервер спит 😴 поэтому первый запрос будет дольше
+      последующих, так как сервер надо разбудить
+    </h1>
     <div class="login-container">
       <form class="login-form" @submit.prevent="submit()">
         <div class="app-container">
