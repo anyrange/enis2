@@ -9,9 +9,9 @@
           <span class="item-title">
             {{ beforeDecimal }}
           </span>
-          <span v-show="afterDecimal" class="item-subtitle">
-            .{{ afterDecimal }}
-          </span>
+          <span v-show="afterDecimal" class="item-subtitle"
+            >.{{ afterDecimal }}</span
+          >
           <span class="item-subtitle">%</span>
         </div>
         <div>
