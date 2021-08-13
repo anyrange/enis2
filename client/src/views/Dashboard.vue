@@ -179,29 +179,16 @@ export default {
   @apply w-full sticky top-0 bg-white dark:bg-gray-800-spotify border-b-2 border-gray-300 dark:border-gray-600-spotify;
 }
 .header-tabs {
-  @apply w-full md:w-1/2;
-  margin: 0 auto;
+  @apply w-full md:w-1/2 m-auto;
 }
 .content {
   @apply flex w-full justify-center overflow-y-auto;
 }
-.content::-webkit-scrollbar {
-  @apply w-2 dark:bg-gray-700-spotify bg-gray-200;
-}
-.content::-webkit-scrollbar-thumb {
-  @apply dark:bg-gray-450-spotify bg-gray-400-spotify;
-}
 .content-list {
-  @apply flex flex-col p-3 gap-y-3 content-list-list-width;
-}
-.content-list-list-width {
-  @apply sm:w-3/4 md:w-1/2 xl:w-1/4 w-full;
+  @apply flex flex-col p-3 gap-y-3 sm:w-3/4 md:w-1/2 xl:w-1/4 w-full;
 }
 .subject-section-wrapper {
   @apply flex flex-col gap-2;
-}
-.subject-section-placeholder {
-  @apply rounded dark:bg-gray-800-spotify bg-gray-200 w-full h-36;
 }
 .footer {
   left: 50%;

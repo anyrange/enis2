@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="{ 'custom-scrollbar': !isMobile }">
     <router-view />
     <notifications />
   </div>
@@ -25,6 +25,11 @@ export default {
     ...mapGetters({
       theme: "preferences/getTheme",
     }),
+    isMobile() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      );
+    },
   },
   watch: {
     theme: {

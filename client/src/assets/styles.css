@@ -11,6 +11,14 @@ body {
   }
 }
 
+.custom-scrollbar .content::-webkit-scrollbar {
+  @apply w-2 dark:bg-gray-700-spotify bg-gray-200;
+}
+
+.custom-scrollbar .content::-webkit-scrollbar-thumb {
+  @apply dark:bg-gray-450-spotify bg-gray-400-spotify;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;
