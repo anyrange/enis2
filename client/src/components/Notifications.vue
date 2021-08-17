@@ -58,6 +58,6 @@ export default {
 
 <style lang="postcss">
 .notifications-bottom-left {
-  @apply absolute bottom-4 left-4 z-40 overflow-x-hidden;
+  @apply fixed bottom-4 left-4 z-40 overflow-x-hidden;
 }
 </style>
