@@ -20,20 +20,23 @@
         <section class="content-list">
           <spinner v-if="loading" />
           <template v-else>
-            <template v-if="currentTab === 'grades'">
-              <subject-grades
-                v-for="item in grades.data"
-                :key="item"
-                :subject="item"
-              />
-            </template>
+            <error v-if="error">{{ error.message }}</error>
             <template v-else>
-              <subject-diary
-                v-for="item in sortByScore(currentTermDiary(currentTab))"
-                :key="item"
-                :subject="item"
-                @click="showSubject(item)"
-              />
+              <template v-if="currentTab === 'grades'">
+                <subject-grades
+                  v-for="item in grades.data"
+                  :key="item"
+                  :subject="item"
+                />
+              </template>
+              <template v-else>
+                <subject-diary
+                  v-for="item in sortByScore(currentTermDiary(currentTab))"
+                  :key="item"
+                  :subject="item"
+                  @click="showSubject(item)"
+                />
+              </template>
             </template>
           </template>
         </section>
@@ -75,6 +78,7 @@ import SubjectDiary from "@/components/SubjectDiary";
 import SubjectGrades from "@/components/SubjectGrades";
 import SubjectSections from "@/components/SubjectSections";
 import GradesIcon from "@/components/icons/GradesIcon";
+import Error from "@/components/Error";
 import { mapActions, mapMutations, mapGetters, mapState } from "vuex";
 
 export default {
@@ -91,11 +95,13 @@ export default {
     SubjectGrades,
     SubjectSections,
     GradesIcon,
+    Error,
   },
   data() {
     return {
       currentTab: "",
       subjectModalOpened: false,
+      error: null,
     };
   },
   GREEK_NUMERALS: {
@@ -131,9 +137,13 @@ export default {
     async currentTab(id) {
       try {
         this.saveTab(id);
+        this.error = null;
         id === "grades" ? await this.fetchGrades() : await this.fetchDiary(id);
-      } catch {
-        this.currentTab = this.lastTermId;
+      } catch (error) {
+        this.error = {
+          status: error.response.status,
+          message: error.response.data.message,
+        };
       }
     },
   },
