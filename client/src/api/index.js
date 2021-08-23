@@ -1,5 +1,6 @@
 import axios from "axios";
 import $store from "@/store";
+import { notify } from "@/services/notify";
 
 const isDev = process.env.NODE_ENV === "development";
 
@@ -35,7 +36,13 @@ api.interceptors.response.use(
     return response.data;
   },
   (error) => {
-    if (error.response.status === 401) $store.dispatch("auth/logout");
+    if (error.response.status === 401) {
+      $store.dispatch("auth/logout");
+      notify.show({
+        type: "danger",
+        message: error?.response?.data?.message || "Что-то пошло не так",
+      });
+    }
     return Promise.reject(error);
   }
 );
