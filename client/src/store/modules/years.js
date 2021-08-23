@@ -3,7 +3,7 @@ import { getYears } from "@/api";
 const defaultState = () => {
   return {
     data: [],
-    loading: true,
+    loading: false,
   };
 };
 
@@ -28,7 +28,7 @@ export default {
   },
   actions: {
     fetchYears: async ({ commit, state }) => {
-      if (!state.data.length) commit("SET_LOADING", true);
+      !state.data.length && commit("SET_LOADING", true);
       try {
         commit("SET_YEARS", await getYears());
       } catch (err) {

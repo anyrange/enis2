@@ -8,10 +8,11 @@
             :key="term.Id"
             :name="term.Id"
             :disabled="loading"
+            @click="getContent(term.Id)"
           >
-            {{ getTermLable(index + 1) }}
+            {{ $options.GREEK_NUMERALS[index + 1] }}
           </tab>
-          <tab name="grades" :disabled="loading">
+          <tab name="grades" :disabled="loading" @click="getContent('grades')">
             <grades-icon />
           </tab>
         </tabs>
@@ -20,7 +21,7 @@
         <section class="content-list">
           <spinner v-if="loading" />
           <template v-else>
-            <error v-if="error">{{ error.message }}</error>
+            <error v-if="error"></error>
             <template v-else>
               <template v-if="currentTab === 'grades'">
                 <subject-grades
@@ -48,7 +49,7 @@
             label="Выйти"
             rounded
             color="negative"
-            @click="logout()"
+            @click="deauthorize()"
           />
         </div>
       </footer>
@@ -58,8 +59,13 @@
         <subject-diary :hoverable="false" :subject="subject.data.current" />
         <loader v-if="subject.loading" />
         <template v-else>
-          <subject-sections label="СОР" :subject="subject.data.SAU" />
-          <subject-sections label="СОЧ" :subject="subject.data.SAT" />
+          <template v-if="!subjectError">
+            <subject-sections label="СОР" :subject="subject.data.SAU" />
+            <subject-sections label="СОЧ" :subject="subject.data.SAT" />
+          </template>
+          <div v-else class="p-2 text-center">
+            Не удалось загрузить информацию о предмете
+          </div>
         </template>
       </div>
     </modal>
@@ -99,9 +105,9 @@ export default {
   },
   data() {
     return {
-      currentTab: "",
       subjectModalOpened: false,
-      error: null,
+      error: false,
+      subjectError: false,
     };
   },
   GREEK_NUMERALS: {
@@ -124,6 +130,14 @@ export default {
       currentYearId: "years/currentYearId",
       currentTermDiary: "diary/getDiaryByTermId",
     }),
+    currentTab: {
+      get() {
+        return this.$store.state.preferences.tab;
+      },
+      set(value) {
+        this.$store.commit("preferences/SET_TAB", value);
+      },
+    },
     loading() {
       return (
         this.years.loading ||
@@ -133,24 +147,15 @@ export default {
       );
     },
   },
-  watch: {
-    async currentTab(id) {
-      try {
-        this.saveTab(id);
-        this.error = null;
-        id === "grades" ? await this.fetchGrades() : await this.fetchDiary(id);
-      } catch (error) {
-        this.error = {
-          status: error.response.status,
-          message: error.response.data.message,
-        };
-      }
-    },
-  },
   async created() {
-    await this.fetchYears();
-    await this.fetchTermsByYear(this.currentYearId);
-    this.currentTab = this.savedTab || this.lastTermId;
+    try {
+      await this.fetchYears();
+      await this.fetchTermsByYear(this.currentYearId);
+      this.currentTab = this.savedTab || this.lastTermId;
+      this.getContent(this.currentTab);
+    } catch (error) {
+      this.error = true;
+    }
   },
   methods: {
     ...mapActions({
@@ -164,15 +169,31 @@ export default {
     ...mapMutations({
       saveTab: "preferences/SET_TAB",
     }),
-    getTermLable(index) {
-      return this.$options.GREEK_NUMERALS[index];
-    },
     sortByScore(array) {
       return array.sort((firstEl, secondEl) => secondEl.Score - firstEl.Score);
     },
+    async getContent(tab) {
+      try {
+        tab === "grades"
+          ? await this.fetchGrades()
+          : await this.fetchDiary(tab);
+        this.error = false;
+      } catch (error) {
+        this.error = true;
+      }
+    },
     async showSubject(subject) {
       this.subjectModalOpened = true;
-      await this.fetchSubject(subject);
+      try {
+        await this.fetchSubject(subject);
+        this.subjectError = false;
+      } catch (error) {
+        this.subjectError = true;
+      }
+    },
+    async deauthorize() {
+      await this.logout();
+      this.$router.push({ name: "login" });
     },
   },
 };

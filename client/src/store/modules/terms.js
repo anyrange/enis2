@@ -3,7 +3,7 @@ import { getTermsByYear } from "@/api";
 const defaultState = () => {
   return {
     data: [],
-    loading: true,
+    loading: false,
   };
 };
 
@@ -28,7 +28,7 @@ export default {
   },
   actions: {
     fetchTermsByYear: async ({ commit, state }, id) => {
-      if (!state.data.length) commit("SET_LOADING", true);
+      !state.data.length && commit("SET_LOADING", true);
       try {
         commit("SET_TERMS", await getTermsByYear(id));
       } catch (err) {

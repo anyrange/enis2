@@ -8,7 +8,7 @@ const checkIfExists = (array, key, value) => {
 const defaultState = () => {
   return {
     data: [],
-    loading: true,
+    loading: false,
   };
 };
 
@@ -39,7 +39,7 @@ export default {
   actions: {
     fetchDiary: async ({ commit, state }, termId) => {
       const existsAtIndex = checkIfExists(state.data, "termId", termId);
-      if (existsAtIndex === false) commit("SET_LOADING", true);
+      existsAtIndex === false && commit("SET_LOADING", true);
       try {
         commit("ADD_DIARY", { data: await getDiary(termId), termId });
       } catch (err) {

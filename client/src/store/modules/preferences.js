@@ -1,8 +1,13 @@
+// eslint-disable-next-line no-unused-vars
+import { getUserCity } from "@/api";
+import schools from "@/schools.json";
+const defaultSchool = schools.find((item) => item.default);
+
 const defaultState = () => {
   return {
     tab: "",
     theme: "",
-    school: {},
+    school: defaultSchool,
   };
 };
 
@@ -11,7 +16,7 @@ export default {
   state: defaultState(),
   mutations: {
     SET_TAB(state, tab) {
-      state.selectedTab = tab;
+      state.tab = tab;
     },
     SET_THEME(state, theme) {
       state.theme = theme;
@@ -19,7 +24,7 @@ export default {
     SET_SCHOOL(state, school) {
       state.school = school;
     },
-    CLEAR_TAB(state) {
+    CLEAR_PREFERENCES(state) {
       Object.assign(state, { tab: defaultState().tab });
     },
   },
@@ -53,6 +58,15 @@ export default {
       currentTheme === "light"
         ? commit("SET_THEME", "dark")
         : commit("SET_THEME", "light");
+    },
+    async predictSchool({ commit }) {
+      try {
+        const city = await getUserCity();
+        const predictedSchool = schools.find((item) => item.city === city);
+        predictedSchool && commit("SET_SCHOOL", predictedSchool);
+      } catch (error) {
+        // console.dir(error);
+      }
     },
   },
 };

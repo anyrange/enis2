@@ -1,44 +1,38 @@
 import { login } from "@/api";
-import $router from "@/router";
 
 export default {
   namespaced: true,
   state: {
-    user: false,
+    authenticated: false,
   },
   mutations: {
-    SET_USER(state, user) {
-      state.user = user;
-    },
-    REMOVE_USER: (state) => {
-      state.user = false;
+    SET_AUTH(state, value) {
+      state.authenticated = value;
     },
   },
   getters: {
     isAuthenticated(state) {
-      return state.user;
+      return state.authenticated;
     },
   },
   actions: {
     login: async ({ commit }, credentials) => {
       try {
         await login(credentials);
-        commit("SET_USER", true);
-        $router.push({ name: "dashboard" });
+        commit("SET_AUTH", true);
       } catch (err) {
-        commit("SET_USER", false);
+        commit("SET_AUTH", false);
         return Promise.reject(err);
       }
     },
     logout: ({ commit }) => {
-      commit("REMOVE_USER");
+      commit("SET_AUTH", false);
+      commit("years/CLEAR_YEARS", null, { root: true });
       commit("terms/CLEAR_TERMS", null, { root: true });
       commit("diary/CLEAR_DIARY", null, { root: true });
       commit("grades/CLEAR_GRADES", null, { root: true });
       commit("subject/CLEAR_SUBJECT", null, { root: true });
-      commit("years/CLEAR_YEARS", null, { root: true });
-      commit("preferences/CLEAR_TAB", null, { root: true });
-      $router.push({ name: "login" });
+      commit("preferences/CLEAR_PREFERENCES", null, { root: true });
     },
   },
 };
