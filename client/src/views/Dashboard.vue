@@ -152,7 +152,7 @@ export default {
       await this.fetchYears();
       await this.fetchTermsByYear(this.currentYearId);
       this.currentTab = this.savedTab || this.lastTermId;
-      this.getContent(this.currentTab);
+      await this.getContent(this.currentTab);
     } catch (error) {
       this.error = true;
     }

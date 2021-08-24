@@ -1,13 +1,11 @@
-// eslint-disable-next-line no-unused-vars
 import { getUserCity } from "@/api";
 import schools from "@/schools.json";
-const defaultSchool = schools.find((item) => item.default);
 
 const defaultState = () => {
   return {
     tab: "",
     theme: "",
-    school: defaultSchool,
+    school: null,
   };
 };
 
@@ -59,13 +57,17 @@ export default {
         ? commit("SET_THEME", "dark")
         : commit("SET_THEME", "light");
     },
-    async predictSchool({ commit }) {
-      try {
-        const city = await getUserCity();
-        const predictedSchool = schools.find((item) => item.city === city);
-        predictedSchool && commit("SET_SCHOOL", predictedSchool);
-      } catch (error) {
-        // console.dir(error);
+    async predictSchool({ commit, state }) {
+      if (!state.school) {
+        const defaultSchool = schools.find((item) => item.default);
+        commit("SET_SCHOOL", defaultSchool);
+        try {
+          const city = await getUserCity();
+          const predictedSchool = schools.find((item) => item.city === city);
+          predictedSchool && commit("SET_SCHOOL", predictedSchool);
+        } catch (error) {
+          // console.dir(error);
+        }
       }
     },
   },

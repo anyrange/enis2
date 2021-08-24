@@ -1,5 +1,6 @@
 import axios from "axios";
 import $store from "@/store";
+import $router from "@/router";
 import { notify } from "@/services/notify";
 
 const isDev = process.env.NODE_ENV === "development";
@@ -38,6 +39,7 @@ api.interceptors.response.use(
   (error) => {
     if (error.response.status === 401) {
       $store.dispatch("auth/logout");
+      $router.push({ name: "login" });
       notify.show({
         type: "danger",
         message: error?.response?.data?.message || "Что-то пошло не так",
@@ -86,11 +88,11 @@ if (isDev) {
     const mock = new MockAdapter(api, { delayResponse: 500 });
     const mockIp = new MockAdapter(ipinfo, { delayResponse: 100 });
 
-    mockIp.onGet("city").reply(400, "Pavlodar");
+    mockIp.onGet("city").reply(200, "Pavlodar");
 
     mock.onPost("login").reply(200);
     mock.onGet("login/captchaRefresh").reply(200, mocks.mockCaptcha);
-    mock.onGet("dashboard/grades").reply(400, mocks.mockGrades);
+    mock.onGet("dashboard/grades").reply(200, mocks.mockGrades);
     mock.onGet("dashboard/years").reply(200, mocks.mockYears);
     mock.onGet(new RegExp("years/*")).reply(200, mocks.mockTerms);
     mock.onGet(new RegExp("terms/*")).reply((config) => {
@@ -100,6 +102,6 @@ if (isDev) {
       if (match("term3id")) return [200, mocks.mockDiary[2]];
       if (match("term4id")) return [200, mocks.mockDiary[3]];
     });
-    mock.onGet(new RegExp("subject")).reply(500, mocks.mockSubject);
+    mock.onGet(new RegExp("subject")).reply(200, mocks.mockSubject);
   })();
 }
