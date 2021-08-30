@@ -21,7 +21,7 @@
         <section class="content-list">
           <spinner v-if="loading" />
           <template v-else>
-            <error v-if="error"></error>
+            <error v-if="error">{{ error }}</error>
             <template v-else>
               <template v-if="currentTab === 'grades'">
                 <subject-grades
@@ -127,6 +127,7 @@ export default {
     ...mapGetters({
       savedTab: "preferences/getTab",
       lastTermId: "terms/lastTermId",
+      currentTermId: "terms/currentTermId",
       currentYearId: "years/currentYearId",
       currentTermDiary: "diary/getDiaryByTermId",
     }),
@@ -151,10 +152,10 @@ export default {
     try {
       await this.fetchYears();
       await this.fetchTermsByYear(this.currentYearId);
-      this.currentTab = this.savedTab || this.lastTermId;
+      this.currentTab = this.savedTab || this.currentTermId || this.lastTermId;
       await this.getContent(this.currentTab);
     } catch (error) {
-      this.error = true;
+      this.error = error.response.data.message;
     }
   },
   methods: {
@@ -177,9 +178,9 @@ export default {
         tab === "grades"
           ? await this.fetchGrades()
           : await this.fetchDiary(tab);
-        this.error = false;
+        this.error = "";
       } catch (error) {
-        this.error = true;
+        this.error = error.response.data.message;
       }
     },
     async showSubject(subject) {

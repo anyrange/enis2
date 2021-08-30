@@ -25,6 +25,9 @@ export default {
     lastTermId: (state) => {
       return state.data[state.data.length - 1].Id;
     },
+    currentTermId: (state) => {
+      return state.data.find((term) => term.isActual).Id;
+    },
   },
   actions: {
     fetchTermsByYear: async ({ commit, state }, id) => {
