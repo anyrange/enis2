@@ -17,35 +17,43 @@ export default fp(async function plugin(fastify) {
         throw err;
       }
 
-      if (
-        response.headers.raw()["content-type"][0] !== "text/json; charset=utf-8"
-      ) {
+      const isJSON =
+        response.headers.raw()["content-type"][0] ===
+        "text/json; charset=utf-8";
+
+      if (!isJSON) {
         const message = await response.text();
 
-        const expired =
+        const isExpired =
           message ===
           "Сессия пользователя была завершена, перезагрузите страницу";
 
-        const err = new Error(
-          expired ? "Сессия пользователя была завершена" : message
-        );
+        if (isExpired) {
+          const err = new Error("Сессия пользователя была завершена");
+          err.code = 401;
+          throw err;
+        }
 
-        err.code = expired ? 401 : 500;
+        const err = new Error(message);
+        err.code = 400;
         throw err;
       }
 
       const json = await response.json();
 
       if (!json.success) {
-        const expired =
+        const isExpired =
           json.message ===
           "Время работы с дневником завершено. Для продолжения необходимо обновить модуль";
 
-        const err = new Error(
-          expired ? "Время работы с дневником завершено" : json.message
-        );
+        if (isExpired) {
+          const err = new Error("Время работы с дневником завершено");
+          err.code = 401;
+          throw err;
+        }
 
-        err.code = expired ? 401 : 500;
+        const err = new Error(json.details || json.message);
+        err.code = 400;
         throw err;
       }
 
