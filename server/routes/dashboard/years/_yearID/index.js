@@ -1,4 +1,5 @@
 import { URLSearchParams } from "url";
+import currentQuarter from "../../../../utils/currentQuarter.js";
 
 export default async function (fastify) {
   fastify.get(
@@ -21,6 +22,7 @@ export default async function (fastify) {
               properties: {
                 Name: { type: "string" },
                 Id: { type: "string" },
+                isActual: { type: "boolean", default: false },
               },
             },
           },
@@ -41,6 +43,7 @@ export default async function (fastify) {
         cookie,
       });
 
+      periods.data[currentQuarter() - 1].isActual = true;
       reply.send(periods.data);
     }
   );
