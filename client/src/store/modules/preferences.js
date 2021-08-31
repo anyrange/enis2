@@ -5,7 +5,7 @@ const defaultState = () => {
   return {
     tab: "",
     theme: "",
-    school: null,
+    school: "",
   };
 };
 
@@ -31,7 +31,7 @@ export default {
       return state.tab;
     },
     getCity: (state) => {
-      return state.school.value;
+      return state.school;
     },
     getTheme: (state) => {
       return state.theme;
@@ -58,16 +58,15 @@ export default {
         : commit("SET_THEME", "light");
     },
     async predictSchool({ commit, state }) {
-      if (!state.school) {
-        const defaultSchool = schools.find((item) => item.default);
-        commit("SET_SCHOOL", defaultSchool);
-        try {
-          const city = await getUserCity();
-          const predictedSchool = schools.find((item) => item.city === city);
-          predictedSchool && commit("SET_SCHOOL", predictedSchool);
-        } catch (error) {
-          // console.dir(error);
-        }
+      if (state.school) return;
+
+      const defaultSchool = schools.find((item) => item.default);
+      commit("SET_SCHOOL", defaultSchool.value);
+
+      const { city } = await getUserCity();
+      const predictedSchool = schools.find((item) => item.city === city);
+      if (predictedSchool) {
+        commit("SET_SCHOOL", predictedSchool.value);
       }
     },
   },

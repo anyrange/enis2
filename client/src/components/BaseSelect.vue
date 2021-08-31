@@ -1,62 +1,72 @@
 <template>
-  <div class="base-select-container">
-    <label class="base-select-label">
+  <div class="flex flex-col gap-2">
+    <label
+      v-if="label.length"
+      :for="label"
+      class="
+        text-base
+        font-medium
+        select-none
+        text-gray-600-spotify
+        dark:text-gray-500-spotify
+      "
+    >
       {{ label }}
     </label>
-    <div class="base-select">
-      <button
-        v-click-outside="closeDropdown"
-        class="base-select-button"
-        type="button"
-        @click="toggleDropdown()"
+    <div class="relative inline-block w-full">
+      <select
+        :id="label"
+        v-model="value"
+        class="
+          w-full
+          h-9
+          pl-3
+          pr-6
+          text-sm
+          appearance-none
+          rounded-sm
+          shadow-sm
+          text-left
+          cursor-default
+          border border-gray-200
+          dark:border-gray-800-spotify
+          focus:ring-blue-500
+          focus:border-blue-500
+          focus:ring-1
+          focus:outline-none
+          disabled:opacity-40
+          bg-gray-50
+          dark:bg-gray-600-spotify
+        "
+        placeholder="Regular input"
       >
-        {{ modelValue.label }}
-        <span class="base-select-button-icon">
-          <svg
-            class="h-5 w-5 text-gray-400"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
-              clip-rule="evenodd"
-            />
-          </svg>
-        </span>
-      </button>
-      <transition
-        leave-active-class="transition ease-in duration-100"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
+        <option
+          v-for="(option, index) in options"
+          :key="index"
+          :value="option.value"
+        >
+          {{ option.label }}
+        </option>
+      </select>
+      <div
+        class="
+          absolute
+          inset-y-0
+          right-0
+          flex
+          items-center
+          px-2
+          pointer-events-none
+        "
       >
-        <ul v-if="dropdownOpened" tabindex="-1" class="base-select-list">
-          <li
-            v-for="option in options"
-            :key="option"
-            class="base-select-list-item"
-            :class="[
-              option.value === modelValue.value
-                ? 'base-select-list-item-active'
-                : 'base-select-list-item-default',
-            ]"
-            @click="handleClick(option)"
-          >
-            <span
-              class="base-select-list-item-label"
-              :class="[
-                option.value === modelValue.value
-                  ? 'base-select-list-item-label-active'
-                  : '',
-              ]"
-            >
-              {{ option.label }}
-            </span>
-          </li>
-        </ul>
-      </transition>
+        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+          <path
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+            fill-rule="evenodd"
+          ></path>
+        </svg>
+      </div>
     </div>
   </div>
 </template>
@@ -66,82 +76,29 @@ export default {
   name: "BaseSelect",
   props: {
     modelValue: {
-      type: Object,
+      type: [String, Number],
       required: true,
     },
     label: {
       type: String,
-      required: true,
+      required: false,
+      default: "",
     },
     options: {
       type: Array,
       required: true,
     },
   },
-  emits: ["update:modelValue", "update"],
-  data() {
-    return {
-      dropdownOpened: false,
-    };
-  },
-  methods: {
-    toggleDropdown() {
-      this.dropdownOpened = !this.dropdownOpened;
-    },
-    closeDropdown() {
-      this.dropdownOpened = false;
-    },
-    handleClick(option) {
-      this.closeDropdown();
-      if (option.value === this.modelValue.value) return;
-      this.$emit("update:modelValue", option);
-      this.$emit("update", option);
+  emits: ["update:modelValue"],
+  computed: {
+    value: {
+      get() {
+        return this.modelValue;
+      },
+      set(value) {
+        this.$emit("update:modelValue", value);
+      },
     },
   },
 };
 </script>
-
-<style lang="postcss" scoped>
-.base-select-container {
-  @apply flex flex-col gap-2;
-}
-.base-select-list::-webkit-scrollbar {
-  @apply w-2 dark:bg-gray-700-spotify bg-gray-300;
-}
-.base-select-list::-webkit-scrollbar-thumb {
-  @apply dark:bg-gray-450-spotify bg-gray-400;
-}
-.base-select-label {
-  @apply text-base font-medium select-none text-gray-600-spotify dark:text-gray-500-spotify;
-}
-.base-select {
-  @apply relative;
-}
-.bs-bg-default {
-  @apply bg-gray-50 dark:bg-gray-600-spotify;
-}
-.base-select-button {
-  @apply bs-bg-default relative w-full text-sm border border-gray-200 dark:border-gray-800-spotify rounded-sm shadow-sm pl-3 pr-10 py-2 text-left cursor-default focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500;
-}
-.base-select-button-icon {
-  @apply absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none;
-}
-.base-select-list {
-  @apply bs-bg-default absolute w-full z-10 mt-1 shadow-lg max-h-56 rounded-sm py-1 ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none;
-}
-.base-select-list-item {
-  @apply text-gray-900 dark:text-gray-100 text-sm cursor-pointer select-none relative py-2 pr-9 duration-200;
-}
-.base-select-list-item-active {
-  @apply hover:bg-opacity-10 hover:bg-blue-500;
-}
-.base-select-list-item-default {
-  @apply hover:bg-opacity-10 hover:bg-gray-500;
-}
-.base-select-list-item-label {
-  @apply ml-3 font-normal block truncate;
-}
-.base-select-list-item-label-active {
-  @apply text-blue-500;
-}
-</style>
