@@ -431,7 +431,7 @@ export const mockDiary = [
   ],
 ];
 export const mockTerms = [
-  { Id: "term1id", Name: "1 четверть" },
+  { Id: "term1id", Name: "1 четверть", isActual: true },
   { Id: "term2id", Name: "2 четверть" },
   { Id: "term3id", Name: "3 четверть" },
   { Id: "term4id", Name: "4 четверть" },
