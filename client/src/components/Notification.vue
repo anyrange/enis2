@@ -7,6 +7,17 @@
     />
     <div class="notify-box">
       <span class="notify-message">{{ notification.message }}</span>
+      <div v-if="notification.actions">
+        <button
+          v-for="(action, index) in notification.actions"
+          :key="`${action}-${index}`"
+          type="button"
+          class="notify-action-btn"
+          @click="handleAction(action.handler)"
+        >
+          {{ action.title }}
+        </button>
+      </div>
       <span
         v-if="notification.closable"
         class="notify-close"
@@ -25,17 +36,6 @@
           />
         </svg>
       </span>
-      <div v-if="notification.actions">
-        <button
-          v-for="(action, index) in notification.actions"
-          :key="`${action}-${index}`"
-          type="button"
-          class="notify-action-btn"
-          @click="handleAction(action.handler)"
-        >
-          {{ action.title }}
-        </button>
-      </div>
     </div>
   </div>
 </template>

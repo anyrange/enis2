@@ -1,4 +1,4 @@
-import { getYears } from "@/api";
+import { getYears } from "../../api";
 
 const defaultState = () => {
   return {

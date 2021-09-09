@@ -58,12 +58,10 @@ export default {
   },
   computed: {
     defaultColor() {
-      if (this.error) return this.red500;
-      return this.gray500;
+      return this.error ? this.red500 : this.gray500;
     },
     activeColor() {
-      if (this.error) return this.red500;
-      return this.blue500;
+      return this.error ? this.red500 : this.blue500;
     },
   },
   methods: {

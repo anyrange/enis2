@@ -1,4 +1,4 @@
-import { getGrades } from "@/api";
+import { getGrades } from "../../api";
 
 const defaultState = () => {
   return {

@@ -6,19 +6,19 @@
 </template>
 
 <script>
-import Notifications from "@/components/Notifications";
+import Notifications from "./components/Notifications.vue";
 import { mapGetters, mapActions } from "vuex";
-import { notify } from "@/services/notify";
+import { notify } from "./services/notify.js";
 
 export default {
-  name: "App",
   components: {
     Notifications,
   },
   data() {
     return {
-      refreshing: false,
-      registration: null,
+      updateSW: undefined,
+      offlineReady: false,
+      needRefresh: false,
     };
   },
   computed: {
@@ -43,46 +43,55 @@ export default {
       immediate: true,
     },
   },
+  async mounted() {
+    try {
+      const { registerSW } = await import("virtual:pwa-register");
+      const vm = this;
+      this.updateSW = registerSW({
+        immediate: true,
+        onNeedRefresh() {
+          vm.needRefresh = true;
+          notify.show({
+            type: "success",
+            message: "Обновление доступно",
+            progress: false,
+            closable: true,
+            actions: [
+              {
+                title: "Обновить",
+                handler: () => {
+                  vm.updateServiceWorker();
+                },
+              },
+            ],
+          });
+        },
+        onRegistered(swRegistration) {
+          swRegistration && vm.handleSWManualUpdates(swRegistration);
+        },
+        onRegisterError(e) {
+          vm.handleSWRegisterError(e);
+        },
+      });
+    } catch {
+      console.log("PWA disabled.");
+    }
+  },
   created() {
     this.setTheme();
-  },
-  mounted() {
-    document.addEventListener("swUpdated", this.showRefreshUI, { once: true });
-    if (navigator.serviceWorker) {
-      navigator.serviceWorker.addEventListener("controllerchange", () => {
-        if (this.refreshing) return;
-        this.refreshing = true;
-        window.localStorage.clear();
-        window.location.reload();
-      });
-    }
   },
   methods: {
     ...mapActions({
       setTheme: "preferences/setTheme",
     }),
-    showRefreshUI(e) {
-      this.registration = e.detail;
-      notify.show({
-        type: "success",
-        message: "Обновление доступно",
-        progress: false,
-        closable: false,
-        actions: [
-          {
-            title: "Обновить",
-            handler: () => {
-              this.refreshApp();
-            },
-          },
-        ],
-      });
+    updateServiceWorker() {
+      this.updateSW && this.updateSW(true);
     },
-    refreshApp() {
-      if (!this.registration || !this.registration.waiting) {
-        return;
-      }
-      this.registration.waiting.postMessage("skipWaiting");
+    handleSWManualUpdates(swRegistration) {
+      console.log(swRegistration);
+    },
+    handleSWRegisterError(error) {
+      console.error(error);
     },
   },
 };

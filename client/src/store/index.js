@@ -1,19 +1,24 @@
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
 
-const requireModule = require.context("./modules", false, /\.js$/);
-const modules = {};
-requireModule.keys().forEach((fileName) => {
-  if (fileName === "./index.js") return;
-  const moduleName = fileName.replace(/(\.\/|\.js)/g, "");
-  modules[moduleName] = {
-    ...requireModule(fileName).default,
-  };
-  modules[moduleName].namespaced = true;
-});
+import auth from "./modules/auth.js";
+import diary from "./modules/diary.js";
+import grades from "./modules/grades.js";
+import preferences from "./modules/preferences.js";
+import subject from "./modules/subject.js";
+import terms from "./modules/terms.js";
+import years from "./modules/years.js";
 
 export default createStore({
-  modules,
+  modules: {
+    auth,
+    diary,
+    grades,
+    preferences,
+    subject,
+    terms,
+    years,
+  },
   plugins: [
     createPersistedState({
       paths: ["auth", "preferences", "years", "terms", "diary", "grades"],

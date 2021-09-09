@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import Notification from "@/components/Notification";
-import { emitter } from "@/services/notify";
+import Notification from "./Notification.vue";
+import { emitter } from "../services/notify.js";
 
 export default {
   name: "Notifications",

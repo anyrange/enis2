@@ -1,4 +1,4 @@
-import { getSubject } from "@/api";
+import { getSubject } from "../../api";
 
 const defaultState = () => {
   return {

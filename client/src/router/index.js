@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
-import $store from "@/store";
+import $store from "../store";
+import Login from "../views/Login.vue";
+import Dashboard from "../views/Dashboard.vue";
 
 const authenticated = () => {
   return $store.getters["auth/isAuthenticated"];
@@ -9,7 +11,7 @@ const routes = [
   {
     path: "/",
     name: "login",
-    component: () => import("@/views/Login.vue"),
+    component: Login,
     beforeEnter(to, from, next) {
       authenticated() ? next({ name: "dashboard" }) : next();
     },
@@ -17,7 +19,7 @@ const routes = [
   {
     path: "/home",
     name: "dashboard",
-    component: () => import("@/views/Dashboard.vue"),
+    component: Dashboard,
     beforeEnter(to, from, next) {
       authenticated() ? next() : next({ name: "login" });
     },
@@ -29,7 +31,7 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes,
 });
 

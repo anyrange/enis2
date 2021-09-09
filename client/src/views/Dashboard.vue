@@ -1,8 +1,18 @@
 <template>
-  <div class="layout">
-    <div class="wrapper">
-      <header class="header">
-        <tabs v-model="currentTab" class="header-tabs">
+  <div class="flex flex-col h-screen bg-gray-100 dark:bg-gray-900-spotify">
+    <div class="flex-1 flex flex-col overflow-y-hidden">
+      <header
+        class="
+          w-full
+          sticky
+          top-0
+          bg-white
+          dark:bg-gray-800-spotify
+          border-b-2 border-gray-300
+          dark:border-gray-600-spotify
+        "
+      >
+        <tabs v-model="currentTab" class="w-full md:w-1/2 m-auto">
           <tab
             v-for="(term, index) in terms.data"
             :key="term.Id"
@@ -17,8 +27,10 @@
           </tab>
         </tabs>
       </header>
-      <main class="content">
-        <section class="content-list">
+      <main class="flex w-full justify-center overflow-y-auto">
+        <section
+          class="flex flex-col p-3 gap-y-3 sm:w-3/4 md:w-1/2 xl:w-1/4 w-full"
+        >
           <spinner v-if="loading" />
           <template v-else>
             <error v-if="error">{{ error }}</error>
@@ -42,8 +54,17 @@
           </template>
         </section>
       </main>
-      <footer class="footer">
-        <div class="footer-content">
+      <footer
+        class="
+          absolute
+          bottom-6
+          bg-gray-200
+          dark:bg-gray-600-spotify
+          rounded-full
+        "
+        style="left: 50%; transform: translateX(-50%)"
+      >
+        <div class="flex justify-center gap-2 p-1">
           <theme-toggler />
           <base-button
             label="Выйти"
@@ -55,7 +76,7 @@
       </footer>
     </div>
     <modal :show="subjectModalOpened" @close="subjectModalOpened = false">
-      <div class="subject-section-wrapper">
+      <div class="flex flex-col gap-2">
         <subject-diary :hoverable="false" :subject="subject.data.current" />
         <loader v-if="subject.loading" />
         <template v-else>
@@ -73,18 +94,18 @@
 </template>
 
 <script>
-import Tabs from "@/components/Tabs";
-import Tab from "@/components/Tab";
-import BaseButton from "@/components/BaseButton";
-import Spinner from "@/components/Spinner";
-import Loader from "@/components/Loader";
-import Modal from "@/components/Modal";
-import ThemeToggler from "@/components/ThemeToggler";
-import SubjectDiary from "@/components/SubjectDiary";
-import SubjectGrades from "@/components/SubjectGrades";
-import SubjectSections from "@/components/SubjectSections";
-import GradesIcon from "@/components/icons/GradesIcon";
-import Error from "@/components/Error";
+import Tabs from "../components/Tabs.vue";
+import Tab from "../components/Tab.vue";
+import BaseButton from "../components/BaseButton.vue";
+import Spinner from "../components/Spinner.vue";
+import Loader from "../components/Loader.vue";
+import Modal from "../components/Modal.vue";
+import SubjectDiary from "../components/SubjectDiary.vue";
+import SubjectGrades from "../components/SubjectGrades.vue";
+import SubjectSections from "../components/SubjectSections.vue";
+import GradesIcon from "../components/icons/GradesIcon.vue";
+import Error from "../components/Error.vue";
+import ThemeToggler from "../components/ThemeToggler.vue";
 import { mapActions, mapMutations, mapGetters, mapState } from "vuex";
 
 export default {
@@ -96,12 +117,12 @@ export default {
     Spinner,
     Loader,
     Modal,
-    ThemeToggler,
     SubjectDiary,
     SubjectGrades,
     SubjectSections,
     GradesIcon,
     Error,
+    ThemeToggler,
   },
   data() {
     return {
@@ -199,35 +220,3 @@ export default {
   },
 };
 </script>
-
-<style lang="postcss" scoped>
-.layout {
-  @apply flex flex-col h-screen bg-gray-100 dark:bg-gray-900-spotify;
-}
-.wrapper {
-  @apply flex-1 flex flex-col overflow-y-hidden;
-}
-.header {
-  @apply w-full sticky top-0 bg-white dark:bg-gray-800-spotify border-b-2 border-gray-300 dark:border-gray-600-spotify;
-}
-.header-tabs {
-  @apply w-full md:w-1/2 m-auto;
-}
-.content {
-  @apply flex w-full justify-center overflow-y-auto;
-}
-.content-list {
-  @apply flex flex-col p-3 gap-y-3 sm:w-3/4 md:w-1/2 xl:w-1/4 w-full;
-}
-.subject-section-wrapper {
-  @apply flex flex-col gap-2;
-}
-.footer {
-  left: 50%;
-  transform: translateX(-50%);
-  @apply absolute bottom-6 bg-gray-200 dark:bg-gray-600-spotify rounded-full;
-}
-.footer-content {
-  @apply flex justify-center gap-2 p-1;
-}
-</style>

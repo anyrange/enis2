@@ -1,4 +1,4 @@
-import { getDiary } from "@/api";
+import { getDiary } from "../../api";
 
 const checkIfExists = (array, key, value) => {
   const index = array.findIndex((item) => item[key] === value);

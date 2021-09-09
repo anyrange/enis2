@@ -3,66 +3,28 @@
   "version": "1.0.0",
   "author": "wsehl",
   "scripts": {
-    "dev": "vue-cli-service serve --port 3004",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "axios": "^0.21.1",
-    "core-js": "^3.8.3",
-    "dotenv": "^10.0.0",
-    "nanoevents": "^6.0.0",
-    "nanoid": "^3.1.23",
-    "register-service-worker": "^1.7.2",
-    "v-wave": "^1.2.8",
-    "vue": "^3.0.4",
-    "vue-router": "^4.0.3",
-    "vuex": "^4.0.0",
-    "vuex-persistedstate": "^4.0.0-beta.3"
+    "axios": "^0.21.4",
+    "nanoevents": "^6.0.1",
+    "nanoid": "^3.1.25",
+    "v-wave": "^1.3.1",
+    "vue": "^3.2.6",
+    "vue-router": "^4.0.11",
+    "vuex": "^4.0.2",
+    "vuex-persistedstate": "^4.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.16",
-    "@babel/eslint-parser": "^7.12.16",
-    "@vue/cli-plugin-babel": "~5.0.0-beta.2",
-    "@vue/cli-plugin-eslint": "~5.0.0-beta.2",
-    "@vue/cli-plugin-pwa": "~5.0.0-beta.2",
-    "@vue/cli-plugin-router": "~5.0.0-beta.2",
-    "@vue/cli-plugin-vuex": "~5.0.0-beta.2",
-    "@vue/cli-service": "~5.0.0-beta.2",
-    "@vue/compiler-sfc": "^3.0.4",
-    "@vue/eslint-config-prettier": "^6.0.0",
-    "autoprefixer": "^10.2.6",
-    "axios-mock-adapter": "^1.19.0",
-    "eslint": "^7.20.0",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-vue": "^7.2.0",
-    "postcss": "^8.3.5",
-    "prettier": "^2.3.2",
-    "tailwindcss": "^2.2.4"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-recommended",
-      "eslint:recommended",
-      "@vue/prettier"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser",
-      "requireConfigFile": false
-    },
-    "rules": {}
-  },
-  "prettier": {
-    "endOfLine": "auto"
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ]
+    "@vitejs/plugin-vue": "^1.6.1",
+    "@vue/compiler-sfc": "^3.2.6",
+    "autoprefixer": "^10.3.4",
+    "axios-mock-adapter": "^1.20.0",
+    "postcss": "^8.3.6",
+    "tailwindcss": "^2.2.13",
+    "vite": "^2.5.4",
+    "vite-plugin-pwa": "^0.11.2"
+  }
 }

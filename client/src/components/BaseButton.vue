@@ -9,6 +9,7 @@
       :type="type"
       :disabled="disabled || loading"
       :class="buttonClass"
+      v-bind="$attrs"
       @click.stop="handleClick($event)"
     >
       <svg
