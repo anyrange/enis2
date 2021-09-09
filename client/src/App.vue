@@ -17,8 +17,6 @@ export default {
   data() {
     return {
       updateSW: undefined,
-      offlineReady: false,
-      needRefresh: false,
     };
   },
   computed: {
@@ -50,7 +48,6 @@ export default {
       this.updateSW = registerSW({
         immediate: true,
         onNeedRefresh() {
-          vm.needRefresh = true;
           notify.show({
             type: "success",
             message: "Обновление доступно",
