@@ -11,12 +11,12 @@ body {
   }
 }
 
-.custom-scrollbar .content::-webkit-scrollbar {
-  @apply w-2 dark:bg-gray-700-spotify bg-gray-200;
+.custom-scrollbar #content::-webkit-scrollbar {
+  @apply w-2;
 }
 
-.custom-scrollbar .content::-webkit-scrollbar-thumb {
-  @apply dark:bg-gray-450-spotify bg-gray-400-spotify;
+.custom-scrollbar #content::-webkit-scrollbar-thumb {
+  @apply dark:bg-gray-600-spotify bg-gray-400-spotify;
 }
 
 .fade-enter-active,

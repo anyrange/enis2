@@ -1,10 +1,24 @@
 <template>
-  <div class="subject-container">
-    <h4 class="subject-part-title">
+  <div
+    class="
+      rounded
+      p-2
+      dark:bg-gray-800-spotify
+      bg-white
+      shadow-md
+      flex flex-col
+      gap-2
+    "
+  >
+    <h4 class="font-semibold text-gray-450-spotify dark:text-gray-500-spotify">
       {{ label }}
     </h4>
-    <div v-for="item in subject" :key="item" class="subject-section-list">
-      <span class="subject-section-title">
+    <div
+      v-for="item in subject"
+      :key="item"
+      class="flex flex-row justify-between"
+    >
+      <span class="font-normal text-base">
         {{ item.Name }}
       </span>
       <div v-if="item.Score !== -1">
@@ -30,18 +44,3 @@ export default {
   },
 };
 </script>
-
-<style lang="postcss" scoped>
-.subject-container {
-  @apply rounded p-2 dark:bg-gray-800-spotify bg-white shadow-md flex flex-col;
-}
-.subject-part-title {
-  @apply mb-2 font-semibold text-gray-450-spotify dark:text-gray-500-spotify;
-}
-.subject-section-list {
-  @apply flex flex-row justify-between;
-}
-.subject-section-title {
-  @apply font-normal text-base;
-}
-</style>

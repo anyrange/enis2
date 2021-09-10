@@ -1,7 +1,6 @@
 <template>
-  <base-button round @click="toggleTheme()" aria-label="Toogle Theme">
-    <sun-icon v-if="theme === 'dark'" />
-    <moon-icon v-else />
+  <base-button round aria-label="Toogle Theme" @click="toggleTheme()">
+    <component :is="theme === 'dark' ? 'sun-icon' : 'moon-icon'" />
   </base-button>
 </template>
 

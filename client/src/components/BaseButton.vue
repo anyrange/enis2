@@ -1,8 +1,5 @@
 <template>
-  <div class="base-button-container">
-    <span v-if="title" class="base-button-title">
-      {{ title }}
-    </span>
+  <div class="flex gap-2 items-center">
     <button
       v-wave="ripple"
       class="base-button"
@@ -79,11 +76,6 @@ export default {
       required: false,
       default: "",
     },
-    title: {
-      type: String,
-      required: false,
-      default: "",
-    },
     loading: {
       type: Boolean,
       required: false,
@@ -135,14 +127,8 @@ export default {
 </script>
 
 <style lang="postcss">
-.base-button-container {
-  @apply flex gap-2 items-center;
-}
 .base-button {
   @apply flex rounded-sm duration-200 transition-colors items-center justify-center uppercase text-center select-none text-sm font-medium focus:outline-none focus:ring-2;
-}
-.base-button-title {
-  @apply select-none;
 }
 .base-button-round {
   @apply h-9 w-9 rounded-full;

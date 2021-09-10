@@ -1,6 +1,6 @@
 <template>
-  <div class="md-input-wrapper">
-    <div class="md-input-box">
+  <div class="flex flex-col gap-1">
+    <div class="relative">
       <input
         v-bind="$attrs"
         :id="label"
@@ -91,12 +91,6 @@ html.dark {
 .md-input-default-color {
   color: v-bind(defaultColor);
   border-color: v-bind(defaultColor);
-}
-.md-input-wrapper {
-  @apply flex flex-col gap-1;
-}
-.md-input-box {
-  @apply relative;
 }
 .md-input {
   caret-color: var(--autofill-text-color);

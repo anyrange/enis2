@@ -1,5 +1,5 @@
 <template>
-  <div class="notifications-bottom-left">
+  <div class="fixed bottom-4 left-4 z-40 overflow-x-hidden">
     <transition-group
       enter-to-class="opacity-100 scale-100"
       enter-active-class="transition ease-out duration-150 transform opacity-0 scale-75"
@@ -55,9 +55,3 @@ export default {
   },
 };
 </script>
-
-<style lang="postcss">
-.notifications-bottom-left {
-  @apply fixed bottom-4 left-4 z-40 overflow-x-hidden;
-}
-</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="loader">
+  <div class="flex space-x-2 p-4 justify-center items-center">
     <div class="circle green-circle" />
     <div class="circle yellow-circle" />
     <div class="circle red-circle" />
@@ -13,9 +13,6 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.loader {
-  @apply flex space-x-2 p-4 justify-center items-center;
-}
 .circle {
   @apply p-2 w-4 h-4 rounded-full animate-bounce;
 }

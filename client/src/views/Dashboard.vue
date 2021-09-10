@@ -27,7 +27,7 @@
           </tab>
         </tabs>
       </header>
-      <main class="flex w-full justify-center overflow-y-auto">
+      <main id="content" class="flex w-full justify-center overflow-y-auto">
         <section
           class="flex flex-col p-3 gap-y-3 sm:w-3/4 md:w-1/2 xl:w-1/4 w-full"
         >

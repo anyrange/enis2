@@ -1,7 +1,7 @@
 <template>
-  <div class="loading-spinner">
+  <div class="opacity-80 h-80 flex items-center justify-center">
     <svg
-      class="loading-spinner-animate"
+      class="animate-spin h-12 w-12"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"
@@ -28,12 +28,3 @@ export default {
   name: "Spinner",
 };
 </script>
-
-<style lang="postcss">
-.loading-spinner {
-  @apply opacity-80 h-80 flex items-center justify-center;
-}
-.loading-spinner-animate {
-  @apply animate-spin h-12 w-12;
-}
-</style>
