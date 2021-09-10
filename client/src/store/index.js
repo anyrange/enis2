@@ -21,7 +21,7 @@ export default createStore({
   },
   plugins: [
     createPersistedState({
-      paths: ["auth", "preferences", "years", "terms", "diary", "grades"],
+      paths: ["auth", "preferences", "years", "terms"],
     }),
   ],
 });

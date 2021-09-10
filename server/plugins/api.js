@@ -1,6 +1,13 @@
 import fp from "fastify-plugin";
 import fetch from "node-fetch";
 
+
+const unauthorizedErrorMessages = ['Сессия пользователя была завершена, перезагрузите страницу', 'Время работы с дневником завершено. Для продолжения необходимо обновить модуль']
+
+const isUnauthorizedErrorMessage = (message) => {
+  return unauthorizedErrorMessages.indexOf(message) !== -1;
+}
+
 export default fp(async function plugin(fastify) {
   fastify.decorate(
     "api",
@@ -24,11 +31,7 @@ export default fp(async function plugin(fastify) {
       if (!isJSON) {
         const message = await response.text();
 
-        const isExpired =
-          message ===
-          "Сессия пользователя была завершена, перезагрузите страницу";
-
-        if (isExpired) {
+        if (isUnauthorizedErrorMessage(message)) {
           const err = new Error("Сессия пользователя была завершена");
           err.code = 401;
           throw err;
@@ -42,11 +45,7 @@ export default fp(async function plugin(fastify) {
       const json = await response.json();
 
       if (!json.success) {
-        const isExpired =
-          json.message ===
-          "Время работы с дневником завершено. Для продолжения необходимо обновить модуль";
-
-        if (isExpired) {
+        if (isUnauthorizedErrorMessage(json.message)) {
           const err = new Error("Время работы с дневником завершено");
           err.code = 401;
           throw err;

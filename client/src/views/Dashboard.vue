@@ -70,7 +70,7 @@
             label="Выйти"
             rounded
             color="negative"
-            @click="deauthorize()"
+            @click="logout()"
           />
         </div>
       </footer>
@@ -212,10 +212,6 @@ export default {
       } catch (error) {
         this.subjectError = true;
       }
-    },
-    async deauthorize() {
-      await this.logout();
-      this.$router.push({ name: "login" });
     },
   },
 };

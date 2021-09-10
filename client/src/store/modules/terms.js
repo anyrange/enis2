@@ -31,7 +31,8 @@ export default {
   },
   actions: {
     fetchTermsByYear: async ({ commit, state }, id) => {
-      !state.data.length && commit("SET_LOADING", true);
+      if (state.data.length) return;
+      commit("SET_LOADING", true);
       try {
         commit("SET_TERMS", await getTermsByYear(id));
       } catch (err) {

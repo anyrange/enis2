@@ -28,7 +28,8 @@ export default {
   },
   actions: {
     fetchYears: async ({ commit, state }) => {
-      !state.data.length && commit("SET_LOADING", true);
+      if (state.data.length) return;
+      commit("SET_LOADING", true);
       try {
         commit("SET_YEARS", await getYears());
       } catch (err) {

@@ -19,13 +19,8 @@ export default {
     SET_LOADING(state, status) {
       state.loading = status;
     },
-    ADD_DIARY(state, { data, termId }) {
-      const existsAtIndex = checkIfExists(state.data, "termId", termId);
-      if (existsAtIndex === false) {
-        state.data = [...state.data, { termId: termId, data }];
-      } else {
-        state.data[existsAtIndex].data = data;
-      }
+    ADD_DIARY(state, marks) {
+      state.data = [...state.data, marks];
     },
     CLEAR_DIARY(state) {
       Object.assign(state, defaultState());
@@ -38,8 +33,8 @@ export default {
   },
   actions: {
     fetchDiary: async ({ commit, state }, termId) => {
-      const existsAtIndex = checkIfExists(state.data, "termId", termId);
-      existsAtIndex === false && commit("SET_LOADING", true);
+      if (checkIfExists(state.data, "termId", termId) !== false) return;
+      commit("SET_LOADING", true);
       try {
         commit("ADD_DIARY", { data: await getDiary(termId), termId });
       } catch (err) {

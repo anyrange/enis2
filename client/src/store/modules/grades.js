@@ -23,7 +23,8 @@ export default {
   },
   actions: {
     fetchGrades: async ({ commit, state }) => {
-      !state.data.length && commit("SET_LOADING", true);
+      if (state.data.length) return;
+      commit("SET_LOADING", true);
       try {
         commit("SET_GRADES", await getGrades());
       } catch (err) {

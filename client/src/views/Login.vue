@@ -8,7 +8,8 @@
           p-4
           rounded-md
           border border-gray-200
-          dark:border-gray-600-spotify dark:bg-gray-800-spotify
+          dark:border-gray-600-spotify
+          dark:bg-gray-800-spotify
         "
         @submit.prevent="submit()"
       >
@@ -182,7 +183,6 @@ export default {
       try {
         this.loading = true;
         await this.login(this.user);
-        this.$router.push({ name: "dashboard" });
       } catch (error) {
         if (error?.response?.data?.data) {
           this.captcha = error.response.data.data.base64img;

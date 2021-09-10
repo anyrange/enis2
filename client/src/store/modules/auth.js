@@ -1,4 +1,5 @@
 import { login } from "../../api";
+import $router from "../../router";
 
 export default {
   namespaced: true,
@@ -20,6 +21,7 @@ export default {
       try {
         await login(credentials);
         commit("SET_AUTH", true);
+        $router.push({ name: "dashboard" });
       } catch (err) {
         commit("SET_AUTH", false);
         return Promise.reject(err);
@@ -33,6 +35,7 @@ export default {
       commit("grades/CLEAR_GRADES", null, { root: true });
       commit("subject/CLEAR_SUBJECT", null, { root: true });
       commit("preferences/CLEAR_PREFERENCES", null, { root: true });
+      $router.push({ name: "login" });
     },
   },
 };
