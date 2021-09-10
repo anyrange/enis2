@@ -1,14 +1,14 @@
 <template>
-  <div class="flex flex-col h-screen dark:bg-gray-900-spotify">
-    <div class="m-auto w-full sm:w-3/5 md:w-1/2 lg:w-2/6 xl:w-1/4 2xl:w-1/5">
+  <div class="flex flex-col h-screen bg-gray-50 dark:bg-gray-900-spotify">
+    <div class="m-auto w-full sm:w-3/5 md:w-1/2 xl:w-2/6 2xl:w-1/5">
       <form
         class="
           flex flex-col
           gap-6
           p-4
           rounded-md
-          border border-gray-200
-          dark:border-gray-600-spotify
+          shadow-sm
+          bg-white
           dark:bg-gray-800-spotify
         "
         @submit.prevent="submit()"

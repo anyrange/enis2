@@ -23,7 +23,7 @@ export default {
   },
   getters: {
     currentYearId: (state) => {
-      return state.data.find((year) => year.isActual).Id;
+      return state.data.find((year) => year.isActual).value;
     },
   },
   actions: {
@@ -31,7 +31,16 @@ export default {
       if (state.data.length) return;
       commit("SET_LOADING", true);
       try {
-        commit("SET_YEARS", await getYears());
+        const years = await getYears();
+        const actualYearIndex = years.findIndex((year) => year.isActual);
+        const formattedYears = years
+          .slice(actualYearIndex, actualYearIndex + 3)
+          .map(({ Id: value, Name: label, isActual }) => ({
+            value,
+            label: label.substring(0, 9),
+            isActual,
+          }));
+        commit("SET_YEARS", formattedYears);
       } catch (err) {
         return Promise.reject(err);
       } finally {

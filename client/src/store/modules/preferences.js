@@ -60,14 +60,12 @@ export default {
     async predictSchool({ commit, state }) {
       if (state.school) return;
 
-      const defaultSchool = schools.find((item) => item.default);
-      commit("SET_SCHOOL", defaultSchool.value);
+      commit("SET_SCHOOL", schools.find((item) => item.default).value);
 
       const { city } = await getUserCity();
       const predictedSchool = schools.find((item) => item.city === city);
-      if (predictedSchool) {
-        commit("SET_SCHOOL", predictedSchool.value);
-      }
+
+      predictedSchool && commit("SET_SCHOOL", predictedSchool.value);
     },
   },
 };

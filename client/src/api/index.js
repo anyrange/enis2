@@ -23,7 +23,10 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  config.params = { ...config.params, city: $store.getters["preferences/getCity"] };
+  config.params = {
+    ...config.params,
+    city: $store.getters["preferences/getCity"],
+  };
   return config;
 });
 
@@ -39,37 +42,24 @@ api.interceptors.response.use(
   }
 );
 
-export function login(user) {
-  return api.post("login", user);
-}
-export function refreshCaptcha() {
-  return api.get("login/captchaRefresh");
-}
-export function getYears() {
-  return api.get("dashboard/years");
-}
-export function getTermsByYear(yearId) {
-  return api.get(`dashboard/years/${yearId}`);
-}
-export function getDiary(id) {
-  return api.get(`dashboard/terms/${id}`);
-}
-export function getSubject(journalId, evalId) {
+export const getUserCity = () => ipinfo.get("/");
+
+export const login = (user) => api.post("login", user);
+export const refreshCaptcha = () => api.get("login/captchaRefresh");
+
+export const getYears = () => api.get("dashboard/years");
+export const getTermsByYear = (yearId) => api.get(`dashboard/years/${yearId}`);
+export const getDiary = (id) => api.get(`dashboard/terms/${id}`);
+export const getSubject = (journalId, evalId) => {
   return api.get("dashboard/subject", {
     params: {
       journalId,
       evalId,
     },
   });
-}
-export function getGrades() {
-  return api.get("dashboard/grades");
-}
-export function getUserCity() {
-  return ipinfo.get("city");
-}
+};
+export const getGrades = () => api.get("dashboard/grades");
 
-//  MOCK API
 if (isDev) {
   (async () => {
     try {
@@ -86,7 +76,9 @@ if (isDev) {
       const mock = new MockAdapter(api, { delayResponse: 500 });
       const mockIp = new MockAdapter(ipinfo, { delayResponse: 100 });
 
-      mockIp.onGet("city").reply(200, "Pavlodar");
+      mockIp.onGet("city").reply(200, {
+        city: "Pavlodar",
+      });
 
       mock.onPost("login").reply(200);
       mock.onGet("login/captchaRefresh").reply(200, mockCaptcha);
@@ -102,7 +94,7 @@ if (isDev) {
       });
       mock.onGet(new RegExp("subject")).reply(200, mockSubject);
     } catch (error) {
-      console.log(error)
+      console.error("Mock API: " + error);
     }
   })();
 }
