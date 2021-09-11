@@ -85,7 +85,7 @@ export default {
 
 <style lang="postcss" scoped>
 .item {
-  @apply flex flex-col gap-6 w-full justify-center rounded shadow-sm bg-white dark:bg-gray-800-spotify;
+  @apply flex flex-col space-y-6 w-full justify-center rounded shadow-sm bg-white dark:bg-gray-800-spotify;
 }
 .item-top {
   @apply flex items-start justify-between p-3;

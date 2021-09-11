@@ -29,7 +29,7 @@
       </header>
       <main id="content" class="flex w-full justify-center overflow-y-auto">
         <section
-          class="flex flex-col p-3 gap-y-3 sm:w-3/4 md:w-1/2 xl:w-1/4 w-full"
+          class="flex flex-col p-3 space-y-3 sm:w-3/4 md:w-1/2 xl:w-1/4 w-full"
         >
           <spinner v-if="loading" />
           <template v-else>
@@ -64,7 +64,7 @@
         "
         style="left: 50%; transform: translateX(-50%)"
       >
-        <div class="flex justify-center gap-2 p-1">
+        <div class="flex justify-center space-x-2 p-1">
           <theme-toggler />
           <base-button
             label="Выйти"
@@ -76,7 +76,7 @@
       </footer>
     </div>
     <modal :show="subjectModalOpened" @close="subjectModalOpened = false">
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col space-y-2">
         <subject-diary :hoverable="false" :subject="subject.data.current" />
         <loader v-if="subject.loading" />
         <template v-else>

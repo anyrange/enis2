@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-2">
+  <div class="flex flex-col space-y-2">
     <label
       v-if="label.length"
       :for="label"

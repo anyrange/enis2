@@ -7,7 +7,7 @@
       bg-white
       shadow-md
       flex flex-col
-      gap-2
+      space-y-2
     "
   >
     <h4 class="font-semibold text-gray-450-spotify dark:text-gray-500-spotify">

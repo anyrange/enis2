@@ -3,8 +3,9 @@
     <div class="m-auto w-full sm:w-3/5 md:w-1/2 xl:w-2/6 2xl:w-1/5">
       <form
         class="
-          flex flex-col
+          grid
           gap-6
+          grid-cols-1
           p-4
           rounded-md
           shadow-sm
@@ -13,7 +14,7 @@
         "
         @submit.prevent="submit()"
       >
-        <div class="flex gap-4 items-center mb-2">
+        <div class="flex space-x-4 items-center mb-2">
           <app-icon class="w-16 h-16 flex-none" />
           <div class="flex flex-col">
             <h1 class="text-2xl font-medium">enis</h1>
@@ -37,7 +38,10 @@
           :error="errors.password"
         />
         <transition name="fade">
-          <div v-if="captcha" class="flex justify-between items-center gap-2">
+          <div
+            v-if="captcha"
+            class="flex justify-between items-center space-x-2"
+          >
             <div class="w-1/2">
               <img
                 class="

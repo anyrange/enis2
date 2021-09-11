@@ -1,5 +1,7 @@
 <template>
-  <div class="h-80 flex flex-col gap-2 items-center justify-center">
+  <div
+    class="h-80 flex flex-col space-y-2 space-x-2 items-center justify-center"
+  >
     <svg
       class="w-32 h-32 opacity-30"
       viewBox="0 0 167 169"
