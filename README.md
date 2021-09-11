@@ -30,11 +30,11 @@ Rename [.env.example](/.env.example) to .env and set your variables or keep the 
 
 ### Mock API
 
-Due to the fact that during the development the original client was unavailable, mock date was added and enabled by default in development mode, you can comment it out or leave it on
+Due to the fact that during the development the original client was unavailable, mock data was added and enabled by default in development mode, you can comment it out or leave it on
 
 ### API documentation
 
-Starting the app will let you investigate the API via Swagger by getting detailed information about endpoints, and their request/response schemas at [http://localhost:8887/docs](http://localhost:8887/docs)
+Starting the server will let you investigate the API via Swagger by getting detailed information about endpoints, and their request/response schemas at [http://localhost:8887/docs](http://localhost:8887/docs)
 
 ![Swagger](https://i.imgur.com/pPxuhW9.png)
 
