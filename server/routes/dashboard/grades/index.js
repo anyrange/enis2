@@ -1,11 +1,18 @@
 import fetch from "node-fetch";
 
-export default async function(fastify) {
+export default async function (fastify) {
   fastify.get(
     "",
     {
       schema: {
-        querystring: fastify.getSchema("domain"),
+        querystring: {
+          type: "object",
+          required: ["city", "yearID"],
+          properties: {
+            city: fastify.getSchema("city"),
+            yearID: { type: "string" },
+          },
+        },
         response: {
           200: {
             type: "array",
@@ -31,26 +38,19 @@ export default async function(fastify) {
       },
     },
     async (req, reply) => {
-      const baseUrl = `https://sms.${req.query.city}.nis.edu.kz`;
+      const { city, yearID } = req.query;
+      const baseUrl = `https://sms.${city}.nis.edu.kz`;
 
       const params = new URLSearchParams();
       const cookie = fastify.cookieStringify(req.cookies);
 
-      const [schoolYears, organization] = await Promise.all([
-        fastify.api({
-          method: "POST",
-          cookie,
-          url: `${baseUrl}/Ref/GetSchoolYears`,
-        }),
-        fastify.api({
-          method: "POST",
-          cookie,
-          url: `${baseUrl}/reportcard/GetOrganizations`,
-        }),
-      ]);
+      const organization = await fastify.api({
+        method: "POST",
+        cookie,
+        url: `${baseUrl}/reportcard/GetOrganizations`,
+      });
 
-      const actualYear = schoolYears.data.find((year) => year.Data.IsActual);
-      params.append("schoolYearId", actualYear.Id);
+      params.append("schoolYearId", yearID);
       params.append("organizationId", organization.data[0].Id);
       params.append("organizationInternalId", organization.data[0].Id);
 
