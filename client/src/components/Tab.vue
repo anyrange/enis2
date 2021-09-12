@@ -59,7 +59,7 @@ export default {
 }
 .active-tab {
   @apply text-blue-500 font-semibold hover:bg-blue-500 hover:bg-opacity-10;
-  box-shadow: 0px 2px 0px #1976d2;
+  /* box-shadow: 0px 2px 0px #1976d2; */
 }
 .default-tab {
   @apply text-gray-500-spotify hover:bg-gray-100 dark:hover:bg-gray-700-spotify;

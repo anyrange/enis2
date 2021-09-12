@@ -4,6 +4,7 @@ import schools from "../../assets/schools.json";
 const defaultState = () => {
   return {
     tab: "",
+    year: "",
     theme: "",
     school: "",
   };
@@ -16,6 +17,9 @@ export default {
     SET_TAB(state, tab) {
       state.tab = tab;
     },
+    SET_YEAR(state, year) {
+      state.year = year;
+    },
     SET_THEME(state, theme) {
       state.theme = theme;
     },
@@ -23,7 +27,10 @@ export default {
       state.school = school;
     },
     CLEAR_PREFERENCES(state) {
-      Object.assign(state, { tab: defaultState().tab });
+      Object.assign(state, {
+        tab: defaultState().tab,
+        year: defaultState().tab,
+      });
     },
   },
   getters: {

@@ -22,7 +22,7 @@ export default {
     },
   },
   getters: {
-    currentYearId: (state) => {
+    actualYearId: (state) => {
       return state.data.find((year) => year.isActual).value;
     },
   },
@@ -40,7 +40,7 @@ export default {
             label: label.substring(0, 9),
             isActual,
           }));
-        commit("SET_YEARS", formattedYears);
+        commit("SET_YEARS", formattedYears.reverse());
       } catch (err) {
         return Promise.reject(err);
       } finally {

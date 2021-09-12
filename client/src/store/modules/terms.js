@@ -22,16 +22,12 @@ export default {
     },
   },
   getters: {
-    lastTermId: (state) => {
-      return state.data[state.data.length - 1].Id;
-    },
-    currentTermId: (state) => {
+    actualTermId: (state) => {
       return state.data.find((term) => term.isActual).Id;
     },
   },
   actions: {
-    fetchTermsByYear: async ({ commit, state }, id) => {
-      if (state.data.length) return;
+    fetchTermsByYear: async ({ commit }, id) => {
       commit("SET_LOADING", true);
       try {
         commit("SET_TERMS", await getTermsByYear(id));

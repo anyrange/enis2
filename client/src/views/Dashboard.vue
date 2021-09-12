@@ -1,31 +1,38 @@
 <template>
   <div class="flex flex-col h-screen bg-gray-100 dark:bg-gray-900-spotify">
     <div class="flex-1 flex flex-col overflow-y-hidden">
-      <header
-        class="
-          w-full
-          sticky
-          top-0
-          bg-white
-          dark:bg-gray-800-spotify
-          border-b-2 border-gray-300
-          dark:border-gray-600-spotify
-        "
-      >
-        <tabs v-model="currentTab" class="w-full md:w-1/2 m-auto">
-          <tab
-            v-for="(term, index) in terms.data"
-            :key="term.Id"
-            :name="term.Id"
-            :disabled="loading"
-            @click="getContent(term.Id)"
-          >
-            {{ $options.GREEK_NUMERALS[index + 1] }}
-          </tab>
-          <tab name="grades" :disabled="loading" @click="getContent('grades')">
-            <grades-icon />
-          </tab>
-        </tabs>
+      <header class="w-full sticky top-0 bg-white dark:bg-gray-800-spotify">
+        <div class="w-full md:w-1/2 m-auto">
+          <tabs v-model="currentYear">
+            <tab
+              v-for="year in years.data"
+              :key="year.value"
+              :name="year.value"
+              :disabled="loading"
+              @click="getTermsAndContentByYear(year.value)"
+            >
+              {{ year.label }}
+            </tab>
+          </tabs>
+          <tabs v-model="currentTab">
+            <tab
+              v-for="(term, index) in terms.data"
+              :key="term.Id"
+              :name="term.Id"
+              :disabled="loading"
+              @click="getContent(term.Id)"
+            >
+              {{ $options.GREEK_NUMERALS[index + 1] }}
+            </tab>
+            <tab
+              name="grades"
+              :disabled="loading"
+              @click="getContent('grades')"
+            >
+              <grades-icon />
+            </tab>
+          </tabs>
+        </div>
       </header>
       <main id="content" class="flex w-full justify-center overflow-y-auto">
         <section
@@ -146,10 +153,8 @@ export default {
       subject: "subject",
     }),
     ...mapGetters({
-      savedTab: "preferences/getTab",
-      lastTermId: "terms/lastTermId",
-      currentTermId: "terms/currentTermId",
-      currentYearId: "years/currentYearId",
+      actualTermId: "terms/actualTermId",
+      actualYearId: "years/actualYearId",
       currentTermDiary: "diary/getDiaryByTermId",
     }),
     currentTab: {
@@ -158,6 +163,14 @@ export default {
       },
       set(value) {
         this.$store.commit("preferences/SET_TAB", value);
+      },
+    },
+    currentYear: {
+      get() {
+        return this.$store.state.preferences.year;
+      },
+      set(value) {
+        this.$store.commit("preferences/SET_YEAR", value);
       },
     },
     loading() {
@@ -172,8 +185,9 @@ export default {
   async created() {
     try {
       await this.fetchYears();
-      await this.fetchTermsByYear(this.currentYearId);
-      this.currentTab = this.savedTab || this.currentTermId || this.lastTermId;
+      this.currentYear = this.currentYear || this.actualYearId;
+      await this.fetchTermsByYear(this.currentYear);
+      this.currentTab = this.currentTab || this.actualTermId;
       await this.getContent(this.currentTab);
     } catch (error) {
       this.error = error.response.data.message;
@@ -191,15 +205,31 @@ export default {
     ...mapMutations({
       saveTab: "preferences/SET_TAB",
     }),
-    sortByScore(array) {
-      return array.sort((firstEl, secondEl) => secondEl.Score - firstEl.Score);
-    },
     async getContent(tab) {
       try {
         tab === "grades"
-          ? await this.fetchGrades()
+          ? await this.fetchGrades(this.currentYear)
           : await this.fetchDiary(tab);
         this.error = "";
+      } catch (error) {
+        this.error = error.response.data.message;
+      }
+    },
+    async getTermsAndContentByYear(yearId) {
+      try {
+        const previusTabName =
+          this.currentTab === "grades"
+            ? "grades"
+            : this.terms.data.find((term) => term.Id === this.currentTab)
+                ?.Name || "";
+        await this.fetchTermsByYear(yearId);
+        const currentTabName =
+          this.currentTab === "grades"
+            ? "grades"
+            : this.terms.data.find((term) => term.Name === previusTabName)
+                ?.Id || "";
+        this.currentTab = currentTabName || this.actualTermId;
+        await this.getContent(this.currentTab);
       } catch (error) {
         this.error = error.response.data.message;
       }
@@ -212,6 +242,9 @@ export default {
       } catch (error) {
         this.subjectError = true;
       }
+    },
+    sortByScore(array) {
+      return array.sort((firstEl, secondEl) => secondEl.Score - firstEl.Score);
     },
   },
 };

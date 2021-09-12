@@ -22,11 +22,10 @@ export default {
     },
   },
   actions: {
-    fetchGrades: async ({ commit, state }) => {
-      if (state.data.length) return;
+    fetchGrades: async ({ commit }, yearID) => {
       commit("SET_LOADING", true);
       try {
-        commit("SET_GRADES", await getGrades());
+        commit("SET_GRADES", await getGrades(yearID));
       } catch (err) {
         return Promise.reject(err);
       } finally {

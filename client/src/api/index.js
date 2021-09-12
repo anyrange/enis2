@@ -58,7 +58,13 @@ export const getSubject = (journalId, evalId) => {
     },
   });
 };
-export const getGrades = () => api.get("dashboard/grades");
+export const getGrades = (yearID) => {
+  return api.get("dashboard/grades", {
+    params: {
+      yearID,
+    },
+  });
+};
 
 if (isDev) {
   (async () => {
