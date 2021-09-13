@@ -1,7 +1,8 @@
 <template>
   <a
+    id="subjectDiary"
     href="#"
-    class="item"
+    class="rounded shadow bg-white dark:bg-gray-800-spotify outline-none"
     :class="{
       'cursor-pointer hover:bg-gray-200 hover:bg-opacity-10 dark:hover:bg-gray-700-spotify':
         hoverable,
@@ -76,10 +77,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.item {
-  @apply shadow rounded bg-white dark:bg-gray-800-spotify outline-none;
-}
-.item:focus-visible {
+#subjectDiary:focus-visible {
   @apply focus:ring-2;
 }
 .item-title {
