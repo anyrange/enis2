@@ -9,7 +9,7 @@
               :key="year.value"
               :name="year.value"
               :disabled="loading"
-              @click="getTermsAndContentByYear(year.value)"
+              @selected="getTermsAndContentByYear(year.value)"
             >
               {{ year.label }}
             </tab>
@@ -20,14 +20,14 @@
               :key="term.Id"
               :name="term.Id"
               :disabled="loading"
-              @click="getContent(term.Id)"
+              @selected="getContent(term.Id)"
             >
               {{ $options.GREEK_NUMERALS[index + 1] }}
             </tab>
             <tab
               name="grades"
               :disabled="loading"
-              @click="getContent('grades')"
+              @selected="getContent('grades')"
             >
               <grades-icon />
             </tab>
@@ -113,7 +113,7 @@ import SubjectSections from "../components/SubjectSections.vue";
 import GradesIcon from "../components/icons/GradesIcon.vue";
 import Error from "../components/Error.vue";
 import ThemeToggler from "../components/ThemeToggler.vue";
-import { mapActions, mapMutations, mapGetters, mapState } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 
 export default {
   name: "Dashboard",
@@ -201,9 +201,6 @@ export default {
       fetchSubject: "subject/fetchSubject",
       fetchYears: "years/fetchYears",
       fetchTermsByYear: "terms/fetchTermsByYear",
-    }),
-    ...mapMutations({
-      saveTab: "preferences/SET_TAB",
     }),
     async getContent(tab) {
       try {

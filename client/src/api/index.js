@@ -1,7 +1,8 @@
 import axios from "axios";
 import $store from "../store";
+import { notify } from "../services/notify";
 
-const isDev = process.env.NODE_ENV === "development";
+const isDev = process.env.NODE_ENV !== "production";
 
 const IPINFO_TOKEN = import.meta.env.VITE_IPINFO_TOKEN;
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
@@ -37,6 +38,10 @@ api.interceptors.response.use(
   (error) => {
     if (error.response.status === 401) {
       $store.dispatch("auth/logout");
+      notify.show({
+        type: "danger",
+        message: error?.response?.data?.message || "Что-то пошло не так",
+      });
     }
     return Promise.reject(error);
   }
@@ -79,7 +84,7 @@ if (isDev) {
         mockSubject,
       } = await import("./mockData.js");
 
-      const mock = new MockAdapter(api, { delayResponse: 500 });
+      const mock = new MockAdapter(api, { delayResponse: 300 });
       const mockIp = new MockAdapter(ipinfo, { delayResponse: 100 });
 
       mockIp.onGet("city").reply(200, {

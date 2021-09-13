@@ -1,12 +1,13 @@
 <template>
-  <div
-    class="flex flex-col rounded shadow bg-white dark:bg-gray-800-spotify"
+  <a
+    href="#"
+    class="item"
     :class="{
       'cursor-pointer hover:bg-gray-200 hover:bg-opacity-10 dark:hover:bg-gray-700-spotify':
         hoverable,
     }"
   >
-    <div class="flex flex-col space-y-2 p-2">
+    <div class="space-y-2 p-2">
       <h3 class="text-base font-medium truncate">
         {{ subject.Name }}
       </h3>
@@ -30,11 +31,9 @@
       :class="barClass"
       class="rounded-b-md dark:bg-opacity-10 bg-opacity-20"
     >
-      <div class="h-1 rounded-bl-md" :style="barStyle" :class="barClass">
-        &nbsp;
-      </div>
+      <div class="h-1 rounded-bl-md" :style="barStyle" :class="barClass" />
     </div>
-  </div>
+  </a>
 </template>
 
 <script>
@@ -77,6 +76,12 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+.item {
+  @apply shadow rounded bg-white dark:bg-gray-800-spotify outline-none;
+}
+.item:focus-visible {
+  @apply focus:ring-2;
+}
 .item-title {
   @apply text-lg font-medium;
 }

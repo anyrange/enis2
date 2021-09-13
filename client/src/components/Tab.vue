@@ -1,13 +1,16 @@
 <template>
-  <li
+  <button
     v-if="visible"
     v-wave
     class="tab"
-    :class="tabClass"
+    :class="[
+      { 'disabled-tab': disabled },
+      [isActive ? 'active-tab' : 'incative-tab'],
+    ]"
     @click="activateTab(name)"
   >
     <slot />
-  </li>
+  </button>
 </template>
 
 <script>
@@ -29,25 +32,22 @@ export default {
       required: false,
     },
   },
+  emits: ["selected"],
   computed: {
-    tabClass() {
-      return {
-        "active-tab": this.isActive,
-        "default-tab": !this.isActive,
-        "disabled-tab": this.disabled,
-      };
-    },
     active() {
       return this.state.active();
     },
     isActive() {
-      if (this.name === this.active) return true;
-      return false;
+      return this.name === this.active;
     },
   },
   methods: {
     activateTab(name) {
-      if (!this.disabled && name !== this.active) return this.selectTab(name);
+      if (this.disabled || name === this.active) {
+        return;
+      }
+      this.$emit("selected", name);
+      this.selectTab(name);
     },
   },
 };
@@ -55,13 +55,15 @@ export default {
 
 <style lang="postcss" scoped>
 .tab {
-  @apply h-12 w-12 flex flex-grow items-center justify-center text-base font-medium cursor-pointer select-none duration-200;
+  @apply h-12 w-12 flex flex-grow items-center justify-center text-base font-medium cursor-pointer select-none duration-200 outline-none;
+}
+.tab:focus-visible {
+  @apply focus:ring-2;
 }
 .active-tab {
   @apply text-blue-500 font-semibold hover:bg-blue-500 hover:bg-opacity-10;
-  /* box-shadow: 0px 2px 0px #1976d2; */
 }
-.default-tab {
+.incative-tab {
   @apply text-gray-500-spotify hover:bg-gray-100 dark:hover:bg-gray-700-spotify;
 }
 .disabled-tab {
