@@ -438,28 +438,28 @@ export const mockTerms = [
 ];
 export const mockSubject = [
   {
-    Name: "Зелёная оценка 9/10",
+    Name: "Electromagnetic oscillations and electromagnetic waves",
     RubricId: "fb5bf2f0-d6fb-11eb-b8bc-0242ac130003",
     Score: 9,
-    MaxScore: 10,
+    MaxScore: 25,
   },
   {
-    Name: "Жёлтая оценка 7/10",
+    Name: "12.1А Вероятностные модели",
     RubricId: "4438a9fa-d6fc-11eb-b8bc-0242ac130003",
     Score: 7,
-    MaxScore: 10,
+    MaxScore: 14,
   },
   {
-    Name: "Красная оценка 6/10",
+    Name: "10.1B Химические вещества в живых организмах (Молекулярная биология)",
     RubricId: "4868930a-d6fc-11eb-b8bc-0242ac130003",
     Score: 6,
-    MaxScore: 10,
+    MaxScore: 12,
   },
   {
-    Name: "Нет оценки 0/10",
+    Name: "Географиялық зерттеу әдістері",
     RubricId: "4868930a-d6fc-11eb-b8bc-0242ac130003",
     Score: 0,
-    MaxScore: 10,
+    MaxScore: 0,
   },
 ];
 export const mockGrades = [

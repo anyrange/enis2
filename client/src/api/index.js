@@ -2,7 +2,7 @@ import axios from "axios";
 import $store from "../store";
 import { notify } from "../services/notify";
 
-const isDev = process.env.NODE_ENV !== "production";
+const isDev = process.env.NODE_ENV === "development";
 
 const IPINFO_TOKEN = import.meta.env.VITE_IPINFO_TOKEN;
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;

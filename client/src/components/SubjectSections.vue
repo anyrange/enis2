@@ -18,13 +18,12 @@
       :key="item"
       class="flex flex-row justify-between"
     >
-      <span class="font-normal text-base">
-        {{ item.Name }}
+      <span>{{ item.Name }}</span>
+      <span>
+        {{ item.Score === -1 ? "-" : item.Score }}/{{
+          item.MaxScore === 0 ? "-" : item.MaxScore
+        }}
       </span>
-      <div v-if="item.Score !== -1">
-        <span>{{ item.Score }}</span>
-        <span>/{{ item.MaxScore }}</span>
-      </div>
     </div>
   </div>
 </template>

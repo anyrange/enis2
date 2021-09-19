@@ -1,7 +1,7 @@
 <template>
-  <a
+  <div
+    tabindex="0"
     id="subjectDiary"
-    href="#"
     class="rounded shadow bg-white dark:bg-gray-800-spotify outline-none"
     :class="{
       'cursor-pointer hover:bg-gray-200 hover:bg-opacity-10 dark:hover:bg-gray-700-spotify':
@@ -18,8 +18,8 @@
             {{ beforeDecimal }}
           </span>
           <span v-show="afterDecimal" class="item-subtitle"
-            >.{{ afterDecimal }}</span
-          >
+            >.{{ afterDecimal }}
+          </span>
           <span class="item-subtitle">%</span>
         </div>
         <div>
@@ -34,7 +34,7 @@
     >
       <div class="h-1 rounded-bl-md" :style="barStyle" :class="barClass" />
     </div>
-  </a>
+  </div>
 </template>
 
 <script>
