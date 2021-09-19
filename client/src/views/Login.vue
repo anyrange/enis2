@@ -80,8 +80,15 @@
           label="Войти"
           :loading="loading"
         />
-        <div class="flex justify-between">
+        <div class="flex justify-between items-center">
           <theme-toggler />
+          <base-button
+            round
+            href="http://t.me/enis2nis"
+            aria-label="Telegram Link"
+          >
+            <telegram-icon />
+          </base-button>
           <base-button
             round
             href="https://github.com/anyrange/enis2"
@@ -102,6 +109,7 @@ import BaseSelect from "../components/BaseSelect.vue";
 import ThemeToggler from "../components/ThemeToggler.vue";
 import AppIcon from "../components/icons/AppIcon.vue";
 import GithubIcon from "../components/icons/GithubIcon.vue";
+import TelegramIcon from "../components/icons/TelegramIcon.vue";
 import schools from "../assets/schools.json";
 import { mapActions } from "vuex";
 import { refreshCaptcha } from "../api";
@@ -115,6 +123,7 @@ export default {
     BaseSelect,
     AppIcon,
     GithubIcon,
+    TelegramIcon,
     ThemeToggler,
   },
   schools,
