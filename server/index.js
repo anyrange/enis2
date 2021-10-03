@@ -4,7 +4,8 @@ import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import dotenv from "dotenv";
 
-dotenv.config({ path: "../.env" });
+dotenv.config();
+
 const app = fastify();
 
 const PORT = process.env.PORT || 8887;

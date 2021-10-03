@@ -1,16 +1,48 @@
 {
   "name": "enis2",
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "install-all": "cd client && npm install && cd ../server && npm install",
-    "serve": "npm run dev --prefix client",
-    "build": "npm run build --prefix client",
-    "server": "npm run dev --prefix server",
+    "serve": "vite --port 3004",
+    "build": "vite build",
+    "preview": "vite preview --port 3004",
+    "server": "nodemon server/index.js",
     "dev": "concurrently \"npm run serve\" \"npm run server\"",
     "heroku-postbuild": "echo Skip builds on Heroku"
   },
   "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "dotenv": "^10.0.0",
+    "fastify": "^3.15.1",
+    "fastify-autoload": "^3.7.1",
+    "fastify-cookie": "^5.3.1",
+    "fastify-cors": "^6.0.1",
+    "fastify-plugin": "^3.0.0",
+    "fastify-swagger": "^4.8.1",
+    "nanoevents": "^6.0.1",
+    "nanoid": "^3.1.25",
+    "node-fetch": "^2.6.1",
+    "v-wave": "^1.3.1",
+    "vue": "^3.2.6",
+    "vue-router": "^4.0.11",
+    "vuex": "^4.0.2",
+    "vuex-persistedstate": "^4.0.0"
+  },
   "devDependencies": {
-    "concurrently": "^4.1.0"
+    "@vitejs/plugin-vue": "^1.6.1",
+    "@vue/compiler-sfc": "^3.2.6",
+    "autoprefixer": "^10.3.4",
+    "axios-mock-adapter": "^1.20.0",
+    "concurrently": "^4.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-vue": "^7.17.0",
+    "nodemon": "^2.0.12",
+    "postcss": "^8.3.6",
+    "prettier": "2.4.0",
+    "tailwindcss": "^2.2.13",
+    "vite": "^2.5.4",
+    "vite-plugin-pwa": "^0.11.2"
   }
 }

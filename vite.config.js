@@ -3,6 +3,7 @@ import vue from "@vitejs/plugin-vue";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
+  root: "./client",
   plugins: [
     vue(),
     VitePWA({
@@ -36,7 +37,4 @@ export default defineConfig({
       },
     }),
   ],
-  server: {
-    port: "3004",
-  },
 });
