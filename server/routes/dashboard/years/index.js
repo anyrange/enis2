@@ -1,4 +1,4 @@
-export default async function(fastify) {
+export default async function (fastify) {
   fastify.get(
     "",
     {

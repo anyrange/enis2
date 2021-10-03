@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-export default async function(fastify) {
+export default async function (fastify) {
   const querystring = fastify.getSchema("domain");
   fastify.get(
     "",

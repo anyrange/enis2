@@ -1,12 +1,14 @@
 import fp from "fastify-plugin";
 import fetch from "node-fetch";
 
-
-const unauthorizedErrorMessages = ['Сессия пользователя была завершена, перезагрузите страницу', 'Время работы с дневником завершено. Для продолжения необходимо обновить модуль']
+const unauthorizedErrorMessages = [
+  "Сессия пользователя была завершена, перезагрузите страницу",
+  "Время работы с дневником завершено. Для продолжения необходимо обновить модуль",
+];
 
 const isUnauthorizedErrorMessage = (message) => {
   return unauthorizedErrorMessages.indexOf(message) !== -1;
-}
+};
 
 export default fp(async function plugin(fastify) {
   fastify.decorate(

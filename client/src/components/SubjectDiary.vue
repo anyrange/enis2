@@ -1,7 +1,7 @@
 <template>
   <div
-    tabindex="0"
     id="subjectDiary"
+    tabindex="0"
     class="rounded shadow bg-white dark:bg-gray-800-spotify outline-none"
     :class="{
       'cursor-pointer hover:bg-gray-200 hover:bg-opacity-10 dark:hover:bg-gray-700-spotify':
