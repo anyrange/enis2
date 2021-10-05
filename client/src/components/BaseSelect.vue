@@ -27,7 +27,6 @@
           rounded-sm
           shadow-sm
           text-left
-          cursor-default
           border border-gray-200
           dark:border-gray-800-spotify
           focus:ring-blue-500
@@ -39,7 +38,10 @@
           dark:bg-gray-600-spotify
         "
         placeholder="Regular input"
-        :class="{ 'animate-pulse': loading }"
+        :class="[
+          { 'animate-pulse': loading },
+          isDisabled ? 'cursor-default' : 'cursor-pointer',
+        ]"
         :disabled="isDisabled"
       >
         <option value="none" selected disabled hidden>
