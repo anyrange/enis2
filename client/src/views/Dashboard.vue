@@ -73,12 +73,9 @@
       >
         <div class="flex justify-center space-x-2 p-1">
           <theme-toggler />
-          <base-button
-            label="Выйти"
-            rounded
-            color="negative"
-            @click="logout()"
-          />
+          <base-button rounded color="negative" @click="logout()">
+            Выйти
+          </base-button>
         </div>
       </footer>
     </div>

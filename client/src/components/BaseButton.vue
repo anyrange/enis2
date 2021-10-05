@@ -1,12 +1,27 @@
 <template>
-  <button
-    v-wave="ripple"
+  <component
+    :is="tag"
+    v-wave="isDisabled ? false : ripple"
     class="base-button"
     :type="type"
-    :disabled="disabled || loading"
-    :class="buttonClass"
+    :disabled="isDisabled"
+    :href="href"
+    :role="tag === 'a' ? 'link' : 'button'"
+    :target="target"
+    :class="[
+      { 'base-button-rounded': rounded },
+      { 'base-button-disabled': disabled },
+      { 'base-button-fullwidth': wFull },
+      { 'base-button-flat': flat },
+      [
+        isDisabled
+          ? `base-button-${color} cursor-default`
+          : `base-button-${color} base-button-${color}--hover cursor-pointer`,
+      ],
+      [icon ? 'base-button-icon' : 'base-button-default'],
+    ]"
     v-bind="$attrs"
-    @click.stop="handleClick($event)"
+    @click.stop="$emit('click', $event)"
   >
     <svg
       v-if="loading"
@@ -30,14 +45,9 @@
       />
     </svg>
     <template v-else>
-      <template v-if="label">
-        {{ label }}
-      </template>
-      <template v-else>
-        <slot />
-      </template>
+      <slot />
     </template>
-  </button>
+  </component>
 </template>
 
 <script>
@@ -47,7 +57,10 @@ export default {
     color: {
       type: String,
       required: false,
-      default: "flat",
+      default: "primary",
+      validator(value) {
+        return ["primary", "negative"].includes(value);
+      },
     },
     type: {
       type: String,
@@ -59,6 +72,14 @@ export default {
       required: false,
       default: true,
     },
+    tag: {
+      type: String,
+      required: false,
+      default: "button",
+      validator(value) {
+        return ["button", "a"].includes(value);
+      },
+    },
     href: {
       type: String,
       required: false,
@@ -68,11 +89,6 @@ export default {
       type: String,
       required: false,
       default: "_blank",
-    },
-    label: {
-      type: String,
-      required: false,
-      default: "",
     },
     loading: {
       type: Boolean,
@@ -94,7 +110,12 @@ export default {
       required: false,
       default: false,
     },
-    round: {
+    icon: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    flat: {
       type: Boolean,
       required: false,
       default: false,
@@ -102,23 +123,8 @@ export default {
   },
   emits: ["click"],
   computed: {
-    buttonClass() {
-      return {
-        "base-button-primary": this.color === "primary",
-        "base-button-negative": this.color === "negative",
-        "base-button-flat": this.color === "flat",
-        "base-button-rounded": this.rounded,
-        "base-button-fullwidth": this.wFull,
-        "base-button-disabled": this.disabled,
-        "base-button-round": this.round,
-        "base-button-default": !this.round,
-      };
-    },
-  },
-  methods: {
-    handleClick(event) {
-      this.$emit("click", event);
-      if (this.href) window.open(this.href, this.target);
+    isDisabled() {
+      return this.disabled || this.loading;
     },
   },
 };
@@ -126,9 +132,12 @@ export default {
 
 <style lang="postcss">
 .base-button {
-  @apply flex rounded-sm duration-200 transition-colors items-center justify-center uppercase text-center select-none text-sm font-medium focus:outline-none focus:ring-2;
+  @apply flex rounded-sm duration-200 transition-colors items-center justify-center uppercase text-center select-none text-sm font-medium focus:outline-none visited:text-current;
 }
-.base-button-round {
+.base-button:focus-visible {
+  @apply focus:ring-2;
+}
+.base-button-icon {
   @apply h-9 w-9 rounded-full;
 }
 .base-button-default {
@@ -144,12 +153,20 @@ export default {
   @apply rounded-full;
 }
 .base-button-flat {
-  @apply hover:bg-black hover:bg-opacity-10;
+  @apply text-black !dark:text-white !bg-transparent;
+  @apply !hover:bg-opacity-15 !hover:bg-blue-600;
+  @apply !dark:hover:bg-opacity-10 !dark:hover:bg-blue-500;
 }
 .base-button-primary {
-  @apply focus:ring-blue-200 dark:focus:ring-blue-400 text-white bg-blue-500 hover:bg-blue-600;
+  @apply text-white bg-blue-500;
+}
+.base-button-primary--hover {
+  @apply hover:bg-blue-600;
 }
 .base-button-negative {
-  @apply focus:ring-red-200 dark:focus:ring-red-800 text-white bg-red-500 hover:bg-red-600;
+  @apply text-white bg-red-500;
+}
+.base-button-negative--hover {
+  @apply hover:bg-red-600;
 }
 </style>

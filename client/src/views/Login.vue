@@ -73,24 +73,24 @@
           label="Школа"
           :options="$options.schools"
         />
-        <base-button
-          type="submit"
-          w-full
-          color="primary"
-          label="Войти"
-          :loading="loading"
-        />
+        <base-button type="submit" w-full color="primary" :loading="loading">
+          Войти
+        </base-button>
         <div class="flex justify-between items-center">
           <theme-toggler />
           <base-button
-            round
+            icon
+            tag="a"
+            flat
             href="http://t.me/enis2nis"
             aria-label="Telegram Link"
           >
             <telegram-icon />
           </base-button>
           <base-button
-            round
+            icon
+            tag="a"
+            flat
             href="https://github.com/anyrange/enis2"
             aria-label="Github Link"
           >

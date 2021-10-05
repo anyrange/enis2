@@ -1,5 +1,5 @@
 <template>
-  <base-button round aria-label="Toogle Theme" @click="toggleTheme()">
+  <base-button flat icon aria-label="Toogle Theme" @click="toggleTheme()">
     <component :is="theme === 'dark' ? 'sun-icon' : 'moon-icon'" />
   </base-button>
 </template>
