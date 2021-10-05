@@ -37,7 +37,7 @@ export default {
     getTab: (state) => {
       return state.tab;
     },
-    getCity: (state) => {
+    getSchool: (state) => {
       return state.school;
     },
     getTheme: (state) => {
@@ -64,15 +64,21 @@ export default {
         ? commit("SET_THEME", "dark")
         : commit("SET_THEME", "light");
     },
-    async predictSchool({ commit, state }) {
-      if (state.school) return;
-
-      commit("SET_SCHOOL", schools.find((item) => item.default).value);
-
-      const { city } = await getUserCity();
-      const predictedSchool = schools.find((item) => item.city === city);
-
-      predictedSchool && commit("SET_SCHOOL", predictedSchool.value);
+    async predictSchool({ state, commit }) {
+      if (state.school) {
+        return;
+      }
+      try {
+        const { city } = await getUserCity();
+        const predictedSchool = schools.find(
+          (item) => item.city === city || city.includes(item.city)
+        );
+        if (city && predictedSchool) {
+          commit("SET_SCHOOL", predictedSchool.value);
+        }
+      } catch (err) {
+        return Promise.reject(err);
+      }
     },
   },
 };

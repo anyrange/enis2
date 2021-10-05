@@ -52,8 +52,7 @@
   {
     "value": "pvl",
     "label": "Павлодар ХБН",
-    "city": "Pavlodar",
-    "default": true
+    "city": "Pavlodar"
   },
   {
     "value": "ptr",

@@ -26,7 +26,7 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
   config.params = {
     ...config.params,
-    city: $store.getters["preferences/getCity"],
+    city: $store.getters["preferences/getSchool"],
   };
   return config;
 });
@@ -47,7 +47,7 @@ api.interceptors.response.use(
   }
 );
 
-export const getUserCity = () => ipinfo.get("/");
+export const getUserCity = () => ipinfo.get("json", { timeout: 1200 });
 
 export const login = (user) => api.post("login", user);
 export const refreshCaptcha = () => api.get("login/captchaRefresh");
@@ -85,9 +85,9 @@ if (isDev) {
       } = await import("./mockData.js");
 
       const mock = new MockAdapter(api, { delayResponse: 300 });
-      const mockIp = new MockAdapter(ipinfo, { delayResponse: 100 });
+      const mockIp = new MockAdapter(ipinfo, { delayResponse: 1200 });
 
-      mockIp.onGet("city").reply(200, {
+      mockIp.onGet("json").reply(200, {
         city: "Pavlodar",
       });
 

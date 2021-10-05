@@ -34,19 +34,31 @@
           focus:border-blue-500
           focus:ring-1
           focus:outline-none
-          disabled:opacity-40
+          disabled:opacity-60
           bg-gray-50
           dark:bg-gray-600-spotify
         "
         placeholder="Regular input"
+        :class="{ 'animate-pulse': loading }"
+        :disabled="isDisabled"
       >
-        <option
-          v-for="(option, index) in options"
-          :key="index"
-          :value="option.value"
-        >
-          {{ option.label }}
+        <option value="none" selected disabled hidden>
+          <slot name="default">Выберите что-нибудь</slot>
         </option>
+        <template v-if="loading">
+          <option value="loading" selected disabled hidden>
+            <slot name="loading">Загрузка...</slot>
+          </option>
+        </template>
+        <template v-else>
+          <option
+            v-for="(option, index) in options"
+            :key="index"
+            :value="option.value"
+          >
+            {{ option.label }}
+          </option>
+        </template>
       </select>
       <div
         class="
@@ -58,6 +70,7 @@
           px-2
           pointer-events-none
         "
+        :class="{ 'opacity-30': isDisabled }"
       >
         <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
           <path
@@ -80,20 +93,33 @@ export default {
       required: true,
     },
     label: {
-      type: String,
+      type: [Boolean, String],
       required: false,
-      default: "",
+      default: false,
     },
     options: {
       type: Array,
       required: true,
     },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   emits: ["update:modelValue"],
   computed: {
+    isDisabled() {
+      return this.disabled || this.loading;
+    },
     value: {
       get() {
-        return this.modelValue;
+        return this.loading ? "loading" : this.modelValue || "none";
       },
       set(value) {
         this.$emit("update:modelValue", value);

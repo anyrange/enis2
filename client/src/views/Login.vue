@@ -71,8 +71,12 @@
           v-model="school"
           class="-mt-2"
           label="Школа"
+          :loading="loadingSchool"
           :options="$options.schools"
-        />
+        >
+          <template #default>Выберите школу</template>
+          <template #loading>Угадываю школу...</template>
+        </base-select>
         <base-button type="submit" w-full color="primary" :loading="loading">
           Войти
         </base-button>
@@ -130,6 +134,7 @@ export default {
   data() {
     return {
       loading: false,
+      loadingSchool: false,
       user: {
         login: "",
         password: "",
@@ -169,9 +174,10 @@ export default {
   },
   async created() {
     try {
+      this.loadingSchool = true;
       await this.predictSchool();
-    } catch (error) {
-      console.log(error);
+    } finally {
+      this.loadingSchool = false;
     }
   },
   methods: {
