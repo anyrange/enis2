@@ -64,10 +64,7 @@ export default {
         ? commit("SET_THEME", "dark")
         : commit("SET_THEME", "light");
     },
-    async predictSchool({ state, commit }) {
-      if (state.school) {
-        return;
-      }
+    async predictSchool({ commit }) {
       try {
         const { city } = await getUserCity();
         const predictedSchool = schools.find(

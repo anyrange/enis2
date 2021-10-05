@@ -173,6 +173,7 @@ export default {
     },
   },
   async created() {
+    if (this.school) return;
     try {
       this.loadingSchool = true;
       await this.predictSchool();
