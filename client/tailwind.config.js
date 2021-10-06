@@ -1,3 +1,5 @@
+import colors from "windicss/colors";
+
 export default {
   darkMode: "class",
   theme: {
@@ -9,6 +11,7 @@ export default {
         "-1": "-1",
       },
       colors: {
+        ...colors,
         "gray-1000-spotify": "#080707",
         "gray-950-spotify": "#191414",
         "gray-900-spotify": "#121212",
@@ -23,10 +26,12 @@ export default {
         "q-warning": "#f2c037",
         "q-info": "#31ccec",
       },
+      fontFamily: {
+        inter: ['"Inter"', "sans-serif"],
+      },
+      fontSize: {
+        xxs: "0.7rem",
+      },
     },
   },
-  variants: {
-    extend: {},
-  },
-  plugins: [],
 };
