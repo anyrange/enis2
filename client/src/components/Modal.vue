@@ -36,7 +36,6 @@
                 align-middle
                 sm:max-w-lg
                 w-full
-                p-2
                 mr-0
                 sm:mr-2
               "
@@ -45,7 +44,38 @@
               aria-labelledby="modal-headline"
               @click.stop
             >
-              <slot />
+              <svg
+                class="
+                  w-8
+                  h-8
+                  p-1
+                  text-gray-500-spotify
+                  dark:bg-gray-800-spotify dark:hover:bg-gray-700-spotify
+                  bg-white
+                  hover:bg-gray-100
+                  rounded-full
+                  duration-100
+                  cursor-pointer
+                  absolute
+                  right-0
+                  top-0
+                "
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+                @click="close"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+              <div class="p-2">
+                <slot />
+              </div>
             </div>
           </transition>
         </div>

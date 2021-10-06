@@ -1,9 +1,9 @@
 <template>
   <div class="flex flex-col h-screen bg-gray-100 dark:bg-gray-900-spotify">
     <div class="flex-1 flex flex-col overflow-y-hidden">
-      <header class="w-full sticky top-0 bg-white dark:bg-gray-800-spotify">
-        <div class="w-full md:w-1/2 m-auto">
-          <tabs v-model="currentYear">
+      <header>
+        <tabs v-model="currentYear" class="tabs-bg">
+          <div class="tabs-container">
             <tab
               v-for="year in years.data"
               :key="year.value"
@@ -13,8 +13,14 @@
             >
               {{ year.label }}
             </tab>
-          </tabs>
-          <tabs v-model="currentTab">
+          </div>
+        </tabs>
+        <tabs
+          v-model="currentTab"
+          class="tabs-bg floating-nav"
+          :class="{ 'floating-nav--hidden': !showTabs }"
+        >
+          <div class="tabs-container">
             <tab
               v-for="(term, index) in terms.data"
               :key="term.Id"
@@ -31,12 +37,21 @@
             >
               <grades-icon />
             </tab>
-          </tabs>
-        </div>
+          </div>
+        </tabs>
       </header>
       <main id="content" class="flex w-full justify-center overflow-y-auto">
         <section
-          class="flex flex-col p-3 space-y-3 sm:w-3/4 md:w-1/2 xl:w-1/4 w-full"
+          class="
+            mt-12
+            flex flex-col
+            p-3
+            space-y-3
+            sm:w-3/4
+            md:w-1/2
+            xl:w-1/4
+            w-full
+          "
         >
           <spinner v-if="loading" />
           <template v-else>
@@ -62,21 +77,12 @@
         </section>
       </main>
       <footer
-        class="
-          absolute
-          bottom-6
-          bg-gray-200
-          dark:bg-gray-600-spotify
-          rounded-full
-        "
+        class="absolute bottom-4 rounded-full"
         style="left: 50%; transform: translateX(-50%)"
       >
-        <div class="flex justify-center space-x-2 p-1">
-          <theme-toggler />
-          <base-button rounded color="negative" @click="logout()">
-            Выйти
-          </base-button>
-        </div>
+        <base-button rounded color="negative" @click="logout()">
+          Выйти
+        </base-button>
       </footer>
     </div>
     <modal :show="subjectModalOpened" @close="subjectModalOpened = false">
@@ -109,7 +115,6 @@ import SubjectGrades from "../components/SubjectGrades.vue";
 import SubjectSections from "../components/SubjectSections.vue";
 import GradesIcon from "../components/icons/GradesIcon.vue";
 import Error from "../components/Error.vue";
-import ThemeToggler from "../components/ThemeToggler.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
 
 export default {
@@ -126,13 +131,15 @@ export default {
     SubjectSections,
     GradesIcon,
     Error,
-    ThemeToggler,
   },
   data() {
     return {
       subjectModalOpened: false,
       error: false,
       subjectError: false,
+      showTabs: true,
+      scrollPosition: 0,
+      contentWindow: null,
     };
   },
   GREEK_NUMERALS: {
@@ -187,8 +194,12 @@ export default {
       this.currentTab = this.currentTab || this.actualTermId;
       await this.getContent(this.currentTab);
     } catch (error) {
-      this.error = error.response.data.message;
+      this.error = error?.response?.data?.message || "Что-то пошло не так";
     }
+  },
+  mounted() {
+    this.contentWindow = document.getElementById("content");
+    this.contentWindow.addEventListener("scroll", this.handleScroll);
   },
   methods: {
     ...mapActions({
@@ -240,6 +251,31 @@ export default {
     sortByScore(array) {
       return array.sort((firstEl, secondEl) => secondEl.Score - firstEl.Score);
     },
+    handleScroll() {
+      this.scrollPosition = this.contentWindow.scrollTop;
+      if (this.scrollPosition >= 48) {
+        this.showTabs = false;
+      } else {
+        this.showTabs = true;
+      }
+    },
   },
 };
 </script>
+
+<style lang="postcss">
+.tabs-bg {
+  @apply bg-white dark:bg-gray-800-spotify;
+}
+.tabs-container {
+  @apply flex w-full md:w-1/2 m-auto;
+}
+.floating-nav {
+  @apply fixed w-full;
+  @apply transition duration-300;
+  transform: translate3d(0, 0, 0);
+}
+.floating-nav.floating-nav--hidden {
+  transform: translate3d(0, -100%, 0);
+}
+</style>

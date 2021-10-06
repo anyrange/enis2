@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'custom-scrollbar': !isMobile }">
+  <div :class="{ 'custom-scrollbars': !isMobile }">
     <router-view />
     <notifications />
   </div>

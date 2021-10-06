@@ -132,7 +132,7 @@ export default {
 
 <style lang="postcss">
 .base-button {
-  @apply flex rounded-sm duration-200 transition-colors items-center justify-center uppercase text-center select-none text-sm font-medium focus:outline-none visited:text-current;
+  @apply flex rounded-sm shadow duration-200 transition-colors items-center justify-center uppercase text-center select-none text-sm font-medium focus:outline-none visited:text-current;
 }
 .base-button:focus-visible {
   @apply focus:ring-2;
@@ -153,9 +153,7 @@ export default {
   @apply rounded-full;
 }
 .base-button-flat {
-  @apply text-black !dark:text-white !bg-transparent;
-  @apply !hover:bg-opacity-15 !hover:bg-blue-600;
-  @apply !dark:hover:bg-opacity-10 !dark:hover:bg-blue-500;
+  @apply text-black !dark:text-white !bg-transparent !hover:bg-opacity-10 !hover:bg-black;
 }
 .base-button-primary {
   @apply text-white bg-blue-500;
