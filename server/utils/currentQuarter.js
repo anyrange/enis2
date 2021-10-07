@@ -6,10 +6,10 @@ export default function () {
 
   const day = Math.floor((now - start) / oneDay);
 
-  const firstQuarterEndDate = new Date(new Date(now.setMonth(9)).setDate(6));
+  const firstQuarterEndDate = new Date(new Date(now.setMonth(10)).setDate(6));
   const secondQuarterEndDate = new Date(new Date(now.setMonth(0)).setDate(9));
-  const thirdQuarterEndDate = new Date(new Date(now.setMonth(1)).setDate(27));
-  const fourthQuarterEndDate = new Date(new Date(now.setMonth(7)).setDate(15));
+  const thirdQuarterEndDate = new Date(new Date(now.setMonth(2)).setDate(27));
+  const fourthQuarterEndDate = new Date(new Date(now.setMonth(8)).setDate(15));
 
   const firstQuarterEndDiff = firstQuarterEndDate - start;
   const secondQuarterEndDiff = secondQuarterEndDate - start;
@@ -21,8 +21,8 @@ export default function () {
   const thirdQuarterEnd = Math.floor(thirdQuarterEndDiff / oneDay);
   const fourthQuarterEnd = Math.floor(fourthQuarterEndDiff / oneDay);
 
-  if (day > fourthQuarterEnd && day < firstQuarterEnd) return 1;
-  if (day > firstQuarterEnd && day < secondQuarterEnd) return 2;
-  if (day > secondQuarterEnd && day < thirdQuarterEnd) return 3;
-  if (day > thirdQuarterEnd && day < fourthQuarterEnd) return 4;
+  if (day > fourthQuarterEnd && day <= firstQuarterEnd) return 1;
+  if (day > firstQuarterEnd && day <= secondQuarterEnd) return 2;
+  if (day > secondQuarterEnd && day <= thirdQuarterEnd) return 3;
+  if (day > thirdQuarterEnd && day <= fourthQuarterEnd) return 4;
 }
