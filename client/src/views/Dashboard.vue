@@ -53,7 +53,7 @@
             w-full
           "
         >
-          <spinner v-if="loading" />
+          <loading-spinner v-if="loading" />
           <template v-else>
             <error v-if="error">{{ error }}</error>
             <template v-else>
@@ -88,7 +88,7 @@
     <modal :show="subjectModalOpened" @close="subjectModalOpened = false">
       <div class="flex flex-col space-y-2">
         <subject-diary :hoverable="false" :subject="subject.data.current" />
-        <loader v-if="subject.loading" />
+        <loading-dots v-if="subject.loading" />
         <template v-else>
           <template v-if="!subjectError">
             <subject-sections label="СОР" :subject="subject.data.SAU" />
@@ -107,8 +107,8 @@
 import Tabs from "../components/Tabs.vue";
 import Tab from "../components/Tab.vue";
 import BaseButton from "../components/BaseButton.vue";
-import Spinner from "../components/Spinner.vue";
-import Loader from "../components/Loader.vue";
+import LoadingSpinner from "../components/LoadingSpinner.vue";
+import LoadingDots from "../components/LoadingDots.vue";
 import Modal from "../components/Modal.vue";
 import SubjectDiary from "../components/SubjectDiary.vue";
 import SubjectGrades from "../components/SubjectGrades.vue";
@@ -123,8 +123,8 @@ export default {
     Tabs,
     Tab,
     BaseButton,
-    Spinner,
-    Loader,
+    LoadingSpinner,
+    LoadingDots,
     Modal,
     SubjectDiary,
     SubjectGrades,
