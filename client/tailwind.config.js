@@ -4,12 +4,6 @@ export default {
   darkMode: "class",
   theme: {
     extend: {
-      transformOrigin: {
-        0: "0%",
-      },
-      zIndex: {
-        "-1": "-1",
-      },
       colors: {
         ...colors,
         "gray-1000-spotify": "#080707",

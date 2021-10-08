@@ -8,6 +8,7 @@
     :href="href"
     :role="tag === 'a' ? 'link' : 'button'"
     :target="target"
+    :rel="rel"
     :class="[
       { 'base-button-rounded': rounded },
       { 'base-button-disabled': disabled },
@@ -89,6 +90,11 @@ export default {
       type: String,
       required: false,
       default: "_blank",
+    },
+    rel: {
+      type: String,
+      required: false,
+      default: "noopener",
     },
     loading: {
       type: Boolean,

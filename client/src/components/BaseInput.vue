@@ -1,18 +1,16 @@
 <template>
-  <div class="flex flex-col space-y-1">
-    <div class="relative">
-      <input
-        v-bind="$attrs"
-        :id="label"
-        v-maska="mask"
-        class="md-input"
-        :placeholder="label"
-        autocomplete="false"
-        :value="modelValue"
-        @input="$emit('update:modelValue', $event.target.value)"
-      />
-      <div class="md-input-underline" />
-    </div>
+  <div class="relative">
+    <input
+      v-bind="$attrs"
+      :id="label"
+      v-maska="mask"
+      class="md-input"
+      :placeholder="label"
+      autocomplete="false"
+      :value="modelValue"
+      @input="$emit('update:modelValue', $event.target.value)"
+    />
+    <div class="md-input-underline" />
   </div>
 </template>
 

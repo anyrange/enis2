@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: "Loader",
+  name: "LoadingDots",
 };
 </script>
 

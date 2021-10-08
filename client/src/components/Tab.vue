@@ -58,7 +58,7 @@ export default {
   @apply h-12 w-12 flex flex-grow items-center justify-center text-base font-medium cursor-pointer select-none duration-200 outline-none;
 }
 .tab:focus-visible {
-  @apply focus:ring-2;
+  @apply focus:ring-2 ring-inset;
 }
 .active-tab {
   @apply text-blue-500 font-semibold hover:bg-blue-500 hover:bg-opacity-10;

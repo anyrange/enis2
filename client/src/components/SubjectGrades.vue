@@ -75,9 +75,17 @@ export default {
   },
   methods: {
     formatScore(score) {
-      if (score === "true") return "Зачёт";
-      if (score === "false") return "Незачёт";
-      return score;
+      switch (score) {
+        case  "true":
+          return "Зачёт";
+        case "false":
+          return "Незачёт";
+        case "none":
+          return "-"
+        default:
+          return score
+      }
+
     },
   },
 };

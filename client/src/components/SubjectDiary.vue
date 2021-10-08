@@ -1,15 +1,23 @@
 <template>
-  <div
+  <button
     id="subjectDiary"
-    tabindex="0"
-    class="rounded shadow bg-white dark:bg-gray-800-spotify outline-none"
-    :class="{
-      'cursor-pointer hover:bg-gray-200 hover:bg-opacity-10 dark:hover:bg-gray-700-spotify':
-        hoverable,
-    }"
+    class="
+      rounded
+      shadow
+      bg-white
+      dark:bg-gray-800-spotify
+      appearence-none
+      focus:outline-none
+      outline-none
+    "
+    :class="[
+      hoverable
+        ? 'cursor-pointer hover:bg-gray-200 hover:bg-opacity-10 dark:hover:bg-gray-700-spotify'
+        : 'cursor-default select-text',
+    ]"
   >
     <div class="space-y-2 p-2">
-      <h3 class="text-base font-medium truncate">
+      <h3 class="flex text-base font-medium truncate">
         {{ subject.Name }}
       </h3>
       <div class="flex justify-between">
@@ -34,7 +42,7 @@
     >
       <div class="h-1 rounded-bl-md" :style="barStyle" :class="barClass" />
     </div>
-  </div>
+  </button>
 </template>
 
 <script>
@@ -58,11 +66,8 @@ export default {
     afterDecimal() {
       return (this.subject.Score + "").split(".")[1];
     },
-    valueRounded() {
-      return Math.ceil(this.subject.Score);
-    },
     barClass() {
-      const roundedScore = this.valueRounded;
+      const roundedScore = Math.ceil(this.subject.Score);
       if (roundedScore >= 85) return "bg-q-positive";
       if (roundedScore >= 65) return "bg-q-warning";
       return "bg-q-negative";

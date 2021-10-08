@@ -85,7 +85,7 @@
         </base-button>
       </footer>
     </div>
-    <modal :show="subjectModalOpened" @close="subjectModalOpened = false">
+    <modal :show="subjectModalOpened" @close="closeModal()">
       <div class="flex flex-col space-y-2">
         <subject-diary :hoverable="false" :subject="subject.data.current" />
         <loading-dots v-if="subject.loading" />
@@ -239,7 +239,14 @@ export default {
         this.error = error.response.data.message;
       }
     },
+    closeModal() {
+      this.subjectModalOpened = false;
+      setTimeout(() => {
+        this.$store.commit("subject/CLEAR_SUBJECT");
+      }, 100);
+    },
     async showSubject(subject) {
+      if (subject.Name === this.subject.data.current.Name) return;
       this.subjectModalOpened = true;
       try {
         await this.fetchSubject(subject);
