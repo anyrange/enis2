@@ -29,7 +29,6 @@ export default async function (fastify) {
                 Exam: { type: "string" },
                 Year: { type: "string" },
                 Final: { type: "string" },
-                IsNotChosen: { type: "boolean" },
               },
             },
           },
@@ -101,13 +100,15 @@ export default async function (fastify) {
         url: `${baseUrl}/ReportCardByStudent/GetData`,
       });
 
-      reply.send(
-        grades.data.filter(
-          (grade) =>
-            grade.IsNotChosen &&
-            grade.ComponentName === "Инвариантный компонент"
-        )
+      const array = grades.data.filter(
+        (grade) =>
+          grade.IsNotChosen && grade.ComponentName === "Инвариантный компонент"
       );
+
+      // remove item duplicates
+      reply.send([
+        ...new Map(array.map((item) => [item["SubjectName"], item])).values(),
+      ]);
     }
   );
 }

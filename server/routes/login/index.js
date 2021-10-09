@@ -10,7 +10,7 @@ export default async function (fastify) {
         querystring,
         body: {
           type: "object",
-          required: ["login", "password", "captchaInput"],
+          required: ["login", "password"],
           properties: {
             login: { type: "string", minLength: 12, maxLength: 12 },
             password: { type: "string", minLength: 1 },
@@ -41,10 +41,13 @@ export default async function (fastify) {
       },
     },
     async (req, reply) => {
+      const { login, password, captchaInput } = req.body;
+
       const params = new URLSearchParams();
-      params.append("login", req.body.login);
-      params.append("password", req.body.password);
-      params.append("captchaInput", req.body.captchaInput);
+
+      params.append("login", login);
+      params.append("password", password);
+      if (captchaInput) params.append("captchaInput", captchaInput);
 
       const cookie = fastify.cookieStringify(req.cookies);
 
