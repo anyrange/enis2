@@ -190,7 +190,7 @@ export default {
     try {
       await this.fetchYears();
       this.currentYear = this.currentYear || this.actualYearId;
-      await this.fetchTermsByYear(this.currentYear);
+      await this.fetchTerms(this.currentYear);
       this.currentTab = this.currentTab || this.actualTermId;
       await this.getContent(this.currentTab);
     } catch (error) {
@@ -208,7 +208,7 @@ export default {
       fetchGrades: "grades/fetchGrades",
       fetchSubject: "subject/fetchSubject",
       fetchYears: "years/fetchYears",
-      fetchTermsByYear: "terms/fetchTermsByYear",
+      fetchTerms: "terms/fetchTerms",
     }),
     async getContent(tab) {
       try {
@@ -222,16 +222,16 @@ export default {
     },
     async getTermsAndContentByYear(yearId) {
       try {
-        const previusTabName =
+        const previousTabName =
           this.currentTab === "grades"
             ? "grades"
             : this.terms.data.find((term) => term.Id === this.currentTab)
                 ?.Name || "";
-        await this.fetchTermsByYear(yearId);
+        await this.fetchTerms(yearId);
         const currentTabName =
           this.currentTab === "grades"
             ? "grades"
-            : this.terms.data.find((term) => term.Name === previusTabName)
+            : this.terms.data.find((term) => term.Name === previousTabName)
                 ?.Id || "";
         this.currentTab = currentTabName || this.actualTermId;
         await this.getContent(this.currentTab);

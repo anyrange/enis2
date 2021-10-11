@@ -53,7 +53,7 @@ export const login = (user) => api.post("login", user);
 export const refreshCaptcha = () => api.get("login/captchaRefresh");
 
 export const getYears = () => api.get("dashboard/years");
-export const getTermsByYear = (yearId) => api.get(`dashboard/years/${yearId}`);
+export const getTerms = (yearId) => api.get(`dashboard/years/${yearId}`);
 export const getDiary = (id) => api.get(`dashboard/terms/${id}`);
 export const getSubject = (journalId, evalId) => {
   return api.get("dashboard/subject", {

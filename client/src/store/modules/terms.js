@@ -1,4 +1,4 @@
-import { getTermsByYear } from "../../api";
+import { getTerms } from "../../api";
 
 const defaultState = () => {
   return {
@@ -27,10 +27,10 @@ export default {
     },
   },
   actions: {
-    fetchTermsByYear: async ({ commit }, id) => {
+    fetchTerms: async ({ commit }, id) => {
       commit("SET_LOADING", true);
       try {
-        commit("SET_TERMS", await getTermsByYear(id));
+        commit("SET_TERMS", await getTerms(id));
       } catch (err) {
         return Promise.reject(err);
       } finally {
