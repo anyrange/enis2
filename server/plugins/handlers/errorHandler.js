@@ -11,7 +11,7 @@ const plugin = fp(async function plugin(fastify) {
       return reply.code(400).send({ message });
     }
 
-    if (code === "ETIMEDOUT")
+    if (code === "ETIMEDOUT" || code === 503)
       return reply.code(503).send({ message: "Попробуйте снова" });
 
     if (code && typeof code === "number" && code > 200 && code < 600)
