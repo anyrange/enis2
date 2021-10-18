@@ -127,7 +127,7 @@
                 icon
                 tag="a"
                 flat
-                href="http://t.me/enis2nis"
+                href="https://t.me/joinchat/ToHSvx2gVOBkMzBi"
                 aria-label="Telegram Link"
               >
                 <telegram-icon />
