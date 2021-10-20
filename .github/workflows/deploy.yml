@@ -20,6 +20,7 @@ jobs:
             cd /var/www/enis2
             pm2 stop enis
             git pull
+            nvm use
             npm i
             npm run build
             pm2 start enis
