@@ -19,10 +19,9 @@
         sm:m-auto
         w-full
         h-[90%]
-        sm:h-auto sm:w-3/5
-        md:w-1/2
-        xl:w-2/6
-        2xl:w-1/5
+        sm:h-auto
+        w-full
+        sm:w-96
       "
     >
       <div
@@ -146,6 +145,22 @@
         </main>
       </div>
     </div>
+    <modal :show="showNotification" @close="showNotification = false">
+      <div class="flex flex-col space-y-2">
+        <h1>🔥 Мы переехали</h1>
+        <p>
+          Благодаря
+          <a href="https://superhooman.co/" class="underline">
+            создателю первого ениша
+          </a>
+          у нас теперь есть
+          <a href="https://enis.que.kz/" class="underline">новый домен</a> и
+          сервер, и хоть этот домен также продолжит работать мы не можем
+          обеспечить здесь стабильную работу нашего сервера
+        </p>
+        <a href="https://enis.que.kz/" class="underline">enis.que.kz</a>
+      </div>
+    </modal>
   </div>
 </template>
 
@@ -153,6 +168,7 @@
 import BaseInput from "../components/BaseInput.vue";
 import BaseButton from "../components/BaseButton.vue";
 import BaseSelect from "../components/BaseSelect.vue";
+import Modal from "../components/Modal.vue";
 import AppIcon from "../components/icons/AppIcon.vue";
 import GithubIcon from "../components/icons/GithubIcon.vue";
 import TelegramIcon from "../components/icons/TelegramIcon.vue";
@@ -170,6 +186,7 @@ export default {
     BaseInput,
     BaseButton,
     BaseSelect,
+    Modal,
     AppIcon,
     GithubIcon,
     MoonIcon,
@@ -194,6 +211,7 @@ export default {
         },
         captchaInput: "",
       },
+      showNotification: false,
     };
   },
   computed: {
@@ -237,6 +255,9 @@ export default {
     } finally {
       this.loadingSchool = false;
     }
+  },
+  mounted() {
+    this.showNotification = window.location.host.includes("enis2.ml");
   },
   methods: {
     ...mapActions({
