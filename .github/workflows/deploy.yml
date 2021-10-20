@@ -1,0 +1,25 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy enis
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.HOST}}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          script: |
+            eval "$(ssh-agent -s)"
+            ssh-add ~/.ssh/id_ed25519
+            cd /var/www/enis2
+            pm2 stop enis
+            git pull
+            npm i
+            npm run build
+            pm2 start enis
