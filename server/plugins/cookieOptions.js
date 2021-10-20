@@ -4,7 +4,7 @@ const plugin = fp(async function plugin(fastify) {
   const year = 60 * 60 * 24 * 365;
   fastify.decorate("cookieOptions", {
     path: "/",
-    sameSite: "strict",
+    sameSite: "none",
     httpOnly: true,
     secure: true,
     domain: url.hostname,
