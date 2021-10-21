@@ -2,21 +2,9 @@ import axios from "axios";
 import $store from "../store";
 import { notify } from "../services/notify";
 
-const isDev = process.env.NODE_ENV === "development";
+const isDev = process.env.NODE_ENV !== "production";
 
-const IPINFO_TOKEN = import.meta.env.VITE_IPINFO_TOKEN;
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
-
-const ipinfo = axios.create({
-  baseURL: "https://ipinfo.io",
-  headers: {
-    Authorization: "Bearer " + IPINFO_TOKEN,
-  },
-});
-
-ipinfo.interceptors.response.use((response) => {
-  return response.data;
-});
 
 const api = axios.create({
   baseURL: SERVER_URL,
@@ -47,7 +35,7 @@ api.interceptors.response.use(
   }
 );
 
-export const getUserCity = () => ipinfo.get("json", { timeout: 1200 });
+export const getUserCity = () => api.get("city", { timeout: 1500 });
 
 export const login = (user) => api.post("login", user);
 export const refreshCaptcha = () => api.get("login/captchaRefresh");
@@ -85,11 +73,8 @@ if (isDev) {
       } = await import("./mockData.js");
 
       const mock = new MockAdapter(api, { delayResponse: 300 });
-      const mockIp = new MockAdapter(ipinfo, { delayResponse: 1200 });
 
-      mockIp.onGet("json").reply(200, {
-        city: "Pavlodar",
-      });
+      mock.onGet("city").reply(200, { city: "Pavlodar" });
 
       mock.onPost("login").reply(200);
       mock.onGet("login/captchaRefresh").reply(200, mockCaptcha);

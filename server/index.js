@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const app = fastify();
+const app = fastify({ trustProxy: true });
 
 const PORT = process.env.PORT || 8887;
 const __filename = fileURLToPath(import.meta.url);
