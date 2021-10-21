@@ -44,8 +44,6 @@ app.register(autoLoad, { dir: join(__dirname, "plugins") });
 app.register(autoLoad, {
   dir: join(__dirname, "routes"),
   routeParams: true,
-  autoHooks: true,
-  cascadeHooks: true,
 });
 
 app.listen(PORT, "0.0.0.0", (err) => {
