@@ -1,8 +1,7 @@
 import axios from "axios";
 import $store from "../store";
 import { notify } from "../services/notify";
-
-const isDev = process.env.NODE_ENV !== "production";
+import { isDev } from "../settings";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -23,17 +22,33 @@ api.interceptors.response.use(
   (response) => {
     return response.data;
   },
-  (error) => {
+  async (error) => {
     if (error.response.status === 401) {
-      $store.dispatch("auth/logout");
-      notify.show({
-        type: "danger",
-        message: error?.response?.data?.message || "Что-то пошло не так",
-      });
+      if (!$store.getters["preferences/getRemember"]) {
+        return logout(error);
+      }
+      try {
+        await $store.dispatch(
+          "auth/login",
+          $store.getters["auth/getCredentials"]
+        );
+        await $store.dispatch("preferences/clearCache");
+        window.location.reload();
+      } catch (error) {
+        return logout(error);
+      }
     }
     return Promise.reject(error);
   }
 );
+
+const logout = (error) => {
+  $store.dispatch("auth/logout");
+  notify.show({
+    type: "danger",
+    message: error.response.data.message,
+  });
+};
 
 export const getUserCity = () => api.get("city", { timeout: 1500 });
 

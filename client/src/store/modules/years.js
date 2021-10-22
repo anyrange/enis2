@@ -27,8 +27,7 @@ export default {
     },
   },
   actions: {
-    fetchYears: async ({ commit, state }) => {
-      if (state.data.length) return;
+    fetchYears: async ({ commit }) => {
       commit("SET_LOADING", true);
       try {
         const years = await getYears();

@@ -5,15 +5,22 @@ export default {
   namespaced: true,
   state: {
     authenticated: false,
+    savedAccount: null,
   },
   mutations: {
     SET_AUTH(state, value) {
       state.authenticated = value;
     },
+    SET_ACCOUNT(state, account) {
+      state.savedAccount = account;
+    },
   },
   getters: {
     isAuthenticated(state) {
       return state.authenticated;
+    },
+    getCredentials(state) {
+      return state.savedAccount;
     },
   },
   actions: {
@@ -27,14 +34,9 @@ export default {
         return Promise.reject(err);
       }
     },
-    logout: ({ commit }) => {
+    logout: ({ commit, dispatch }) => {
       commit("SET_AUTH", false);
-      commit("years/CLEAR_YEARS", null, { root: true });
-      commit("terms/CLEAR_TERMS", null, { root: true });
-      commit("diary/CLEAR_DIARY", null, { root: true });
-      commit("grades/CLEAR_GRADES", null, { root: true });
-      commit("subject/CLEAR_SUBJECT", null, { root: true });
-      commit("preferences/CLEAR_PREFERENCES", null, { root: true });
+      dispatch("preferences/clearCache", null, { root: true });
       $router.push({ name: "login" });
     },
   },

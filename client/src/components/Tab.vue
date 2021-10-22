@@ -4,12 +4,12 @@
     v-wave
     class="tab"
     :class="[
-      { 'disabled-tab': disabled },
+      { 'disabled-tab': isDisabled },
       [isActive ? 'active-tab' : 'incative-tab'],
     ]"
     @click="activateTab(name)"
   >
-    <slot />
+    <slot> </slot>
   </button>
 </template>
 
@@ -31,9 +31,16 @@ export default {
       type: Boolean,
       required: false,
     },
+    loading: {
+      type: Boolean,
+      required: false,
+    },
   },
   emits: ["selected"],
   computed: {
+    isDisabled() {
+      return this.disabled || this.loading;
+    },
     active() {
       return this.state.active();
     },
@@ -43,7 +50,7 @@ export default {
   },
   methods: {
     activateTab(name) {
-      if (this.disabled || name === this.active) {
+      if (this.isDisabled || name === this.active) {
         return;
       }
       this.$emit("selected", name);

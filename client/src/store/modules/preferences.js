@@ -7,6 +7,7 @@ const defaultState = () => {
     year: "",
     theme: "",
     school: "",
+    remember: false,
   };
 };
 
@@ -26,6 +27,9 @@ export default {
     SET_SCHOOL(state, school) {
       state.school = school;
     },
+    SET_REMEMBER(state, value) {
+      state.remember = value;
+    },
     CLEAR_PREFERENCES(state) {
       Object.assign(state, {
         tab: defaultState().tab,
@@ -42,6 +46,9 @@ export default {
     },
     getTheme: (state) => {
       return state.theme;
+    },
+    getRemember: (state) => {
+      return state.remember;
     },
   },
   actions: {
@@ -76,6 +83,14 @@ export default {
       } catch (err) {
         return Promise.reject(err);
       }
+    },
+    clearCache: ({ commit }) => {
+      commit("CLEAR_PREFERENCES");
+      commit("years/CLEAR_YEARS", null, { root: true });
+      commit("terms/CLEAR_TERMS", null, { root: true });
+      commit("diary/CLEAR_DIARY", null, { root: true });
+      commit("grades/CLEAR_GRADES", null, { root: true });
+      commit("subject/CLEAR_SUBJECT", null, { root: true });
     },
   },
 };

@@ -102,6 +102,11 @@
                 <template #default>Выберите школу</template>
                 <template #loading>Угадываю школу...</template>
               </base-select>
+              <base-checkbox
+                id="rememberMe"
+                v-model="rememberMe"
+                label="Запомнить меня"
+              />
               <base-button
                 type="submit"
                 w-full
@@ -168,6 +173,7 @@
 import BaseInput from "../components/BaseInput.vue";
 import BaseButton from "../components/BaseButton.vue";
 import BaseSelect from "../components/BaseSelect.vue";
+import BaseCheckbox from "../components/BaseCheckbox.vue";
 import Modal from "../components/Modal.vue";
 import AppIcon from "../components/icons/AppIcon.vue";
 import GithubIcon from "../components/icons/GithubIcon.vue";
@@ -186,6 +192,7 @@ export default {
     BaseInput,
     BaseButton,
     BaseSelect,
+    BaseCheckbox,
     Modal,
     AppIcon,
     GithubIcon,
@@ -193,7 +200,6 @@ export default {
     SunIcon,
     TelegramIcon,
   },
-  schools,
   data() {
     return {
       loading: false,
@@ -214,6 +220,8 @@ export default {
       showNotification: false,
     };
   },
+  schools,
+  emojis,
   computed: {
     ...mapGetters({
       theme: "preferences/getTheme",
@@ -226,6 +234,14 @@ export default {
         this.$store.commit("preferences/SET_SCHOOL", value);
       },
     },
+    rememberMe: {
+      get() {
+        return this.$store.state.preferences.remember;
+      },
+      set(value) {
+        this.$store.commit("preferences/SET_REMEMBER", value);
+      },
+    },
     formValidated() {
       return this.form.login.valid && this.form.password.valid;
     },
@@ -234,7 +250,6 @@ export default {
       return array[Math.floor(Math.random() * array.length)];
     },
   },
-  emojis,
   watch: {
     form: {
       handler({ login, password }) {
@@ -271,21 +286,23 @@ export default {
     },
     async submit() {
       const form = this.form;
-
-      this.validationStarted = true;
-      this.validateForm({
+      const account = {
         login: form.login.value,
         password: form.password.value,
-      });
-      if (!this.formValidated) return;
+      };
+
+      this.validationStarted = true;
+      this.validateForm(account);
+
+      if (!this.formValidated || !this.school) return;
 
       this.loading = true;
       try {
         await this.login({
-          login: form.login.value,
-          password: form.password.value,
+          ...account,
           captchaInput: form.captchaInput,
         });
+        this.$store.commit("auth/SET_ACCOUNT", account);
       } catch (error) {
         notify.show({
           type: "danger",

@@ -8,7 +8,7 @@
               v-for="year in years.data"
               :key="year.value"
               :name="year.value"
-              :disabled="loading"
+              :loading="loading"
               @selected="getTermsAndContentByYear(year.value)"
             >
               {{ year.label }}
@@ -25,14 +25,14 @@
               v-for="(term, index) in terms.data"
               :key="term.Id"
               :name="term.Id"
-              :disabled="loading"
+              :loading="loading"
               @selected="getContent(term.Id)"
             >
               {{ $options.GREEK_NUMERALS[index + 1] }}
             </tab>
             <tab
               name="grades"
-              :disabled="loading"
+              :loading="loading"
               @selected="getContent('grades')"
             >
               <grades-icon />
@@ -116,6 +116,7 @@ import SubjectSections from "../components/SubjectSections.vue";
 import GradesIcon from "../components/icons/GradesIcon.vue";
 import Error from "../components/Error.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
+import { debounce } from "../utils";
 
 export default {
   name: "Dashboard",
@@ -140,6 +141,7 @@ export default {
       showTabs: true,
       scrollPosition: 0,
       contentWindow: null,
+      loading: true,
     };
   },
   GREEK_NUMERALS: {
@@ -177,7 +179,7 @@ export default {
         this.$store.commit("preferences/SET_YEAR", value);
       },
     },
-    loading() {
+    loadingStates() {
       return (
         this.years.loading ||
         this.terms.loading ||
@@ -185,6 +187,11 @@ export default {
         this.grades.loading
       );
     },
+  },
+  watch: {
+    loadingStates: debounce(function (value) {
+      this.loading = value;
+    }, 5),
   },
   async created() {
     try {
@@ -194,6 +201,7 @@ export default {
       this.currentTab = this.currentTab || this.actualTermId;
       await this.getContent(this.currentTab);
     } catch (error) {
+      if (error.response.status === 401) return;
       this.error = error?.response?.data?.message || "Что-то пошло не так";
     }
   },
