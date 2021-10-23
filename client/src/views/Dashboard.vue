@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-screen bg-gray-100 dark:bg-gray-900-spotify">
+  <div class="flex flex-col h-screen">
     <div class="flex-1 flex flex-col overflow-y-hidden">
       <header>
         <tabs v-model="currentYearName" class="tabs-bg">

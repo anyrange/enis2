@@ -1,5 +1,6 @@
 body {
   @apply font-inter text-black dark:text-white antialiased;
+  @apply bg-gray-50 dark:bg-gray-900-spotify;
 }
 
 @media only screen and (max-width: 1024px) {

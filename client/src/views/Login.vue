@@ -3,8 +3,6 @@
     class="
       flex flex-col
       h-screen
-      bg-gray-50
-      dark:bg-gray-900-spotify
       sm:from-transparent sm:to-transparent
       bg-gradient-to-r bg-conic-to-l
       from-sky-400
