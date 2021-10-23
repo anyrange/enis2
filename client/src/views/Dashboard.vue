@@ -133,6 +133,8 @@ export default {
       scrollPosition: 0,
       contentWindow: null,
       loading: true,
+      retryContentAmount: 0,
+      retryYearsAndTermsAmount: 0,
     };
   },
   GREEK_NUMERALS: {
@@ -218,12 +220,13 @@ export default {
           : await this.fetchDiary(this.getTermIdByName(tab));
         this.error = "";
       } catch (error) {
-        try {
-          await this.fetchTerms(this.getYearIdByName(this.currentYearName));
-          await this.getContent(this.currentTab);
-        } catch (error) {
-          this.error = error.response.data.message;
-        }
+        if (this.retryContentAmount >= 1) return;
+        this.retryContentAmount++;
+        this.error = error.response.data.message;
+        tab === "grades"
+          ? await this.fetchYears()
+          : await this.fetchTerms(this.getYearIdByName(this.currentYearName));
+        await this.getContent(this.currentTab);
       }
     },
     async getTermsAndContentByYear(yearName) {
@@ -231,12 +234,11 @@ export default {
         await this.fetchTerms(this.getYearIdByName(yearName));
         this.getContent(this.currentTab || this.actualTermName);
       } catch (error) {
-        try {
-          await this.fetchYears();
-          await this.getTermsAndContentByYear(this.currentYearName);
-        } catch (error) {
-          this.error = error.response.data.message;
-        }
+        if (this.retryYearsAndTermsAmount >= 1) return;
+        this.retryYearsAndTermsAmount++;
+        this.error = error.response.data.message;
+        await this.fetchYears();
+        await this.getTermsAndContentByYear(this.currentYearName);
       }
     },
     closeModal() {
