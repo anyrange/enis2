@@ -272,7 +272,7 @@ export default {
     }
   },
   mounted() {
-    this.showNotification = window.location.host.includes("enis2.ml");
+    // this.showNotification = window.location.host.includes("enis2");
   },
   methods: {
     ...mapActions({
