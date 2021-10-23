@@ -22,8 +22,11 @@ export default {
     },
   },
   getters: {
-    actualYearId: (state) => {
-      return state.data.find((year) => year.isActual).value;
+    actualYearName: (state) => {
+      return state.data.find((year) => year.isActual).label;
+    },
+    getYearIdByName: (state) => (label) => {
+      return state.data.find((item) => item.label === label)?.value || "";
     },
   },
   actions: {

@@ -2,14 +2,14 @@
   <div class="flex flex-col h-screen bg-gray-100 dark:bg-gray-900-spotify">
     <div class="flex-1 flex flex-col overflow-y-hidden">
       <header>
-        <tabs v-model="currentYear" class="tabs-bg">
+        <tabs v-model="currentYearName" class="tabs-bg">
           <div class="tabs-container">
             <tab
               v-for="year in years.data"
               :key="year.value"
-              :name="year.value"
+              :name="year.label"
               :loading="loading"
-              @selected="getTermsAndContentByYear(year.value)"
+              @selected="getTermsAndContentByYear(year.label)"
             >
               {{ year.label }}
             </tab>
@@ -24,9 +24,9 @@
             <tab
               v-for="(term, index) in terms.data"
               :key="term.Id"
-              :name="term.Id"
+              :name="term.Name"
               :loading="loading"
-              @selected="getContent(term.Id)"
+              @selected="getContent(term.Name)"
             >
               {{ $options.GREEK_NUMERALS[index + 1] }}
             </tab>
@@ -41,18 +41,7 @@
         </tabs>
       </header>
       <main id="content" class="flex w-full justify-center overflow-y-auto">
-        <section
-          class="
-            mt-12
-            flex flex-col
-            p-3
-            space-y-3
-            sm:w-3/4
-            md:w-1/2
-            xl:w-1/4
-            w-full
-          "
-        >
+        <section class="mt-12 flex flex-col p-3 space-y-3 sm:w-450px w-full">
           <loading-spinner v-if="loading" />
           <template v-else>
             <error v-if="error">{{ error }}</error>
@@ -66,7 +55,9 @@
               </template>
               <template v-else>
                 <subject-diary
-                  v-for="item in sortByScore(currentTermDiary(currentTab))"
+                  v-for="item in sortByScore(
+                    currentTermDiary(getTermIdByName(currentTab))
+                  )"
                   :key="item"
                   :subject="item"
                   @click="showSubject(item)"
@@ -159,8 +150,10 @@ export default {
       subject: "subject",
     }),
     ...mapGetters({
-      actualTermId: "terms/actualTermId",
-      actualYearId: "years/actualYearId",
+      actualTermName: "terms/actualTermName",
+      getTermIdByName: "terms/getTermIdByName",
+      actualYearName: "years/actualYearName",
+      getYearIdByName: "years/getYearIdByName",
       currentTermDiary: "diary/getDiaryByTermId",
     }),
     currentTab: {
@@ -171,7 +164,7 @@ export default {
         this.$store.commit("preferences/SET_TAB", value);
       },
     },
-    currentYear: {
+    currentYearName: {
       get() {
         return this.$store.state.preferences.year;
       },
@@ -196,13 +189,13 @@ export default {
   async created() {
     try {
       await this.fetchYears();
-      this.currentYear = this.currentYear || this.actualYearId;
-      await this.fetchTerms(this.currentYear);
-      this.currentTab = this.currentTab || this.actualTermId;
+      this.currentYearName = this.currentYearName || this.actualYearName;
+      await this.fetchTerms(this.getYearIdByName(this.currentYearName));
+      this.currentTab = this.currentTab || this.actualTermName;
       await this.getContent(this.currentTab);
     } catch (error) {
       if (error.response.status === 401) return;
-      this.error = error?.response?.data?.message || "Что-то пошло не так";
+      this.error = error.response.data.message || "Что-то пошло не так";
     }
   },
   mounted() {
@@ -221,30 +214,29 @@ export default {
     async getContent(tab) {
       try {
         tab === "grades"
-          ? await this.fetchGrades(this.currentYear)
-          : await this.fetchDiary(tab);
+          ? await this.fetchGrades(this.getYearIdByName(this.currentYearName))
+          : await this.fetchDiary(this.getTermIdByName(tab));
         this.error = "";
       } catch (error) {
-        this.error = error.response.data.message;
+        try {
+          await this.fetchTerms(this.getYearIdByName(this.currentYearName));
+          await this.getContent(this.currentTab);
+        } catch (error) {
+          this.error = error.response.data.message;
+        }
       }
     },
-    async getTermsAndContentByYear(yearId) {
+    async getTermsAndContentByYear(yearName) {
       try {
-        const previousTabName =
-          this.currentTab === "grades"
-            ? "grades"
-            : this.terms.data.find((term) => term.Id === this.currentTab)
-                ?.Name || "";
-        await this.fetchTerms(yearId);
-        const currentTabName =
-          this.currentTab === "grades"
-            ? "grades"
-            : this.terms.data.find((term) => term.Name === previousTabName)
-                ?.Id || "";
-        this.currentTab = currentTabName || this.actualTermId;
-        await this.getContent(this.currentTab);
+        await this.fetchTerms(this.getYearIdByName(yearName));
+        this.getContent(this.currentTab || this.actualTermName);
       } catch (error) {
-        this.error = error.response.data.message;
+        try {
+          await this.fetchYears();
+          await this.getTermsAndContentByYear(this.currentYearName);
+        } catch (error) {
+          this.error = error.response.data.message;
+        }
       }
     },
     closeModal() {
@@ -268,11 +260,7 @@ export default {
     },
     handleScroll() {
       this.scrollPosition = this.contentWindow.scrollTop;
-      if (this.scrollPosition >= 48) {
-        this.showTabs = false;
-      } else {
-        this.showTabs = true;
-      }
+      this.showTabs = this.scrollPosition <= 48;
     },
   },
 };
@@ -283,7 +271,7 @@ export default {
   @apply bg-white dark:bg-gray-800-spotify;
 }
 .tabs-container {
-  @apply flex w-full md:w-1/2 m-auto;
+  @apply flex w-full xl:w-1/2 m-auto;
 }
 .floating-nav {
   @apply fixed w-full;

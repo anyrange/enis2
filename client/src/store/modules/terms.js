@@ -22,15 +22,24 @@ export default {
     },
   },
   getters: {
-    actualTermId: (state) => {
-      return state.data.find((term) => term.isActual).Id;
+    actualTermName: (state) => {
+      return state.data.find((term) => term.isActual).Name;
+    },
+    getTermIdByName: (state) => (Name) => {
+      return state.data.find((item) => item.Name === Name)?.Id || "";
     },
   },
   actions: {
     fetchTerms: async ({ commit }, id) => {
       commit("SET_LOADING", true);
       try {
-        commit("SET_TERMS", await getTerms(id));
+        const terms = await getTerms(id);
+        const formattedTerms = terms.map(({ Id, Name: label, isActual }) => ({
+          Id,
+          Name: label.substring(0, 1),
+          isActual,
+        }));
+        commit("SET_TERMS", formattedTerms);
       } catch (err) {
         return Promise.reject(err);
       } finally {

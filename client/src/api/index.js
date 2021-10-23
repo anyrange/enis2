@@ -24,16 +24,13 @@ api.interceptors.response.use(
   },
   async (error) => {
     if (error.response.status === 401) {
-      if (!$store.getters["preferences/getRemember"]) {
-        return logout(error);
-      }
+      if (!$store.getters["preferences/getRemember"]) return logout(error);
       try {
         await $store.dispatch(
           "auth/login",
           $store.getters["auth/getCredentials"]
         );
-        await $store.dispatch("preferences/clearCache");
-        window.location.reload();
+        return api.request(error.config);
       } catch (error) {
         return logout(error);
       }

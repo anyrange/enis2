@@ -24,7 +24,7 @@ export default createStore({
   },
   plugins: [
     createPersistedState({
-      key: isDev ? "vuex" : "secure-store",
+      key: isDev ? "dev" : "prod",
       storage: isDev
         ? null
         : {
