@@ -56,7 +56,10 @@
               <template v-else>
                 <subject-diary
                   v-for="item in sortByScore(
-                    currentTermDiary(getTermIdByName(currentTab))
+                    getCurrentTermDiary({
+                      termName: currentTab,
+                      yearName: currentYearName,
+                    })
                   )"
                   :key="item"
                   :subject="item"
@@ -132,7 +135,7 @@ export default {
       showTabs: true,
       scrollPosition: 0,
       contentWindow: null,
-      loading: true,
+      loading: false,
       retryContentAmount: 0,
       retryYearsAndTermsAmount: 0,
     };
@@ -156,7 +159,7 @@ export default {
       getTermIdByName: "terms/getTermIdByName",
       actualYearName: "years/actualYearName",
       getYearIdByName: "years/getYearIdByName",
-      currentTermDiary: "diary/getDiaryByTermId",
+      getCurrentTermDiary: "diary/getCurrentTermDiary",
     }),
     currentTab: {
       get() {
@@ -217,7 +220,11 @@ export default {
       try {
         tab === "grades"
           ? await this.fetchGrades(this.getYearIdByName(this.currentYearName))
-          : await this.fetchDiary(this.getTermIdByName(tab));
+          : await this.fetchDiary({
+              termId: this.getTermIdByName(tab),
+              termName: tab,
+              yearName: this.currentYearName,
+            });
         this.error = "";
       } catch (error) {
         if (this.retryContentAmount >= 1) return;
@@ -232,7 +239,7 @@ export default {
     async getTermsAndContentByYear(yearName) {
       try {
         await this.fetchTerms(this.getYearIdByName(yearName));
-        this.getContent(this.currentTab || this.actualTermName);
+        await this.getContent(this.currentTab || this.actualTermName);
       } catch (error) {
         if (this.retryYearsAndTermsAmount >= 1) return;
         this.retryYearsAndTermsAmount++;

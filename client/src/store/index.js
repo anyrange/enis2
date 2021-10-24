@@ -24,7 +24,7 @@ export default createStore({
   },
   plugins: [
     createPersistedState({
-      key: isDev ? "dev" : "prod",
+      key: isDev ? "development" : "production",
       storage: isDev
         ? null
         : {
