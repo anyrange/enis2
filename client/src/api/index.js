@@ -47,6 +47,8 @@ const logout = (error) => {
   });
 };
 
+export const checkSmsAvailability = () => api.get("health/sms");
+
 export const getUserCity = () => api.get("city", { timeout: 1500 });
 
 export const login = (user) => api.post("login", user);
@@ -83,6 +85,8 @@ if (isDev) {
   } = await import("./mockData.js");
 
   const mock = new MockAdapter(api, { delayResponse: 300 });
+
+  mock.onGet("health/sms").reply(200, { alive: true });
 
   mock.onGet("city").reply(200, { city: "Pavlodar" });
 

@@ -31,6 +31,7 @@
               {{ $options.GREEK_NUMERALS[index + 1] }}
             </tab>
             <tab
+              v-if="terms.data.length"
               name="grades"
               :loading="loading"
               @selected="getContent('grades')"
@@ -111,6 +112,7 @@ import GradesIcon from "../components/icons/GradesIcon.vue";
 import Error from "../components/Error.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
 import { debounce } from "../utils";
+import { checkSmsAvailability } from "../api";
 
 export default {
   name: "Dashboard",
@@ -138,6 +140,8 @@ export default {
       loading: false,
       retryContentAmount: 0,
       retryYearsAndTermsAmount: 0,
+      checkingAvailability: false,
+      smsAvailable: false,
     };
   },
   GREEK_NUMERALS: {
@@ -182,7 +186,8 @@ export default {
         this.years.loading ||
         this.terms.loading ||
         this.diary.loading ||
-        this.grades.loading
+        this.grades.loading ||
+        this.checkingAvailability
       );
     },
   },
@@ -192,6 +197,8 @@ export default {
     }, 5),
   },
   async created() {
+    await this.checkSms();
+    if (!this.smsAvailable) return;
     try {
       await this.fetchYears();
       this.currentYearName = this.currentYearName || this.actualYearName;
@@ -216,6 +223,19 @@ export default {
       fetchYears: "years/fetchYears",
       fetchTerms: "terms/fetchTerms",
     }),
+    async checkSms() {
+      this.checkingAvailability = true;
+      try {
+        const { alive } = await checkSmsAvailability();
+        this.smsAvailable = alive;
+        if (!this.smsAvailable) {
+          this.error = "Оригинальный клиент не работает";
+          return;
+        }
+      } finally {
+        this.checkingAvailability = false;
+      }
+    },
     async getContent(tab) {
       try {
         tab === "grades"

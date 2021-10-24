@@ -148,7 +148,10 @@
         </main>
       </div>
     </div>
-    <modal :show="showNotification" @close="showNotification = false">
+    <modal
+      :show="showDomainNotification"
+      @close="showDomainNotification = false"
+    >
       <div class="flex flex-col space-y-2">
         <h1>🔥 Мы переехали</h1>
         <p>
@@ -162,6 +165,24 @@
           обеспечить здесь стабильную работу нашего сервера
         </p>
         <a href="https://enis.que.kz/" class="underline">enis.que.kz</a>
+      </div>
+    </modal>
+    <modal
+      :show="showAvailabilityNotification"
+      @close="showAvailabilityNotification = false"
+    >
+      <div class="flex flex-col space-y-2">
+        <h1>😞</h1>
+        <p>
+          <a
+            :href="`https://sms.${school}.nis.edu.kz/`"
+            target="_blank"
+            class="underline"
+          >
+            Оригинальный клиент</a
+          >
+          не работает
+        </p>
       </div>
     </modal>
   </div>
@@ -181,7 +202,7 @@ import SunIcon from "../components/icons/SunIcon.vue";
 import schools from "../assets/schools.json";
 import emojis from "../assets/emojis.json";
 import { mapActions, mapGetters } from "vuex";
-import { refreshCaptcha } from "../api";
+import { refreshCaptcha, checkSmsAvailability } from "../api";
 import { notify } from "../services/notify.js";
 
 export default {
@@ -215,7 +236,8 @@ export default {
         },
         captchaInput: "",
       },
-      showNotification: false,
+      showDomainNotification: false,
+      showAvailabilityNotification: false,
     };
   },
   schools,
@@ -270,7 +292,7 @@ export default {
     }
   },
   mounted() {
-    // this.showNotification = window.location.host.includes("enis2");
+    // this.showDomainNotification = window.location.host.includes("enis2");
   },
   methods: {
     ...mapActions({
@@ -296,6 +318,10 @@ export default {
 
       this.loading = true;
       try {
+        const { alive } = await checkSmsAvailability();
+        this.showAvailabilityNotification = !alive;
+        if (!alive) return;
+
         await this.login({
           ...account,
           captchaInput: form.captchaInput,
