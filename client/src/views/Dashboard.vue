@@ -1,6 +1,12 @@
 <template>
   <div class="flex flex-col h-screen">
-    <div class="flex-1 flex flex-col overflow-y-hidden">
+    <div
+      class="flex-1 flex flex-col overflow-y-hidden"
+      :class="{
+        'justify-center items-center': !smsAvailable,
+      }"
+    >
+      <random-gif v-if="!smsAvailable" class="text-center" />
       <header>
         <tabs v-model="currentYearName" class="tabs-bg">
           <div class="tabs-container">
@@ -95,6 +101,24 @@
         </template>
       </div>
     </modal>
+    <modal
+      :show="showAvailabilityNotification"
+      @close="showAvailabilityNotification = false"
+    >
+      <div class="flex flex-col space-y-2">
+        <h1>😞</h1>
+        <p>
+          <a
+            :href="`https://sms.${school}.nis.edu.kz/`"
+            target="_blank"
+            class="underline"
+          >
+            Оригинальный клиент</a
+          >
+          не работает
+        </p>
+      </div>
+    </modal>
   </div>
 </template>
 
@@ -110,6 +134,7 @@ import SubjectGrades from "../components/SubjectGrades.vue";
 import SubjectSections from "../components/SubjectSections.vue";
 import GradesIcon from "../components/icons/GradesIcon.vue";
 import Error from "../components/Error.vue";
+import RandomGif from "../components/RandomGif.vue";
 import { mapActions, mapGetters, mapState } from "vuex";
 import { debounce } from "../utils";
 import { checkSmsAvailability } from "../api";
@@ -128,6 +153,7 @@ export default {
     SubjectSections,
     GradesIcon,
     Error,
+    RandomGif,
   },
   data() {
     return {
@@ -141,7 +167,8 @@ export default {
       retryContentAmount: 0,
       retryYearsAndTermsAmount: 0,
       checkingAvailability: false,
-      smsAvailable: false,
+      smsAvailable: true,
+      showAvailabilityNotification: false,
     };
   },
   GREEK_NUMERALS: {
@@ -164,6 +191,7 @@ export default {
       actualYearName: "years/actualYearName",
       getYearIdByName: "years/getYearIdByName",
       getCurrentTermDiary: "diary/getCurrentTermDiary",
+      school: "preferences/getSchool",
     }),
     currentTab: {
       get() {
@@ -197,8 +225,15 @@ export default {
     }, 5),
   },
   async created() {
-    await this.checkSms();
-    if (!this.smsAvailable) return;
+    try {
+      this.checkingAvailability = true;
+      const { alive } = await checkSmsAvailability();
+      this.smsAvailable = alive;
+      this.showAvailabilityNotification = !alive;
+      if (!alive) return;
+    } finally {
+      this.checkingAvailability = false;
+    }
     try {
       await this.fetchYears();
       this.currentYearName = this.currentYearName || this.actualYearName;
@@ -223,19 +258,6 @@ export default {
       fetchYears: "years/fetchYears",
       fetchTerms: "terms/fetchTerms",
     }),
-    async checkSms() {
-      this.checkingAvailability = true;
-      try {
-        const { alive } = await checkSmsAvailability();
-        this.smsAvailable = alive;
-        if (!this.smsAvailable) {
-          this.error = "Оригинальный клиент не работает";
-          return;
-        }
-      } finally {
-        this.checkingAvailability = false;
-      }
-    },
     async getContent(tab) {
       try {
         tab === "grades"
