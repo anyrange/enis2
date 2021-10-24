@@ -72,37 +72,31 @@ export const getGrades = (yearID) => {
 };
 
 if (isDev) {
-  (async () => {
-    try {
-      const { default: MockAdapter } = await import("axios-mock-adapter");
-      const {
-        mockCaptcha,
-        mockGrades,
-        mockYears,
-        mockTerms,
-        mockDiary,
-        mockSubject,
-      } = await import("./mockData.js");
+  const { default: MockAdapter } = await import("axios-mock-adapter");
+  const {
+    mockCaptcha,
+    mockGrades,
+    mockYears,
+    mockTerms,
+    mockDiary,
+    mockSubject,
+  } = await import("./mockData.js");
 
-      const mock = new MockAdapter(api, { delayResponse: 300 });
+  const mock = new MockAdapter(api, { delayResponse: 300 });
 
-      mock.onGet("city").reply(200, { city: "Pavlodar" });
+  mock.onGet("city").reply(200, { city: "Pavlodar" });
 
-      mock.onPost("login").reply(200);
-      mock.onGet("login/captchaRefresh").reply(200, mockCaptcha);
-      mock.onGet("dashboard/grades").reply(200, mockGrades);
-      mock.onGet("dashboard/years").reply(200, mockYears);
-      mock.onGet(new RegExp("years/*")).reply(200, mockTerms);
-      mock.onGet(new RegExp("terms/*")).reply((config) => {
-        const match = (id) => config.url.includes(id);
-        if (match("term1id")) return [200, mockDiary[0]];
-        if (match("term2id")) return [200, mockDiary[1]];
-        if (match("term3id")) return [200, mockDiary[2]];
-        if (match("term4id")) return [200, mockDiary[3]];
-      });
-      mock.onGet(new RegExp("subject")).reply(200, mockSubject);
-    } catch (error) {
-      console.error("Mock API: " + error);
-    }
-  })();
+  mock.onPost("login").reply(200);
+  mock.onGet("login/captchaRefresh").reply(200, mockCaptcha);
+  mock.onGet("dashboard/grades").reply(200, mockGrades);
+  mock.onGet("dashboard/years").reply(200, mockYears);
+  mock.onGet(new RegExp("years/*")).reply(200, mockTerms);
+  mock.onGet(new RegExp("terms/*")).reply((config) => {
+    const match = (id) => config.url.includes(id);
+    if (match("term1id")) return [200, mockDiary[0]];
+    if (match("term2id")) return [200, mockDiary[1]];
+    if (match("term3id")) return [200, mockDiary[2]];
+    if (match("term4id")) return [200, mockDiary[3]];
+  });
+  mock.onGet(new RegExp("subject")).reply(200, mockSubject);
 }
