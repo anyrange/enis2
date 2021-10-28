@@ -318,10 +318,6 @@ export default {
 
       this.loading = true;
       try {
-        const { alive } = await checkSmsAvailability();
-        this.showAvailabilityNotification = !alive;
-        if (!alive) return;
-
         await this.login({
           ...account,
           captchaInput: form.captchaInput,
@@ -336,6 +332,10 @@ export default {
           this.captcha = error.response.data.data.base64img;
           this.form.captchaInput = "";
         }
+
+        if (error.response.status === 400) return;
+        const { alive } = await checkSmsAvailability();
+        this.showAvailabilityNotification = !alive;
       } finally {
         this.loading = false;
       }

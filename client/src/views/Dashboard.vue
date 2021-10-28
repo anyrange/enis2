@@ -226,15 +226,6 @@ export default {
   },
   async created() {
     try {
-      this.checkingAvailability = true;
-      const { alive } = await checkSmsAvailability();
-      this.smsAvailable = alive;
-      this.showAvailabilityNotification = !alive;
-      if (!alive) return;
-    } finally {
-      this.checkingAvailability = false;
-    }
-    try {
       await this.fetchYears();
       this.currentYearName = this.currentYearName || this.actualYearName;
       await this.fetchTerms(this.getYearIdByName(this.currentYearName));
@@ -242,6 +233,15 @@ export default {
       await this.getContent(this.currentTab);
     } catch (error) {
       if (error.response.status === 401) return;
+      try {
+        this.checkingAvailability = true;
+        const { alive } = await checkSmsAvailability();
+        this.smsAvailable = alive;
+        this.showAvailabilityNotification = !alive;
+        if (!alive) return;
+      } finally {
+        this.checkingAvailability = false;
+      }
       this.error = error.response.data.message || "Что-то пошло не так";
     }
   },
