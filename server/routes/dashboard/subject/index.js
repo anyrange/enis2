@@ -23,6 +23,8 @@ export default async function (fastify) {
                 Name: { type: "string" },
                 Score: { type: "number" },
                 MaxScore: { type: "number" },
+                SectionId: { type: "string" },
+                RubricId: { type: "string" },
               },
             },
           },
@@ -44,6 +46,7 @@ export default async function (fastify) {
         cookie,
       });
 
+      response.data.forEach((item) => (item.SectionId = item.Id));
       reply.send(response.data);
     }
   );
