@@ -164,8 +164,8 @@ export default {
       scrollPosition: 0,
       contentWindow: null,
       loading: false,
-      retryContentAmount: 0,
-      retryYearsAndTermsAmount: 0,
+      retryContent: 0,
+      retryYearsAndTerms: 0,
       checkingAvailability: false,
       smsAvailable: true,
       showAvailabilityNotification: false,
@@ -269,8 +269,10 @@ export default {
             });
         this.error = "";
       } catch (error) {
-        if (this.retryContentAmount >= 1) return;
-        this.retryContentAmount++;
+        if (error.response.status === 401 || this.retryContent >= 1) {
+          return;
+        }
+        this.retryContent++;
         this.error = error.response.data.message;
         tab === "grades"
           ? await this.fetchYears()
@@ -283,8 +285,10 @@ export default {
         await this.fetchTerms(this.getYearIdByName(yearName));
         await this.getContent(this.currentTab || this.actualTermName);
       } catch (error) {
-        if (this.retryYearsAndTermsAmount >= 1) return;
-        this.retryYearsAndTermsAmount++;
+        if (error.response.status === 401 || this.retryYearsAndTerms >= 1) {
+          return;
+        }
+        this.retryYearsAndTerms++;
         this.error = error.response.data.message;
         await this.fetchYears();
         await this.getTermsAndContentByYear(this.currentYearName);
