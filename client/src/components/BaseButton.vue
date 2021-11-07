@@ -138,7 +138,7 @@ export default {
 
 <style lang="postcss">
 .base-button {
-  @apply flex rounded-sm shadow duration-200 transition-colors items-center justify-center uppercase text-center select-none text-sm font-medium focus:outline-none visited:text-current;
+  @apply flex rounded-sm appearance-none shadow duration-200 transition-colors items-center justify-center uppercase text-center select-none text-sm font-medium focus:outline-none visited:text-current;
 }
 .base-button:focus-visible {
   @apply focus:ring-2;
