@@ -22,7 +22,8 @@ export default function () {
   const fourthQuarterEnd = Math.floor(fourthQuarterEndDiff / oneDay);
 
   if (day > fourthQuarterEnd && day <= firstQuarterEnd) return 1;
-  if (day > firstQuarterEnd && day <= secondQuarterEnd) return 2;
+  if (day > firstQuarterEnd || day <= secondQuarterEnd) return 2;
   if (day > secondQuarterEnd && day <= thirdQuarterEnd) return 3;
   if (day > thirdQuarterEnd && day <= fourthQuarterEnd) return 4;
+  return 1;
 }
