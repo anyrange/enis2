@@ -2,12 +2,9 @@ import { getSubject } from "../../api";
 
 const defaultState = () => {
   return {
-    data: {
-      SAU: [],
-      SAT: [],
-      current: {},
-    },
-    loading: false,
+    SAU: [],
+    SAT: [],
+    current: {},
   };
 };
 
@@ -15,11 +12,8 @@ export default {
   namespaced: true,
   state: defaultState(),
   mutations: {
-    SET_LOADING(state, status) {
-      state.loading = status;
-    },
     SET_SUBJECT(state, subject) {
-      Object.assign(state.data, subject);
+      Object.assign(state, subject);
     },
     CLEAR_SUBJECT(state) {
       Object.assign(state, defaultState());
@@ -27,7 +21,6 @@ export default {
   },
   actions: {
     fetchSubject: async ({ commit }, subject) => {
-      commit("SET_LOADING", true);
       try {
         commit("SET_SUBJECT", { current: subject });
         commit("SET_SUBJECT", {
@@ -36,8 +29,6 @@ export default {
         });
       } catch (err) {
         return Promise.reject(err);
-      } finally {
-        commit("SET_LOADING", false);
       }
     },
   },

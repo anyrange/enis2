@@ -3,7 +3,6 @@ import { getYears } from "../../api";
 const defaultState = () => {
   return {
     data: [],
-    loading: false,
   };
 };
 
@@ -11,9 +10,6 @@ export default {
   namespaced: true,
   state: defaultState(),
   mutations: {
-    SET_LOADING(state, status) {
-      state.loading = status;
-    },
     SET_YEARS(state, result) {
       state.data = result;
     },
@@ -30,8 +26,10 @@ export default {
     },
   },
   actions: {
-    fetchYears: async ({ commit }) => {
-      commit("SET_LOADING", true);
+    fetchYears: async ({ commit, state }, { force = false }) => {
+      if (state.data.length && !force) {
+        return;
+      }
       try {
         const years = await getYears();
         const actualYearIndex = years.findIndex((year) => year.isActual);
@@ -41,12 +39,11 @@ export default {
             value,
             label: label.substring(0, 9),
             isActual,
-          }));
-        commit("SET_YEARS", formattedYears.reverse());
+          }))
+          .reverse();
+        commit("SET_YEARS", formattedYears);
       } catch (err) {
         return Promise.reject(err);
-      } finally {
-        commit("SET_LOADING", false);
       }
     },
   },

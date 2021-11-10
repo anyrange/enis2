@@ -15,14 +15,6 @@ export default {
       state.savedAccount = account;
     },
   },
-  getters: {
-    isAuthenticated(state) {
-      return state.authenticated;
-    },
-    getCredentials(state) {
-      return state.savedAccount;
-    },
-  },
   actions: {
     login: async ({ commit }, credentials) => {
       try {
@@ -34,9 +26,14 @@ export default {
         return Promise.reject(err);
       }
     },
-    logout: ({ commit, dispatch }) => {
+    logout: ({ commit }) => {
       commit("SET_AUTH", false);
-      dispatch("preferences/clearCache", null, { root: true });
+      commit("preferences/CLEAR_PREFERENCES", null, { root: true });
+      commit("years/CLEAR_YEARS", null, { root: true });
+      commit("terms/CLEAR_TERMS", null, { root: true });
+      commit("diary/CLEAR_DIARY", null, { root: true });
+      commit("grades/CLEAR_GRADES", null, { root: true });
+      commit("subject/CLEAR_SUBJECT", null, { root: true });
       $router.push({ name: "login" });
     },
   },

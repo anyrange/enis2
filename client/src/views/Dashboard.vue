@@ -1,12 +1,6 @@
 <template>
   <div class="flex flex-col h-screen">
-    <div
-      class="flex-1 flex flex-col overflow-y-hidden"
-      :class="{
-        'justify-center items-center': !smsAvailable,
-      }"
-    >
-      <random-gif v-if="!smsAvailable" class="text-center" />
+    <div class="flex-1 flex flex-col overflow-y-hidden">
       <header>
         <tabs v-model="currentYearName" class="tabs-bg">
           <div class="tabs-container">
@@ -15,7 +9,7 @@
               :key="year.value"
               :name="year.label"
               :loading="loading"
-              @selected="getTermsAndContentByYear(year.label)"
+              @selected="getTermsAndContentByYear({ yearName: year.label })"
             >
               {{ year.label }}
             </tab>
@@ -49,84 +43,77 @@
       </header>
       <main id="content" class="flex w-full justify-center overflow-y-auto">
         <section class="mt-12 flex flex-col p-3 space-y-3 sm:w-450px w-full">
-          <loading-spinner v-if="loading" />
-          <template v-else>
-            <error v-if="error">{{ error }}</error>
+          <template v-if="alive">
+            <error v-if="error">
+              <span v-if="isGrades">Не удалось загрузить табель</span>
+              <span v-else>Не удалось загрузить дневник</span>
+            </error>
             <template v-else>
-              <template v-if="currentTab === 'grades'">
+              <template v-if="isGrades">
                 <subject-grades
-                  v-for="item in grades.data"
+                  v-for="item in grades"
                   :key="item"
                   :subject="item"
                 />
               </template>
               <template v-else>
                 <subject-diary
-                  v-for="item in sortByScore(
-                    getCurrentTermDiary({
-                      termName: currentTab,
-                      yearName: currentYearName,
-                    })
-                  )"
+                  v-for="item in sortByScore(diary)"
                   :key="item"
                   :subject="item"
-                  @click="showSubject(item)"
+                  @click="openSubjectModal(item)"
                 />
               </template>
             </template>
           </template>
+          <random-gif v-else />
         </section>
       </main>
-      <footer
-        class="absolute bottom-4 rounded-full"
+      <div
+        class="absolute bottom-4"
         style="left: 50%; transform: translateX(-50%)"
       >
         <base-button rounded color="negative" @click="logout()">
           Выйти
         </base-button>
-      </footer>
+      </div>
+      <div
+        class="
+          absolute
+          bottom-4
+          right-4
+          rounded-full
+          bg-gray-50
+          dark:bg-gray-900-spotify
+        "
+      >
+        <theme-toggler />
+      </div>
     </div>
-    <modal :show="subjectModalOpened" @close="closeModal()">
+    <modal :show="subjectModal" @close="closeSubjectModal()">
       <div class="flex flex-col space-y-2">
-        <subject-diary :hoverable="false" :subject="subject.data.current" />
-        <loading-dots v-if="subject.loading" />
+        <subject-diary :hoverable="false" :subject="subject.current" />
+        <loading-dots v-if="loading && loadingEndpoint === 'SUBJECT'" />
         <template v-else>
-          <template v-if="!subjectError">
-            <subject-sections label="СОР" :subject="subject.data.SAU" />
-            <subject-sections label="СОЧ" :subject="subject.data.SAT" />
-          </template>
-          <div v-else class="p-2 text-center">
+          <div v-if="subjectError" class="p-2 text-center">
             Не удалось загрузить информацию о предмете
           </div>
+          <template v-else>
+            <subject-sections label="СОР" :subject="subject.SAU" />
+            <subject-sections label="СОЧ" :subject="subject.SAT" />
+          </template>
         </template>
-      </div>
-    </modal>
-    <modal
-      :show="showAvailabilityNotification"
-      @close="showAvailabilityNotification = false"
-    >
-      <div class="flex flex-col space-y-2">
-        <h1>😞</h1>
-        <p>
-          <a
-            :href="`https://sms.${school}.nis.edu.kz/`"
-            target="_blank"
-            class="underline"
-          >
-            Оригинальный клиент</a
-          >
-          не работает
-        </p>
       </div>
     </modal>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters, mapState } from "vuex";
+import { notify } from "../services/notify.js";
 import Tabs from "../components/Tabs.vue";
 import Tab from "../components/Tab.vue";
 import BaseButton from "../components/BaseButton.vue";
-import LoadingSpinner from "../components/LoadingSpinner.vue";
 import LoadingDots from "../components/LoadingDots.vue";
 import Modal from "../components/Modal.vue";
 import SubjectDiary from "../components/SubjectDiary.vue";
@@ -135,9 +122,7 @@ import SubjectSections from "../components/SubjectSections.vue";
 import GradesIcon from "../components/icons/GradesIcon.vue";
 import Error from "../components/Error.vue";
 import RandomGif from "../components/RandomGif.vue";
-import { mapActions, mapGetters, mapState } from "vuex";
-import { debounce } from "../utils";
-import { checkSmsAvailability } from "../api";
+import ThemeToggler from "../components/ThemeToggler.vue";
 
 export default {
   name: "Dashboard",
@@ -145,7 +130,6 @@ export default {
     Tabs,
     Tab,
     BaseButton,
-    LoadingSpinner,
     LoadingDots,
     Modal,
     SubjectDiary,
@@ -154,21 +138,16 @@ export default {
     GradesIcon,
     Error,
     RandomGif,
+    ThemeToggler,
   },
   data() {
     return {
-      subjectModalOpened: false,
       error: false,
       subjectError: false,
+      subjectModal: false,
       showTabs: true,
       scrollPosition: 0,
       contentWindow: null,
-      loading: false,
-      retryContent: 0,
-      retryYearsAndTerms: 0,
-      checkingAvailability: false,
-      smsAvailable: true,
-      showAvailabilityNotification: false,
     };
   },
   GREEK_NUMERALS: {
@@ -181,9 +160,10 @@ export default {
     ...mapState({
       years: "years",
       terms: "terms",
-      diary: "diary",
-      grades: "grades",
       subject: "subject",
+      alive: (state) => state.health.alive,
+      loading: (state) => state.loader.status,
+      loadingEndpoint: (state) => state.loader.endpoint,
     }),
     ...mapGetters({
       actualTermName: "terms/actualTermName",
@@ -191,7 +171,7 @@ export default {
       actualYearName: "years/actualYearName",
       getYearIdByName: "years/getYearIdByName",
       getCurrentTermDiary: "diary/getCurrentTermDiary",
-      school: "preferences/getSchool",
+      getCurrentTermGrades: "grades/getCurrentTermGrades",
     }),
     currentTab: {
       get() {
@@ -209,41 +189,24 @@ export default {
         this.$store.commit("preferences/SET_YEAR", value);
       },
     },
-    loadingStates() {
-      return (
-        this.years.loading ||
-        this.terms.loading ||
-        this.diary.loading ||
-        this.grades.loading ||
-        this.checkingAvailability
-      );
+    diary() {
+      return this.getCurrentTermDiary({
+        termName: this.currentTab,
+        yearName: this.currentYearName,
+      });
+    },
+    isGrades() {
+      return this.currentTab === "grades";
+    },
+    grades() {
+      return this.getCurrentTermGrades({
+        yearName: this.currentYearName,
+      });
     },
   },
-  watch: {
-    loadingStates: debounce(function (value) {
-      this.loading = value;
-    }, 5),
-  },
   async created() {
-    try {
-      await this.fetchYears();
-      this.currentYearName = this.currentYearName || this.actualYearName;
-      await this.fetchTerms(this.getYearIdByName(this.currentYearName));
-      this.currentTab = this.currentTab || this.actualTermName;
-      await this.getContent(this.currentTab);
-    } catch (error) {
-      if (error.response.status === 401) return;
-      try {
-        this.checkingAvailability = true;
-        const { alive } = await checkSmsAvailability();
-        this.smsAvailable = alive;
-        this.showAvailabilityNotification = !alive;
-        if (!alive) return;
-      } finally {
-        this.checkingAvailability = false;
-      }
-      this.error = error.response.data.message || "Что-то пошло не так";
-    }
+    await this.getTabs({ force: false });
+    await this.getContent(this.currentTab);
   },
   mounted() {
     this.contentWindow = document.getElementById("content");
@@ -257,58 +220,127 @@ export default {
       fetchSubject: "subject/fetchSubject",
       fetchYears: "years/fetchYears",
       fetchTerms: "terms/fetchTerms",
+      checkAvailability: "health/checkAvailability",
     }),
+    endSession() {
+      notify.show({
+        type: "danger",
+        message: "Сессия завершена",
+      });
+      this.logout();
+    },
+    async restoreSession() {
+      if (!this.$store.state.preferences.remember) {
+        return this.endSession();
+      }
+      try {
+        await this.$store.dispatch(
+          "auth/login",
+          this.$store.state.auth.savedAccount
+        );
+        return Promise.resolve();
+      } catch {
+        this.endSession();
+        return Promise.reject();
+      }
+    },
+    async getTabs({ force }) {
+      try {
+        await this.fetchYears({ force: force });
+        this.currentYearName = this.currentYearName || this.actualYearName;
+        await this.fetchTerms({
+          force: force,
+          yearId: this.getYearIdByName(this.currentYearName),
+        });
+        this.currentTab = this.currentTab || this.actualTermName;
+      } catch (error) {
+        let tries = 0;
+        if (tries >= 1) {
+          return;
+        }
+        tries++;
+        if (error.response.status === 401) {
+          this.restoreSession().then(async () => {
+            await this.getTabs({
+              forceUpdate: true,
+            });
+          });
+        } else {
+          this.error = true;
+        }
+        await this.checkAvailability();
+      }
+    },
     async getContent(tab) {
       try {
         tab === "grades"
-          ? await this.fetchGrades(this.getYearIdByName(this.currentYearName))
+          ? await this.fetchGrades({
+              yearId: this.getYearIdByName(this.currentYearName),
+              yearName: this.currentYearName,
+            })
           : await this.fetchDiary({
               termId: this.getTermIdByName(tab),
               termName: tab,
               yearName: this.currentYearName,
             });
-        this.error = "";
+        this.error = false;
       } catch (error) {
-        if (error.response.status === 401 || this.retryContent >= 1) {
+        let tries = 0;
+        if (tries >= 1) {
           return;
         }
-        this.retryContent++;
-        this.error = error.response.data.message;
-        tab === "grades"
-          ? await this.fetchYears()
-          : await this.fetchTerms(this.getYearIdByName(this.currentYearName));
-        await this.getContent(this.currentTab);
+        tries++;
+        if (error.response.status === 401) {
+          this.restoreSession().then(async () => {
+            await this.getTabs({ force: true });
+            await this.getContent(this.currentTab);
+          });
+        } else {
+          this.error = true;
+        }
       }
     },
-    async getTermsAndContentByYear(yearName) {
+    async getTermsAndContentByYear({ yearName, force = false }) {
       try {
-        await this.fetchTerms(this.getYearIdByName(yearName));
+        await this.fetchTerms({
+          yearId: this.getYearIdByName(yearName),
+          force: force,
+        });
         await this.getContent(this.currentTab || this.actualTermName);
       } catch (error) {
-        if (error.response.status === 401 || this.retryYearsAndTerms >= 1) {
+        let tries = 0;
+        if (tries >= 1) {
           return;
         }
-        this.retryYearsAndTerms++;
-        this.error = error.response.data.message;
-        await this.fetchYears();
-        await this.getTermsAndContentByYear(this.currentYearName);
+        tries++;
+        if (error.response.status === 401) {
+          this.restoreSession().then(async () => {
+            await this.fetchYears({ force: true });
+            await this.getTermsAndContentByYear({
+              yearName: this.currentYearName,
+              force: true,
+            });
+          });
+        } else {
+          this.error = true;
+        }
       }
     },
-    closeModal() {
-      this.subjectModalOpened = false;
-      setTimeout(() => {
-        this.$store.commit("subject/CLEAR_SUBJECT");
-      }, 100);
-    },
-    async showSubject(subject) {
-      if (subject.Name === this.subject.data.current.Name) return;
-      this.subjectModalOpened = true;
+    async openSubjectModal(subject) {
+      if (subject.Name === this.subject.current.Name && this.subjectModal) {
+        return;
+      }
+      this.$store.commit("subject/CLEAR_SUBJECT");
+      this.subjectModal = true;
       try {
         await this.fetchSubject(subject);
         this.subjectError = false;
-      } catch (error) {
+      } catch {
         this.subjectError = true;
       }
+    },
+    closeSubjectModal() {
+      this.subjectModal = false;
     },
     sortByScore(array) {
       return array.sort((firstEl, secondEl) => secondEl.Score - firstEl.Score);
@@ -330,7 +362,7 @@ export default {
 }
 .floating-nav {
   @apply fixed w-full;
-  @apply transition duration-300;
+  @apply transition transition-transform duration-300;
   transform: translate3d(0, 0, 0);
 }
 .floating-nav.floating-nav--hidden {

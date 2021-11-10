@@ -3,7 +3,6 @@ import { getTerms } from "../../api";
 const defaultState = () => {
   return {
     data: [],
-    loading: false,
   };
 };
 
@@ -11,9 +10,6 @@ export default {
   namespaced: true,
   state: defaultState(),
   mutations: {
-    SET_LOADING(state, status) {
-      state.loading = status;
-    },
     SET_TERMS(state, result) {
       state.data = result;
     },
@@ -30,10 +26,12 @@ export default {
     },
   },
   actions: {
-    fetchTerms: async ({ commit }, id) => {
-      commit("SET_LOADING", true);
+    fetchTerms: async ({ commit, state }, { yearId, force = false }) => {
+      if (state.data.length && !force) {
+        return;
+      }
       try {
-        const terms = await getTerms(id);
+        const terms = await getTerms(yearId);
         const formattedTerms = terms.map(({ Id, Name: label, isActual }) => ({
           Id,
           Name: label.substring(0, 1),
@@ -42,8 +40,6 @@ export default {
         commit("SET_TERMS", formattedTerms);
       } catch (err) {
         return Promise.reject(err);
-      } finally {
-        commit("SET_LOADING", false);
       }
     },
   },

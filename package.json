@@ -1,6 +1,6 @@
 {
   "name": "enis2",
-  "version": "1.0.0",
+  "version": "1.6.0",
   "type": "module",
   "scripts": {
     "serve": "vite --port 3004",

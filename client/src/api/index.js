@@ -1,7 +1,6 @@
 import axios from "axios";
 import $store from "../store";
-import { notify } from "../services/notify";
-import { isDev } from "../settings";
+import { isDev, ENDPOINTS } from "../settings";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -10,68 +9,69 @@ const api = axios.create({
   withCredentials: true,
 });
 
-api.interceptors.request.use((config) => {
-  config.params = {
-    ...config.params,
-    city: $store.getters["preferences/getSchool"],
-  };
-  return config;
-});
-
-api.interceptors.response.use(
-  (response) => {
-    return response.data;
+api.interceptors.request.use(
+  (config) => {
+    $store.commit("loader/SET_LOADING", {
+      status: true,
+      endpoint: Object.keys(ENDPOINTS).find(
+        (key) =>
+          ENDPOINTS[key] ===
+          Object.values(ENDPOINTS).find((path) => config.url.includes(path))
+      ),
+    });
+    config.params = {
+      ...config.params,
+      city: $store.state.preferences.school,
+    };
+    return config;
   },
-  async (error) => {
-    if (error.response.status === 401) {
-      if (!$store.getters["preferences/getRemember"]) return logout(error);
-      try {
-        await $store.dispatch(
-          "auth/login",
-          $store.getters["auth/getCredentials"]
-        );
-        return api.request(error.config);
-      } catch (error) {
-        return logout(error);
-      }
-    }
+  (error) => {
+    $store.commit("loader/SET_LOADING", {
+      status: false,
+    });
     return Promise.reject(error);
   }
 );
 
-const logout = (error) => {
-  $store.dispatch("auth/logout");
-  notify.show({
-    type: "danger",
-    message: error.response.data.message,
+api.interceptors.response.use(
+  (response) => {
+    $store.commit("loader/SET_LOADING", {
+      status: false,
+    });
+    return response.data;
+  },
+  async (error) => {
+    $store.commit("loader/SET_LOADING", {
+      status: false,
+    });
+    error.response.data = error.response.data || {};
+    error.response.data.message =
+      error.response.data.message || "Что-то пошло не так";
+    return Promise.reject(error);
+  }
+);
+
+export const checkSMSavailability = () => api.get(ENDPOINTS.HEALTH_SMS);
+
+export const getUserCity = () => api.get(ENDPOINTS.CITY, { timeout: 1500 });
+
+export const login = (user) => api.post(ENDPOINTS.LOGIN, user);
+
+export const refreshCaptcha = () => api.get(ENDPOINTS.REFRESH_CAPTCHA);
+
+export const getYears = () => api.get(ENDPOINTS.YEARS);
+
+export const getTerms = (id) => api.get(`${ENDPOINTS.TERMS}${id}`);
+
+export const getDiary = (id) => api.get(`${ENDPOINTS.DIARY}${id}`);
+
+export const getSubject = (journalId, evalId) =>
+  api.get(ENDPOINTS.SUBJECT, {
+    params: { journalId, evalId },
   });
-};
 
-export const checkSmsAvailability = () => api.get("health/sms");
-
-export const getUserCity = () => api.get("city", { timeout: 1500 });
-
-export const login = (user) => api.post("login", user);
-export const refreshCaptcha = () => api.get("login/captchaRefresh");
-
-export const getYears = () => api.get("dashboard/years");
-export const getTerms = (yearId) => api.get(`dashboard/years/${yearId}`);
-export const getDiary = (id) => api.get(`dashboard/terms/${id}`);
-export const getSubject = (journalId, evalId) => {
-  return api.get("dashboard/subject", {
-    params: {
-      journalId,
-      evalId,
-    },
-  });
-};
-export const getGrades = (yearID) => {
-  return api.get("dashboard/grades", {
-    params: {
-      yearID,
-    },
-  });
-};
+export const getGrades = (yearID) =>
+  api.get(ENDPOINTS.GRADES, { params: { yearID } });
 
 if (isDev) {
   const { default: MockAdapter } = await import("axios-mock-adapter");
@@ -86,7 +86,7 @@ if (isDev) {
 
   const mock = new MockAdapter(api, { delayResponse: 300 });
 
-  mock.onGet("health/sms").reply(200, { alive: true });
+  mock.onGet("health/sms").reply(200, { alive: false });
 
   mock.onGet("city").reply(200, { city: "Pavlodar" });
 

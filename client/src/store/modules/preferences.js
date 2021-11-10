@@ -37,23 +37,9 @@ export default {
       });
     },
   },
-  getters: {
-    getTab: (state) => {
-      return state.tab;
-    },
-    getSchool: (state) => {
-      return state.school;
-    },
-    getTheme: (state) => {
-      return state.theme;
-    },
-    getRemember: (state) => {
-      return state.remember;
-    },
-  },
   actions: {
-    setTheme({ commit, getters }) {
-      const cachedTheme = getters.getTheme;
+    setTheme({ commit, state }) {
+      const cachedTheme = state.theme;
       const hasDarkPreference = window.matchMedia(
         "(prefers-color-scheme: dark)"
       ).matches;
@@ -65,13 +51,15 @@ export default {
         commit("SET_THEME", "light");
       }
     },
-    toggleTheme({ commit, getters }) {
-      const currentTheme = getters.getTheme;
-      currentTheme === "light"
+    toggleTheme({ commit, state }) {
+      state.theme === "light"
         ? commit("SET_THEME", "dark")
         : commit("SET_THEME", "light");
     },
-    async predictSchool({ commit }) {
+    async predictSchool({ commit, state }) {
+      if (state.school) {
+        return;
+      }
       try {
         const { city } = await getUserCity();
         const predictedSchool = schools.find(
@@ -83,14 +71,6 @@ export default {
       } catch (err) {
         return Promise.reject(err);
       }
-    },
-    clearCache: ({ commit }) => {
-      commit("CLEAR_PREFERENCES");
-      commit("years/CLEAR_YEARS", null, { root: true });
-      commit("terms/CLEAR_TERMS", null, { root: true });
-      commit("diary/CLEAR_DIARY", null, { root: true });
-      commit("grades/CLEAR_GRADES", null, { root: true });
-      commit("subject/CLEAR_SUBJECT", null, { root: true });
     },
   },
 };

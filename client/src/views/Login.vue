@@ -94,7 +94,7 @@
               </transition>
               <base-select
                 v-model="school"
-                :loading="loadingSchool"
+                :loading="loading && loadingEndpoint === 'CITY'"
                 :options="$options.schools"
               >
                 <template #default>Выберите школу</template>
@@ -109,7 +109,7 @@
                 type="submit"
                 w-full
                 color="primary"
-                :loading="loading"
+                :loading="loading && loadingEndpoint === 'LOGIN'"
               >
                 Войти
               </base-button>
@@ -117,14 +117,7 @@
           </div>
           <footer class="self-end">
             <div class="flex justify-between items-center">
-              <base-button
-                flat
-                icon
-                aria-label="Toogle Theme"
-                @click="toggleTheme()"
-              >
-                <component :is="theme === 'dark' ? 'sun-icon' : 'moon-icon'" />
-              </base-button>
+              <theme-toggler />
               <base-button
                 icon
                 tag="a"
@@ -148,62 +141,23 @@
         </main>
       </div>
     </div>
-    <modal
-      :show="showDomainNotification"
-      @close="showDomainNotification = false"
-    >
-      <div class="flex flex-col space-y-2">
-        <h1>🔥 Мы переехали</h1>
-        <p>
-          Благодаря
-          <a href="https://superhooman.co/" class="underline">
-            создателю первого ениша
-          </a>
-          у нас теперь есть
-          <a href="https://enis.que.kz/" class="underline">новый домен</a> и
-          сервер, и хоть этот домен также продолжит работать мы не можем
-          обеспечить здесь стабильную работу нашего сервера
-        </p>
-        <a href="https://enis.que.kz/" class="underline">enis.que.kz</a>
-      </div>
-    </modal>
-    <modal
-      :show="showAvailabilityNotification"
-      @close="showAvailabilityNotification = false"
-    >
-      <div class="flex flex-col space-y-2">
-        <h1>😞</h1>
-        <p>
-          <a
-            :href="`https://sms.${school}.nis.edu.kz/`"
-            target="_blank"
-            class="underline"
-          >
-            Оригинальный клиент</a
-          >
-          не работает
-        </p>
-      </div>
-    </modal>
   </div>
 </template>
 
 <script>
+import { mapActions, mapState } from "vuex";
+import { refreshCaptcha } from "../api";
+import { notify } from "../services/notify.js";
+import schools from "../assets/schools.json";
+import emojis from "../assets/emojis.json";
 import BaseInput from "../components/BaseInput.vue";
 import BaseButton from "../components/BaseButton.vue";
 import BaseSelect from "../components/BaseSelect.vue";
 import BaseCheckbox from "../components/BaseCheckbox.vue";
-import Modal from "../components/Modal.vue";
+import ThemeToggler from "../components/ThemeToggler.vue";
 import AppIcon from "../components/icons/AppIcon.vue";
 import GithubIcon from "../components/icons/GithubIcon.vue";
 import TelegramIcon from "../components/icons/TelegramIcon.vue";
-import MoonIcon from "../components/icons/MoonIcon.vue";
-import SunIcon from "../components/icons/SunIcon.vue";
-import schools from "../assets/schools.json";
-import emojis from "../assets/emojis.json";
-import { mapActions, mapGetters } from "vuex";
-import { refreshCaptcha, checkSmsAvailability } from "../api";
-import { notify } from "../services/notify.js";
 
 export default {
   name: "Login",
@@ -212,19 +166,13 @@ export default {
     BaseButton,
     BaseSelect,
     BaseCheckbox,
-    Modal,
+    ThemeToggler,
     AppIcon,
     GithubIcon,
-    MoonIcon,
-    SunIcon,
     TelegramIcon,
   },
   data() {
     return {
-      loading: false,
-      loadingSchool: false,
-      validationStarted: false,
-      captcha: "",
       form: {
         login: {
           value: "",
@@ -236,16 +184,20 @@ export default {
         },
         captchaInput: "",
       },
-      showDomainNotification: false,
-      showAvailabilityNotification: false,
+      validationStarted: false,
+      captcha: "",
     };
   },
   schools,
   emojis,
   computed: {
-    ...mapGetters({
-      theme: "preferences/getTheme",
+    ...mapState({
+      loading: (state) => state.loader.status,
+      loadingEndpoint: (state) => state.loader.endpoint,
     }),
+    theme() {
+      return this.$store.state.preferences.theme;
+    },
     school: {
       get() {
         return this.$store.state.preferences.school;
@@ -266,8 +218,8 @@ export default {
       return this.form.login.valid && this.form.password.valid;
     },
     randomEmoji() {
-      const array = this.$options.emojis;
-      return array[Math.floor(Math.random() * array.length)];
+      const { emojis } = this.$options;
+      return emojis[Math.floor(Math.random() * emojis.length)];
     },
   },
   watch: {
@@ -283,22 +235,14 @@ export default {
     },
   },
   async created() {
-    if (this.school) return;
-    this.loadingSchool = true;
-    try {
-      await this.predictSchool();
-    } finally {
-      this.loadingSchool = false;
-    }
-  },
-  mounted() {
-    // this.showDomainNotification = window.location.host.includes("enis2");
+    await this.predictSchool();
   },
   methods: {
     ...mapActions({
       login: "auth/login",
       predictSchool: "preferences/predictSchool",
       toggleTheme: "preferences/toggleTheme",
+      checkAvailability: "health/checkAvailability",
     }),
     validateForm({ login, password }) {
       this.form.login.valid = login.length === 12;
@@ -314,9 +258,9 @@ export default {
       this.validationStarted = true;
       this.validateForm(account);
 
-      if (!this.formValidated || !this.school) return;
-
-      this.loading = true;
+      if (!this.formValidated || !this.school) {
+        return;
+      }
       try {
         await this.login({
           ...account,
@@ -326,18 +270,16 @@ export default {
       } catch (error) {
         notify.show({
           type: "danger",
-          message: error?.response?.data?.message || "Что-то пошло не так",
+          message: error.response.data.message,
         });
-        if (error?.response?.data?.data) {
+        if (error.response.data && error.response.data.data) {
           this.captcha = error.response.data.data.base64img;
           this.form.captchaInput = "";
         }
-
-        if (error.response.status === 400) return;
-        const { alive } = await checkSmsAvailability();
-        this.showAvailabilityNotification = !alive;
-      } finally {
-        this.loading = false;
+        if (error.response.status === 400) {
+          return;
+        }
+        await this.checkAvailability();
       }
     },
     async updateCaptcha() {
@@ -346,7 +288,7 @@ export default {
       } catch (error) {
         notify.show({
           type: "danger",
-          message: error?.response?.data?.message || "Что-то пошло не так",
+          message: error.response.data.message,
         });
       }
     },

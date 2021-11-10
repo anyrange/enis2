@@ -4,7 +4,7 @@ import Login from "../views/Login.vue";
 import Dashboard from "../views/Dashboard.vue";
 
 const authenticated = () => {
-  return $store.getters["auth/isAuthenticated"];
+  return $store.state.auth.authenticated;
 };
 
 const routes = [

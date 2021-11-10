@@ -1,5 +1,37 @@
 <template>
   <div :class="{ 'custom-scrollbars': !isMobile }">
+    <loading-spinner />
+    <modal :show="showAvailabilityModal" @close="showAvailabilityModal = false">
+      <div class="flex flex-col space-y-2">
+        <h1>😞</h1>
+        <p>
+          <a
+            :href="`https://sms.${$store.state.preferences.school}.nis.edu.kz/`"
+            target="_blank"
+            class="underline"
+          >
+            Оригинальный клиент</a
+          >
+          не работает
+        </p>
+      </div>
+    </modal>
+    <modal :show="showDomainModal" @close="showDomainModal = false">
+      <div class="flex flex-col space-y-2">
+        <h1>🔥 Мы переехали</h1>
+        <p>
+          Благодаря
+          <a href="https://superhooman.co/" class="underline">
+            создателю первого ениша
+          </a>
+          у нас теперь есть
+          <a href="https://enis.que.kz/" class="underline">новый домен</a> и
+          сервер, и хоть этот домен также продолжит работать мы не можем
+          обеспечить здесь стабильную работу нашего сервера
+        </p>
+        <a href="https://enis.que.kz/" class="underline">enis.que.kz</a>
+      </div>
+    </modal>
     <router-view />
     <notifications />
   </div>
@@ -7,22 +39,34 @@
 
 <script>
 import Notifications from "./components/Notifications.vue";
-import { mapGetters, mapActions } from "vuex";
+import LoadingSpinner from "./components/LoadingSpinner.vue";
+import Modal from "./components/Modal.vue";
 import { notify } from "./services/notify.js";
 
 export default {
   components: {
     Notifications,
+    LoadingSpinner,
+    Modal,
   },
   data() {
     return {
       updateSW: undefined,
+      showDomainModal: false,
     };
   },
   computed: {
-    ...mapGetters({
-      theme: "preferences/getTheme",
-    }),
+    theme() {
+      return this.$store.state.preferences.theme;
+    },
+    showAvailabilityModal: {
+      get() {
+        return !this.$store.state.health.alive;
+      },
+      set(value) {
+        this.$store.commit("health/SET_AVAILABILITY", !value);
+      },
+    },
     isMobile() {
       return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
         navigator.userAgent
@@ -40,6 +84,10 @@ export default {
       },
       immediate: true,
     },
+  },
+  created() {
+    this.$store.dispatch("preferences/setTheme");
+    // this.showDomainModal = window.location.host.includes("enis2");
   },
   async mounted() {
     try {
@@ -63,32 +111,14 @@ export default {
             ],
           });
         },
-        onRegistered(swRegistration) {
-          swRegistration && vm.handleSWManualUpdates(swRegistration);
-        },
-        onRegisterError(e) {
-          vm.handleSWRegisterError(e);
-        },
       });
     } catch {
       console.log("PWA disabled.");
     }
   },
-  created() {
-    this.setTheme();
-  },
   methods: {
-    ...mapActions({
-      setTheme: "preferences/setTheme",
-    }),
     updateServiceWorker() {
       this.updateSW && this.updateSW(true);
-    },
-    handleSWManualUpdates(swRegistration) {
-      console.log(swRegistration);
-    },
-    handleSWRegisterError(error) {
-      console.error(error);
     },
   },
 };

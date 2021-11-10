@@ -1,3 +1,4 @@
+import { isDev } from "../settings";
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
 import SecureLS from "secure-ls";
@@ -8,7 +9,8 @@ import preferences from "./modules/preferences.js";
 import subject from "./modules/subject.js";
 import terms from "./modules/terms.js";
 import years from "./modules/years.js";
-import { isDev } from "../settings";
+import loader from "./modules/loader.js";
+import health from "./modules/health.js";
 
 const ls = new SecureLS({ isCompression: false });
 
@@ -21,10 +23,12 @@ export default createStore({
     subject,
     terms,
     years,
+    loader,
+    health,
   },
   plugins: [
     createPersistedState({
-      key: isDev ? "development" : "production",
+      key: isDev ? "development-1.6" : "production-1.6",
       storage: isDev
         ? null
         : {
@@ -32,7 +36,7 @@ export default createStore({
             setItem: (key, value) => ls.set(key, value),
             removeItem: (key) => ls.remove(key),
           },
-      paths: ["auth", "preferences", "years", "terms"],
+      paths: ["auth", "preferences", "years", "terms", "diary", "grades"],
     }),
   ],
 });
