@@ -148,6 +148,9 @@ export default {
       showTabs: true,
       scrollPosition: 0,
       contentWindow: null,
+      termsAndYearsTries: 0,
+      tabTries: 0,
+      contentTries: 0,
     };
   },
   GREEK_NUMERALS: {
@@ -238,10 +241,8 @@ export default {
           "auth/login",
           this.$store.state.auth.savedAccount
         );
-        return Promise.resolve();
       } catch {
         this.endSession();
-        return Promise.reject();
       }
     },
     async getTabs({ force }) {
@@ -254,16 +255,13 @@ export default {
         });
         this.currentTab = this.currentTab || this.actualTermName;
       } catch (error) {
-        let tries = 0;
-        if (tries >= 1) {
+        if (this.tabTries >= 1) {
           return;
         }
-        tries++;
+        this.tabTries++;
         if (error.response.status === 401) {
           this.restoreSession().then(async () => {
-            await this.getTabs({
-              forceUpdate: true,
-            });
+            await this.getTabs({ force: true });
           });
         } else {
           this.error = true;
@@ -285,11 +283,10 @@ export default {
             });
         this.error = false;
       } catch (error) {
-        let tries = 0;
-        if (tries >= 1) {
+        if (this.contentTries >= 1) {
           return;
         }
-        tries++;
+        this.contentTries++;
         if (error.response.status === 401) {
           this.restoreSession().then(async () => {
             await this.getTabs({ force: true });
@@ -308,11 +305,10 @@ export default {
         });
         await this.getContent(this.currentTab || this.actualTermName);
       } catch (error) {
-        let tries = 0;
-        if (tries >= 1) {
+        if (this.termsAndYearsTries >= 1) {
           return;
         }
-        tries++;
+        this.termsAndYearsTries++;
         if (error.response.status === 401) {
           this.restoreSession().then(async () => {
             await this.fetchYears({ force: true });

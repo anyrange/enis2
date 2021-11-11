@@ -86,7 +86,7 @@ if (isDev) {
 
   const mock = new MockAdapter(api, { delayResponse: 300 });
 
-  mock.onGet("health/sms").reply(200, { alive: false });
+  mock.onGet("health/sms").reply(200, { alive: true });
 
   mock.onGet("city").reply(200, { city: "Pavlodar" });
 

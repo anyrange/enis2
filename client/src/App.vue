@@ -61,10 +61,10 @@ export default {
     },
     showAvailabilityModal: {
       get() {
-        return !this.$store.state.health.alive;
+        return this.$store.state.health.showAvailabilityModal;
       },
       set(value) {
-        this.$store.commit("health/SET_AVAILABILITY", !value);
+        this.$store.commit("health/SET_MODAL", value);
       },
     },
     isMobile() {
