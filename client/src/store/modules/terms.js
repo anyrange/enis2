@@ -27,9 +27,9 @@ export default {
   },
   actions: {
     fetchTerms: async ({ commit, state }, { yearId, force = false }) => {
-      if (state.data.length && !force) {
-        return;
-      }
+      // if (state.data.length && !force) {
+      //   return;
+      // }
       try {
         const terms = await getTerms(yearId);
         const formattedTerms = terms.map(({ Id, Name: label, isActual }) => ({
