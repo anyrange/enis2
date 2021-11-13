@@ -272,10 +272,9 @@ export default {
           } catch (error) {
             console.log(error);
           }
-        } else {
-          await this.checkAvailability();
-          this.error = true;
         }
+        this.error = true;
+        await this.checkAvailability();
       }
     },
     async getContent(tab) {
