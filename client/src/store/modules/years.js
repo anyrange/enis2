@@ -26,7 +26,7 @@ export default {
     },
   },
   actions: {
-    fetchYears: async ({ commit, state }, { force = false }) => {
+    fetchYears: async ({ commit, state }, { force }) => {
       if (state.data.length && !force) {
         return;
       }

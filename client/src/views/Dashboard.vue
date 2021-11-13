@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col h-screen">
-    <div class="flex-1 flex flex-col overflow-y-hidden">
+    <main v-if="alive" class="flex-1 flex flex-col overflow-y-hidden">
       <header>
         <tabs v-model="currentYearName" class="tabs-bg">
           <div class="tabs-container">
@@ -41,7 +41,7 @@
           </div>
         </tabs>
       </header>
-      <main id="content" class="flex w-full justify-center overflow-y-auto">
+      <section id="content" class="flex w-full justify-center overflow-y-auto">
         <section class="mt-12 flex flex-col p-3 space-y-3 sm:w-450px w-full">
           <template v-if="alive">
             <error v-if="error">
@@ -68,7 +68,12 @@
           </template>
           <random-gif v-else />
         </section>
-      </main>
+      </section>
+    </main>
+    <main v-else class="flex justify-center items-center h-screen">
+      <random-gif />
+    </main>
+    <footer>
       <div
         class="absolute bottom-4"
         style="left: 50%; transform: translateX(-50%)"
@@ -89,8 +94,8 @@
       >
         <theme-toggler />
       </div>
-    </div>
-    <modal :show="subjectModal" @close="closeSubjectModal()">
+    </footer>
+    <modal :show="showSubjectModal" @close="closeSubjectModal()">
       <div class="flex flex-col space-y-2">
         <subject-diary :hoverable="false" :subject="subject.current" />
         <loading-dots v-if="loading && loadingEndpoint === 'SUBJECT'" />
@@ -144,7 +149,7 @@ export default {
     return {
       error: false,
       subjectError: false,
-      subjectModal: false,
+      showSubjectModal: false,
       showTabs: true,
       scrollPosition: 0,
       contentWindow: null,
@@ -254,19 +259,23 @@ export default {
           yearId: this.getYearIdByName(this.currentYearName),
         });
         this.currentTab = this.currentTab || this.actualTermName;
+        this.error = false;
       } catch (error) {
         if (this.tabTries >= 1) {
           return;
         }
         this.tabTries++;
         if (error.response.status === 401) {
-          this.restoreSession().then(async () => {
+          try {
+            await this.restoreSession();
             await this.getTabs({ force: true });
-          });
+          } catch (error) {
+            console.log(error);
+          }
         } else {
+          await this.checkAvailability();
           this.error = true;
         }
-        await this.checkAvailability();
       }
     },
     async getContent(tab) {
@@ -288,10 +297,15 @@ export default {
         }
         this.contentTries++;
         if (error.response.status === 401) {
-          this.restoreSession().then(async () => {
-            await this.getTabs({ force: true });
-            await this.getContent(this.currentTab);
-          });
+          try {
+            await Promise.all([
+              this.restoreSession(),
+              this.getTabs({ force: true }),
+              this.getContent(this.currentTab),
+            ]);
+          } catch (error) {
+            console.log(error);
+          }
         } else {
           this.error = true;
         }
@@ -310,24 +324,29 @@ export default {
         }
         this.termsAndYearsTries++;
         if (error.response.status === 401) {
-          this.restoreSession().then(async () => {
-            await this.fetchYears({ force: true });
-            await this.getTermsAndContentByYear({
-              yearName: this.currentYearName,
-              force: true,
-            });
-          });
+          try {
+            await Promise.all([
+              this.restoreSession(),
+              this.fetchYears({ force: true }),
+              this.getTermsAndContentByYear({
+                yearName: this.currentYearName,
+                force: true,
+              }),
+            ]);
+          } catch (error) {
+            console.log(error);
+          }
         } else {
           this.error = true;
         }
       }
     },
     async openSubjectModal(subject) {
-      if (subject.Name === this.subject.current.Name && this.subjectModal) {
+      if (subject.Name === this.subject.current.Name && this.showSubjectModal) {
         return;
       }
       this.$store.commit("subject/CLEAR_SUBJECT");
-      this.subjectModal = true;
+      this.showSubjectModal = true;
       try {
         await this.fetchSubject(subject);
         this.subjectError = false;
@@ -336,7 +355,7 @@ export default {
       }
     },
     closeSubjectModal() {
-      this.subjectModal = false;
+      this.showSubjectModal = false;
     },
     sortByScore(array) {
       return array.sort((firstEl, secondEl) => secondEl.Score - firstEl.Score);
