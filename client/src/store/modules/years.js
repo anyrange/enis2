@@ -27,9 +27,9 @@ export default {
   },
   actions: {
     fetchYears: async ({ commit, state }, { force }) => {
-      if (state.data.length && !force) {
-        return;
-      }
+      // if (state.data.length && !force) {
+      //   return;
+      // }
       try {
         const years = await getYears();
         const actualYearIndex = years.findIndex((year) => year.isActual);
