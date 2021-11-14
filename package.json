@@ -4,10 +4,12 @@
   "type": "module",
   "scripts": {
     "serve": "vite --port 3004",
+    "serve:prod": "vite --mode production --port 3004",
     "build": "vite build",
     "preview": "vite preview --port 3004",
     "server": "nodemon server/index.js",
-    "dev": "concurrently \"npm run serve\" \"npm run server\" ",
+    "dev": "concurrently \"npm run serve\" \"npm run server\"",
+    "dev:prod": "concurrently \"npm run serve:prod\" \"npm run server\"",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix .",
     "format": "prettier --write .",
     "heroku-postbuild": "echo Skip builds on Heroku"

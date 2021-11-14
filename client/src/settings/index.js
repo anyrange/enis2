@@ -1,4 +1,7 @@
-export const isDev = process.env.NODE_ENV === "development";
+export const isDev = import.meta.env.DEV;
+
+export const isLocal =
+  location.hostname === "localhost" || location.hostname === "127.0.0.1";
 
 export const ENDPOINTS = {
   HEALTH_SMS: "health/sms",

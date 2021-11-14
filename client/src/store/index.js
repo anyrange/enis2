@@ -1,4 +1,4 @@
-import { isDev } from "../settings";
+import { isDev, isLocal } from "../settings";
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
 import SecureLS from "secure-ls";
@@ -28,8 +28,8 @@ export default createStore({
   },
   plugins: [
     createPersistedState({
-      key: isDev ? "development-1.6" : "production-1.6",
-      storage: isDev
+      key: isDev ? "development-1.7" : "production-1.6",
+      storage: isLocal
         ? null
         : {
             getItem: (key) => ls.get(key),

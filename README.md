@@ -26,7 +26,7 @@ Rename [.env.example](/.env.example) to .env and set your variables or keep the 
 
 ### Mock API
 
-Due to the fact that during the development the original client was unavailable, mock data was added and enabled by default in development mode, you can comment it out or leave it on
+Due to the fact that the original client was unavailable during development, mock data was added and enabled by default in development mode, you can run an app with real data using command `npm run dev:prod`
 
 ### API documentation
 
