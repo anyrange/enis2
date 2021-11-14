@@ -15,9 +15,4 @@ export const ENDPOINTS = {
   GRADES: "dashboard/grades",
 };
 
-export const HIDE_LOADER_ON_ENDPOINTS = [
-  "CITY",
-  "LOGIN",
-  "REFRESH_CAPTCHA",
-  "SUBJECT",
-];
+export const HIDE_LOADER_ON_ENDPOINTS = ["CITY", "REFRESH_CAPTCHA", "SUBJECT"];

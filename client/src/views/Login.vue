@@ -105,12 +105,7 @@
                 v-model="rememberMe"
                 label="Запомнить меня"
               />
-              <base-button
-                type="submit"
-                w-full
-                color="primary"
-                :loading="loading && loadingEndpoint === 'LOGIN'"
-              >
+              <base-button type="submit" w-full color="primary">
                 Войти
               </base-button>
             </form>
