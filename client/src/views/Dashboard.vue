@@ -43,30 +43,27 @@
       </header>
       <section id="content" class="flex w-full justify-center overflow-y-auto">
         <section class="mt-12 flex flex-col p-3 space-y-3 sm:w-450px w-full">
-          <template v-if="alive">
-            <error v-if="error">
-              <span v-if="isGrades">Не удалось загрузить табель</span>
-              <span v-else>Не удалось загрузить дневник</span>
-            </error>
+          <error v-if="error && !loading">
+            <span v-if="isGrades">Не удалось загрузить табель</span>
+            <span v-else>Не удалось загрузить дневник</span>
+          </error>
+          <template v-else>
+            <template v-if="isGrades">
+              <subject-grades
+                v-for="item in grades"
+                :key="item"
+                :subject="item"
+              />
+            </template>
             <template v-else>
-              <template v-if="isGrades">
-                <subject-grades
-                  v-for="item in grades"
-                  :key="item"
-                  :subject="item"
-                />
-              </template>
-              <template v-else>
-                <subject-diary
-                  v-for="item in sortByScore(diary)"
-                  :key="item"
-                  :subject="item"
-                  @click="openSubjectModal(item)"
-                />
-              </template>
+              <subject-diary
+                v-for="item in sortByScore(diary)"
+                :key="item"
+                :subject="item"
+                @click="openSubjectModal(item)"
+              />
             </template>
           </template>
-          <random-gif v-else />
         </section>
       </section>
     </main>
@@ -78,7 +75,7 @@
         class="absolute bottom-4"
         style="left: 50%; transform: translateX(-50%)"
       >
-        <base-button rounded color="negative" @click="logout()">
+        <base-button rounded color="negative" @click="signOut()">
           Выйти
         </base-button>
       </div>
@@ -230,12 +227,17 @@ export default {
       fetchTerms: "terms/fetchTerms",
       checkAvailability: "health/checkAvailability",
     }),
+    signOut() {
+      this.logout();
+      this.error = false;
+      this.$store.commit("health/SET_AVAILABILITY", true);
+    },
     endSession() {
       notify.show({
         type: "danger",
         message: "Сессия завершена",
       });
-      this.logout();
+      this.signOut();
     },
     async restoreSession() {
       if (!this.$store.state.preferences.remember) {
@@ -273,8 +275,9 @@ export default {
             console.log(error);
           }
         }
-        this.error = true;
-        await this.checkAvailability();
+        await this.checkAvailability().catch(() => {
+          this.error = true;
+        });
       }
     },
     async getContent(tab) {
