@@ -1,27 +1,19 @@
 <template>
-  <img :src="selectedImage" alt="error-gif" />
+  <img class="max-w-120" :src="randomGIF.src" :alt="randomGIF.name" />
 </template>
 
 <script>
+import gifs from "../assets/gifs.json";
+
 export default {
   name: "RandomGif",
-  data() {
-    return {
-      selectedImage: null,
-      gifs: [],
-    };
-  },
-  async created() {
-    this.gifs = await import.meta.glob("../assets/gifs/*.gif");
-    this.gifs[`../assets/gifs/${this.randomInteger(1, 4)}.gif`]().then(
-      (mod) => {
-        this.selectedImage = mod.default;
-      }
-    );
-  },
-  methods: {
-    randomInteger(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
+  computed: {
+    randomGIF() {
+      const { url, name } = gifs[Math.floor(Math.random() * gifs.length)];
+      return {
+        src: url,
+        name: name,
+      };
     },
   },
 };
