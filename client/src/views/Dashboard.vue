@@ -210,8 +210,7 @@ export default {
     },
   },
   async created() {
-    await this.getTabs({ force: false });
-    await this.getContent(this.currentTab);
+    await this.startSession({ force: false });
   },
   mounted() {
     this.contentWindow = document.getElementById("content");
@@ -252,6 +251,10 @@ export default {
         this.endSession();
       }
     },
+    async startSession({ force }) {
+      await this.getTabs({ force: force });
+      await this.getContent(this.currentTab);
+    },
     async getTabs({ force }) {
       try {
         await this.fetchYears({ force: force });
@@ -268,12 +271,8 @@ export default {
         }
         this.tabTries++;
         if (error.response.status === 401) {
-          try {
-            await this.restoreSession();
-            await this.getTabs({ force: true });
-          } catch (error) {
-            console.log(error);
-          }
+          await this.restoreSession();
+          await this.startSession({ force: true });
         }
         await this.checkAvailability().catch(() => {
           this.error = true;
@@ -299,15 +298,8 @@ export default {
         }
         this.contentTries++;
         if (error.response.status === 401) {
-          try {
-            await Promise.all([
-              this.restoreSession(),
-              this.getTabs({ force: true }),
-              this.getContent(this.currentTab),
-            ]);
-          } catch (error) {
-            console.log(error);
-          }
+          await this.restoreSession();
+          await this.startSession({ force: true });
         } else {
           this.error = true;
         }
@@ -326,18 +318,12 @@ export default {
         }
         this.termsAndYearsTries++;
         if (error.response.status === 401) {
-          try {
-            await Promise.all([
-              this.restoreSession(),
-              this.fetchYears({ force: true }),
-              this.getTermsAndContentByYear({
-                yearName: this.currentYearName,
-                force: true,
-              }),
-            ]);
-          } catch (error) {
-            console.log(error);
-          }
+          await this.restoreSession();
+          await this.fetchYears({ force: true });
+          await this.getTermsAndContentByYear({
+            yearName: this.currentYearName,
+            force: true,
+          });
         } else {
           this.error = true;
         }
