@@ -1,5 +1,5 @@
 <template>
-  <div class="flex space-x-2 p-4 justify-center items-center">
+  <div class="flex space-x-2 pb-3 h-9 justify-center items-center">
     <div class="loader-dots block relative w-20">
       <div class="absolute top-0 w-3 h-3 rounded-full bg-q-positive"></div>
       <div class="absolute top-0 w-3 h-3 rounded-full bg-q-warning"></div>
