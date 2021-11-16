@@ -9,7 +9,9 @@
               :key="year.value"
               :name="year.label"
               :loading="loading"
-              @selected="getTermsAndContentByYear({ yearName: year.label })"
+              @selected="
+                getTermsAndContentByYear({ yearName: year.label, force: true })
+              "
             >
               {{ year.label }}
             </tab>
@@ -305,7 +307,7 @@ export default {
         }
       }
     },
-    async getTermsAndContentByYear({ yearName, force = false }) {
+    async getTermsAndContentByYear({ yearName, force }) {
       try {
         await this.fetchTerms({
           yearId: this.getYearIdByName(yearName),
