@@ -2,7 +2,7 @@ import { getGrades } from "../../api";
 
 function existsAtIndex(state, yearName) {
   const index = state.data.findIndex((item) => item.yearName === yearName);
-  return index === -1 ? false : index;
+  return index === -1 ? null : index;
 }
 
 const defaultState = () => {
@@ -17,7 +17,7 @@ export default {
   mutations: {
     ADD_GRADES(state, { grades, yearName }) {
       const index = existsAtIndex(state, yearName);
-      index === false
+      index === null
         ? (state.data = [...state.data, { grades, yearName }])
         : (state.data[index].grades = grades);
     },
@@ -35,7 +35,14 @@ export default {
       },
   },
   actions: {
-    fetchGrades: async ({ commit }, { yearId, yearName }) => {
+    fetchGrades: async ({ commit, state, rootState }, { yearId, yearName }) => {
+      if (rootState.years.actual) {
+        const exists = existsAtIndex(state, yearName) !== null;
+        const isActualYear = rootState.years.actual === yearName;
+        if (exists && !isActualYear) {
+          return;
+        }
+      }
       try {
         commit("ADD_GRADES", {
           grades: await getGrades(yearId),

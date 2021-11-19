@@ -4,7 +4,7 @@ function existsAtIndex(state, termName, yearName) {
   const index = state.data.findIndex(
     (item) => item.termName === termName && item.yearName === yearName
   );
-  return index === -1 ? false : index;
+  return index === -1 ? null : index;
 }
 
 const defaultState = () => {
@@ -19,7 +19,7 @@ export default {
   mutations: {
     ADD_DIARY(state, { diary, termName, yearName }) {
       const index = existsAtIndex(state, termName, yearName);
-      index === false
+      index === null
         ? (state.data = [...state.data, { diary, termName, yearName }])
         : (state.data[index].diary = diary);
     },
@@ -39,7 +39,18 @@ export default {
       },
   },
   actions: {
-    fetchDiary: async ({ commit }, { termId, termName, yearName }) => {
+    fetchDiary: async (
+      { commit, rootState, state },
+      { termId, termName, yearName }
+    ) => {
+      if (rootState.years.actual && rootState.terms.actual) {
+        const exists = existsAtIndex(state, termName, yearName) !== null;
+        const isActualTerm = rootState.terms.actual === termName;
+        const isActualYear = rootState.years.actual === yearName;
+        if (exists && !(isActualTerm && isActualYear)) {
+          return;
+        }
+      }
       try {
         commit("ADD_DIARY", {
           diary: await getDiary(termId),

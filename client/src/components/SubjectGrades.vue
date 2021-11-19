@@ -5,11 +5,11 @@
         {{ subject.SubjectName }}
       </span>
       <div v-if="subject.Exam !== 'none'" class="item-top-box">
-        <span class="item-top-box-mark">{{ subject.Exam }}</span>
+        <span class="item-top-box-mark">{{ formatScore(subject.Exam) }}</span>
         <span class="item-top-box-label">Экзамен</span>
       </div>
-      <div v-if="subject.Final !== 'none'" class="item-top-box">
-        <span class="item-top-box-mark">{{ subject.Final }}</span>
+      <div class="item-top-box">
+        <span class="item-top-box-mark">{{ formatScore(subject.Final) }}</span>
         <span class="item-top-box-label">Итоговая</span>
       </div>
     </div>
@@ -76,16 +76,15 @@ export default {
   methods: {
     formatScore(score) {
       switch (score) {
-        case  "true":
+        case "true":
           return "Зачёт";
         case "false":
           return "Незачёт";
         case "none":
-          return "-"
+          return "-";
         default:
-          return score
+          return score;
       }
-
     },
   },
 };

@@ -1,8 +1,13 @@
 import { getTerms } from "../../api";
 
+const shorterTermName = (name) => {
+  return name.substring(0, 1);
+};
+
 const defaultState = () => {
   return {
     data: [],
+    actual: null,
   };
 };
 
@@ -12,6 +17,9 @@ export default {
   mutations: {
     SET_TERMS(state, result) {
       state.data = result;
+    },
+    SET_ACTUAL(state, payload) {
+      state.actual = payload;
     },
     CLEAR_TERMS(state) {
       Object.assign(state, defaultState());
@@ -32,9 +40,11 @@ export default {
       }
       try {
         const terms = await getTerms(yearId);
+        const actualTerm = terms.find((term) => term.isActual);
+        !state.actual && commit("SET_ACTUAL", shorterTermName(actualTerm.Name));
         const formattedTerms = terms.map(({ Id, Name: label, isActual }) => ({
           Id,
-          Name: label.substring(0, 1),
+          Name: shorterTermName(label),
           isActual,
         }));
         commit("SET_TERMS", formattedTerms);
