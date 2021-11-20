@@ -10,6 +10,7 @@ export default defineConfig({
     WindiCSS(),
     VitePWA({
       includeAssets: ["favicon.ico", "robots.txt", "apple-touch-icon.png"],
+      registerType: "autoUpdate",
       manifest: {
         name: "enis2",
         short_name: "enis2",

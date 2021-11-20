@@ -41,7 +41,6 @@
 import Notifications from "./components/Notifications.vue";
 import LoadingSpinner from "./components/LoadingSpinner.vue";
 import Modal from "./components/Modal.vue";
-import { notify } from "./services/notify.js";
 
 export default {
   components: {
@@ -88,38 +87,6 @@ export default {
   created() {
     this.$store.dispatch("preferences/setTheme");
     // this.showDomainModal = window.location.host.includes("enis2");
-  },
-  async mounted() {
-    try {
-      const { registerSW } = await import("virtual:pwa-register");
-      const vm = this;
-      this.updateSW = registerSW({
-        immediate: true,
-        onNeedRefresh() {
-          notify.show({
-            type: "success",
-            message: "Обновление доступно",
-            progress: false,
-            closable: true,
-            actions: [
-              {
-                title: "Обновить",
-                handler: () => {
-                  vm.updateServiceWorker();
-                },
-              },
-            ],
-          });
-        },
-      });
-    } catch {
-      console.log("PWA disabled.");
-    }
-  },
-  methods: {
-    updateServiceWorker() {
-      this.updateSW && this.updateSW(true);
-    },
   },
 };
 </script>
