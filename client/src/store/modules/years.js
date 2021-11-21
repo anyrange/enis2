@@ -26,10 +26,7 @@ export default {
     },
   },
   getters: {
-    actualYearName: (state) => {
-      return state.data.find((year) => year.isActual).label;
-    },
-    getYearIdByName: (state) => (label) => {
+    getYearId: (state) => (label) => {
       return state.data.find((item) => item.label === label)?.value || "";
     },
   },

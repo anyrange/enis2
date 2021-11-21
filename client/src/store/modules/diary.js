@@ -1,11 +1,11 @@
 import { getDiary } from "../../api";
 
-function existsAtIndex(state, termName, yearName) {
+const existsAtIndex = (state, termName, yearName) => {
   const index = state.data.findIndex(
     (item) => item.termName === termName && item.yearName === yearName
   );
   return index === -1 ? null : index;
-}
+};
 
 const defaultState = () => {
   return {
@@ -28,13 +28,15 @@ export default {
     },
   },
   getters: {
-    getCurrentTermDiary:
+    getCurrentDiary:
       (state) =>
       ({ termName, yearName }) => {
-        return (
+        const diary =
           state.data.find(
             (item) => item.termName === termName && item.yearName === yearName
-          )?.diary || []
+          )?.diary || [];
+        return diary.sort(
+          (firstEl, secondEl) => secondEl.Score - firstEl.Score
         );
       },
   },

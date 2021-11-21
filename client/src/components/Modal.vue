@@ -36,6 +36,7 @@
                 align-middle
                 sm:max-w-lg
                 w-full
+                overflow-hidden
                 mr-0
                 sm:mr-2
               "
@@ -73,7 +74,7 @@
                   d="M6 18L18 6M6 6l12 12"
                 ></path>
               </svg>
-              <div class="p-2">
+              <div class="p-2 max-h-xl overflow-y-auto">
                 <slot />
               </div>
             </div>

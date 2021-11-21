@@ -184,15 +184,12 @@ export default {
     };
   },
   schools,
-  emojis,
   computed: {
     ...mapState({
       loading: (state) => state.loader.status,
       loadingEndpoint: (state) => state.loader.endpoint,
+      theme: (state) => state.preferences.theme,
     }),
-    theme() {
-      return this.$store.state.preferences.theme;
-    },
     school: {
       get() {
         return this.$store.state.preferences.school;
@@ -213,7 +210,6 @@ export default {
       return this.form.login.valid && this.form.password.valid;
     },
     randomEmoji() {
-      const { emojis } = this.$options;
       return emojis[Math.floor(Math.random() * emojis.length)];
     },
   },

@@ -10,7 +10,7 @@
               :name="year.label"
               :loading="loading"
               @selected="
-                getTermsAndContentByYear({ yearName: year.label, force: true })
+                getTermsAndContentByYear({ yearName: year.label, force: false })
               "
             >
               {{ year.label }}
@@ -24,20 +24,14 @@
         >
           <div class="tabs-container">
             <tab
-              v-for="(term, index) in terms.data"
+              v-for="(term, index) in terms"
               :key="term.Id"
               :name="term.Name"
-              :loading="loading"
               @selected="getContent(term.Name)"
             >
               {{ $options.GREEK_NUMERALS[index + 1] }}
             </tab>
-            <tab
-              v-if="terms.data.length"
-              name="grades"
-              :loading="loading"
-              @selected="getContent('grades')"
-            >
+            <tab name="grades" @selected="getContent('grades')">
               <grades-icon />
             </tab>
           </div>
@@ -45,9 +39,8 @@
       </header>
       <section id="content" class="flex w-full justify-center overflow-y-auto">
         <section class="mt-12 flex flex-col p-3 space-y-3 sm:w-450px w-full">
-          <error v-if="error && !loading">
-            <span v-if="isGrades">Не удалось загрузить табель</span>
-            <span v-else>Не удалось загрузить дневник</span>
+          <error v-if="error && !loading && loadingEndpoint !== 'SUBJECT'">
+            {{ errorMessage }}
           </error>
           <template v-else>
             <template v-if="isGrades">
@@ -59,7 +52,7 @@
             </template>
             <template v-else>
               <subject-diary
-                v-for="item in sortByScore(diary)"
+                v-for="item in diary"
                 :key="item"
                 :subject="item"
                 @click="openSubjectModal(item)"
@@ -94,13 +87,16 @@
         <theme-toggler />
       </div>
     </footer>
-    <modal :show="showSubjectModal" @close="closeSubjectModal()">
+    <modal :show="showSubjectModal" @close="showSubjectModal = false">
       <div class="flex flex-col space-y-2">
         <subject-diary :hoverable="false" :subject="subject.current" />
-        <loading-dots v-if="loading && loadingEndpoint === 'SUBJECT'" />
+        <loading-dots v-if="loading" />
         <template v-else>
-          <div v-if="subjectError" class="p-2 text-center">
-            Не удалось загрузить информацию о предмете
+          <div
+            v-if="error && loadingEndpoint === 'SUBJECT'"
+            class="p-2 text-center"
+          >
+            {{ errorMessage }}
           </div>
           <template v-else>
             <subject-sections label="СОР" :subject="subject.SAU" />
@@ -146,15 +142,12 @@ export default {
   },
   data() {
     return {
-      error: false,
-      subjectError: false,
-      showSubjectModal: false,
       showTabs: true,
       scrollPosition: 0,
       contentWindow: null,
-      termsAndYearsTries: 0,
-      tabTries: 0,
-      contentTries: 0,
+      showSubjectModal: false,
+      refetchAttempts: 0,
+      error: false,
     };
   },
   GREEK_NUMERALS: {
@@ -163,23 +156,36 @@ export default {
     3: "III",
     4: "IV",
   },
+  ERROR_MESSAGES: {
+    SUBJECT: "Не удалось загрузить информацию о предмете",
+    DIARY: "Не удалось загрузить дневник",
+    GRADES: "Не удалось загрузить табель",
+  },
   computed: {
     ...mapState({
       years: "years",
-      terms: "terms",
       subject: "subject",
+      actualTermName: (state) => state.terms.actual,
+      actualYearName: (state) => state.years.actual,
       alive: (state) => state.health.alive,
       loading: (state) => state.loader.status,
       loadingEndpoint: (state) => state.loader.endpoint,
     }),
     ...mapGetters({
-      actualTermName: "terms/actualTermName",
-      getTermIdByName: "terms/getTermIdByName",
-      actualYearName: "years/actualYearName",
-      getYearIdByName: "years/getYearIdByName",
-      getCurrentTermDiary: "diary/getCurrentTermDiary",
-      getCurrentTermGrades: "grades/getCurrentTermGrades",
+      getTermId: "terms/getTermId",
+      getYearId: "years/getYearId",
+      getCurrentTerms: "terms/getCurrentTerms",
+      getCurrentDiary: "diary/getCurrentDiary",
+      getCurrentGrades: "grades/getCurrentGrades",
     }),
+    errorMessage() {
+      return this.error
+        ? this.$options.ERROR_MESSAGES[this.loadingEndpoint]
+        : null;
+    },
+    isGrades() {
+      return this.currentTab === "grades";
+    },
     currentTab: {
       get() {
         return this.$store.state.preferences.tab;
@@ -196,17 +202,19 @@ export default {
         this.$store.commit("preferences/SET_YEAR", value);
       },
     },
+    terms() {
+      return this.getCurrentTerms({
+        yearName: this.currentYearName,
+      });
+    },
     diary() {
-      return this.getCurrentTermDiary({
+      return this.getCurrentDiary({
         termName: this.currentTab,
         yearName: this.currentYearName,
       });
     },
-    isGrades() {
-      return this.currentTab === "grades";
-    },
     grades() {
-      return this.getCurrentTermGrades({
+      return this.getCurrentGrades({
         yearName: this.currentYearName,
       });
     },
@@ -228,17 +236,9 @@ export default {
       fetchTerms: "terms/fetchTerms",
       checkAvailability: "health/checkAvailability",
     }),
-    signOut() {
-      this.logout();
-      this.error = false;
-      this.$store.commit("health/SET_AVAILABILITY", true);
-    },
-    endSession() {
-      notify.show({
-        type: "danger",
-        message: "Сессия завершена",
-      });
-      this.signOut();
+    async startSession({ force }) {
+      await this.getTabs({ force });
+      await this.getContent(this.currentTab);
     },
     async restoreSession() {
       if (!this.$store.state.preferences.remember) {
@@ -253,52 +253,66 @@ export default {
         this.endSession();
       }
     },
-    async startSession({ force }) {
-      await this.getTabs({ force: force });
-      await this.getContent(this.currentTab);
+    endSession() {
+      notify.show({
+        type: "danger",
+        message: "Сессия завершена",
+      });
+      this.signOut();
+    },
+    signOut() {
+      this.logout();
+      this.error = false;
+      this.$store.commit("health/SET_AVAILABILITY", true);
     },
     async getTabs({ force }) {
       try {
-        await this.fetchYears({ force: force });
+        await this.fetchYears({ force });
         this.currentYearName = this.currentYearName || this.actualYearName;
         await this.fetchTerms({
-          force: force,
-          yearId: this.getYearIdByName(this.currentYearName),
+          force,
+          yearId: this.getYearId(this.currentYearName),
+          yearName: this.currentYearName,
         });
         this.currentTab = this.currentTab || this.actualTermName;
         this.error = false;
+        this.refetchAttempts = 0;
       } catch (error) {
-        if (this.tabTries >= 1) {
+        if (this.refetchAttempts >= 1) {
           return;
         }
-        this.tabTries++;
+        this.refetchAttempts++;
         if (error.response.status === 401) {
           await this.restoreSession();
           await this.startSession({ force: true });
-        }
-        await this.checkAvailability().catch(() => {
+        } else {
+          await this.checkAvailability();
           this.error = true;
-        });
+        }
       }
     },
     async getContent(tab) {
       try {
         tab === "grades"
           ? await this.fetchGrades({
-              yearId: this.getYearIdByName(this.currentYearName),
+              yearId: this.getYearId(this.currentYearName),
               yearName: this.currentYearName,
             })
           : await this.fetchDiary({
-              termId: this.getTermIdByName(tab),
+              termId: this.getTermId({
+                termName: tab,
+                yearName: this.currentYearName,
+              }),
               termName: tab,
               yearName: this.currentYearName,
             });
         this.error = false;
+        this.refetchAttempts = 0;
       } catch (error) {
-        if (this.contentTries >= 1) {
+        if (this.refetchAttempts >= 1) {
           return;
         }
-        this.contentTries++;
+        this.refetchAttempts++;
         if (error.response.status === 401) {
           await this.restoreSession();
           await this.startSession({ force: true });
@@ -310,15 +324,18 @@ export default {
     async getTermsAndContentByYear({ yearName, force }) {
       try {
         await this.fetchTerms({
-          yearId: this.getYearIdByName(yearName),
+          yearId: this.getYearId(yearName),
+          yearName: yearName,
           force: force,
         });
         await this.getContent(this.currentTab || this.actualTermName);
+        this.error = false;
+        this.refetchAttempts = 0;
       } catch (error) {
-        if (this.termsAndYearsTries >= 1) {
+        if (this.refetchAttempts >= 1) {
           return;
         }
-        this.termsAndYearsTries++;
+        this.refetchAttempts++;
         if (error.response.status === 401) {
           await this.restoreSession();
           await this.fetchYears({ force: true });
@@ -339,16 +356,21 @@ export default {
       this.showSubjectModal = true;
       try {
         await this.fetchSubject(subject);
-        this.subjectError = false;
-      } catch {
-        this.subjectError = true;
+        this.error = false;
+        this.refetchAttempts = 0;
+      } catch (error) {
+        if (this.refetchAttempts >= 1) {
+          return;
+        }
+        this.refetchAttempts++;
+        if (error.response.status === 401) {
+          await this.restoreSession();
+          await this.startSession({ force: true });
+          await this.fetchSubject(subject);
+        } else {
+          this.error = true;
+        }
       }
-    },
-    closeSubjectModal() {
-      this.showSubjectModal = false;
-    },
-    sortByScore(array) {
-      return array.sort((firstEl, secondEl) => secondEl.Score - firstEl.Score);
     },
     handleScroll() {
       this.scrollPosition = this.contentWindow.scrollTop;

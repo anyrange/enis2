@@ -3,10 +3,12 @@
     <loading-spinner />
     <modal :show="showAvailabilityModal" @close="showAvailabilityModal = false">
       <div class="flex flex-col space-y-2">
-        <h1>😞</h1>
+        <h1>
+          <span role="img" aria-label="Disappointed Face">😞</span>
+        </h1>
         <p>
           <a
-            :href="`https://sms.${$store.state.preferences.school}.nis.edu.kz/`"
+            :href="`https://sms.${school}.nis.edu.kz/`"
             target="_blank"
             class="underline"
           >
@@ -16,28 +18,13 @@
         </p>
       </div>
     </modal>
-    <modal :show="showDomainModal" @close="showDomainModal = false">
-      <div class="flex flex-col space-y-2">
-        <h1>🔥 Мы переехали</h1>
-        <p>
-          Благодаря
-          <a href="https://superhooman.co/" class="underline">
-            создателю первого ениша
-          </a>
-          у нас теперь есть
-          <a href="https://enis.que.kz/" class="underline">новый домен</a> и
-          сервер, и хоть этот домен также продолжит работать мы не можем
-          обеспечить здесь стабильную работу нашего сервера
-        </p>
-        <a href="https://enis.que.kz/" class="underline">enis.que.kz</a>
-      </div>
-    </modal>
     <router-view />
     <notifications />
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
 import Notifications from "./components/Notifications.vue";
 import LoadingSpinner from "./components/LoadingSpinner.vue";
 import Modal from "./components/Modal.vue";
@@ -48,16 +35,11 @@ export default {
     LoadingSpinner,
     Modal,
   },
-  data() {
-    return {
-      updateSW: undefined,
-      showDomainModal: false,
-    };
-  },
   computed: {
-    theme() {
-      return this.$store.state.preferences.theme;
-    },
+    ...mapState({
+      theme: (state) => state.preferences.theme,
+      school: (state) => state.preferences.school,
+    }),
     showAvailabilityModal: {
       get() {
         return this.$store.state.health.showAvailabilityModal;
@@ -86,7 +68,6 @@ export default {
   },
   created() {
     this.$store.dispatch("preferences/setTheme");
-    // this.showDomainModal = window.location.host.includes("enis2");
   },
 };
 </script>

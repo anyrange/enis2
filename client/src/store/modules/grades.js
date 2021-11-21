@@ -1,9 +1,9 @@
 import { getGrades } from "../../api";
 
-function existsAtIndex(state, yearName) {
+const existsAtIndex = (state, yearName) => {
   const index = state.data.findIndex((item) => item.yearName === yearName);
   return index === -1 ? null : index;
-}
+};
 
 const defaultState = () => {
   return {
@@ -26,7 +26,7 @@ export default {
     },
   },
   getters: {
-    getCurrentTermGrades:
+    getCurrentGrades:
       (state) =>
       ({ yearName }) => {
         return (

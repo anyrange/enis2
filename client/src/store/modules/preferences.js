@@ -52,9 +52,7 @@ export default {
       }
     },
     toggleTheme({ commit, state }) {
-      state.theme === "light"
-        ? commit("SET_THEME", "dark")
-        : commit("SET_THEME", "light");
+      commit("SET_THEME", state.theme === "light" ? "dark" : "light");
     },
     async predictSchool({ commit, state }) {
       if (state.school) {
