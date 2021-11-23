@@ -43,13 +43,13 @@ export default {
   actions: {
     fetchDiary: async (
       { commit, rootState, state },
-      { termId, termName, yearName }
+      { termId, termName, yearName, force = false }
     ) => {
       if (rootState.years.actual && rootState.terms.actual) {
         const exists = existsAtIndex(state, termName, yearName) !== null;
         const isActualTerm = rootState.terms.actual === termName;
         const isActualYear = rootState.years.actual === yearName;
-        if (exists && !(isActualTerm && isActualYear)) {
+        if (exists && !(isActualTerm && isActualYear) && !force) {
           return;
         }
       }

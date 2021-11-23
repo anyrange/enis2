@@ -13,6 +13,32 @@
           class="fixed inset-0 flex items-center justify-center"
           @click="close"
         >
+          <svg
+            class="
+              w-6
+              h-6
+              text-gray-500
+              hover:text-gray-300
+              rounded-full
+              duration-100
+              cursor-pointer
+              absolute
+              right-1
+              top-1
+            "
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+            @click="close"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
           <transition
             enter-active-class="transition ease-out duration-200 transform"
             enter-from-class="opacity-0 translate-y-10 scale-95"
@@ -31,8 +57,7 @@
                 text-left
                 overflow-hidden
                 shadow-xl
-                transform
-                transition-all
+                transition-transform
                 align-middle
                 sm:max-w-lg
                 w-full
@@ -45,35 +70,6 @@
               aria-labelledby="modal-headline"
               @click.stop
             >
-              <svg
-                class="
-                  w-8
-                  h-8
-                  p-1
-                  text-gray-500-spotify
-                  dark:bg-gray-800-spotify dark:hover:bg-gray-700-spotify
-                  bg-white
-                  hover:bg-gray-100
-                  rounded-full
-                  duration-100
-                  cursor-pointer
-                  absolute
-                  right-0
-                  top-0
-                "
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                @click="close"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              </svg>
               <div class="p-2 max-h-xl overflow-y-auto">
                 <slot />
               </div>
