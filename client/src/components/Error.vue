@@ -8,7 +8,7 @@
 </template>
 
 <script>
-const emoticons = ["¯\_(ツ)_/¯", "(≥o≤)", "(>_<)"];
+import emoticons from "../assets/emoticons.json";
 
 export default {
   name: "Error",
