@@ -419,6 +419,7 @@ export default {
       if (subject.Name === this.subject.current.Name && this.showSubjectModal) {
         return;
       }
+      const subjectName = subject.Name;
       this.$store.commit("subject/CLEAR_SUBJECT");
       this.showSubjectModal = true;
       try {
@@ -430,11 +431,13 @@ export default {
           return;
         }
         this.refetchAttempts++;
-        if (error.response.status === 401) {
+        try {
           await this.restoreSession();
           await this.startSession({ force: true });
-          await this.fetchSubject(subject);
-        } else {
+          await this.fetchSubject(
+            this.diary.find((s) => s.Name === subjectName)
+          );
+        } catch {
           this.error = true;
         }
       }
