@@ -37,6 +37,7 @@
         </tabs>
       </header>
       <section
+        id="content"
         ref="content"
         class="flex h-full w-full justify-center overflow-y-auto"
       >
