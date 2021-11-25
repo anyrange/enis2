@@ -39,17 +39,7 @@ export default {
   },
   actions: {
     setTheme({ commit, state }) {
-      const cachedTheme = state.theme;
-      const hasDarkPreference = window.matchMedia(
-        "(prefers-color-scheme: dark)"
-      ).matches;
-      if (cachedTheme) {
-        commit("SET_THEME", cachedTheme);
-      } else if (hasDarkPreference) {
-        commit("SET_THEME", "dark");
-      } else {
-        commit("SET_THEME", "light");
-      }
+      commit("SET_THEME", state.theme || "dark");
     },
     toggleTheme({ commit, state }) {
       commit("SET_THEME", state.theme === "light" ? "dark" : "light");
