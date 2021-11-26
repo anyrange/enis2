@@ -117,7 +117,7 @@
                 icon
                 tag="a"
                 flat
-                href="https://t.me/joinchat/ToHSvx2gVOBkMzBi"
+                :href="$options.TG_LINK"
                 aria-label="Telegram Link"
               >
                 <telegram-icon />
@@ -126,7 +126,7 @@
                 icon
                 tag="a"
                 flat
-                href="https://github.com/anyrange/enis2"
+                :href="$options.GH_LINK"
                 aria-label="Github Link"
               >
                 <github-icon />
@@ -143,6 +143,7 @@
 import { mapActions, mapState } from "vuex";
 import { refreshCaptcha } from "../api";
 import { notify } from "../services/notify.js";
+import { GH_LINK, TG_LINK } from "../settings";
 import schools from "../assets/schools.json";
 import emojis from "../assets/emojis.json";
 import BaseInput from "../components/BaseInput.vue";
@@ -184,6 +185,8 @@ export default {
     };
   },
   schools,
+  GH_LINK,
+  TG_LINK,
   computed: {
     ...mapState({
       loading: (state) => state.loader.status,

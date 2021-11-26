@@ -42,16 +42,9 @@
         class="flex h-full w-full justify-center overflow-y-auto"
       >
         <section class="mt-12 flex flex-col p-3 space-y-3 sm:w-450px w-full">
-          <template v-if="!loading && loadingEndpoint !== 'SUBJECT'">
-            <template v-if="error">
-              <error>
-                {{ errorMessage }}
-              </error>
-            </template>
-            <template v-else>
-              <error v-if="isGrades ? !grades.length : !diary.length" />
-            </template>
-          </template>
+          <error
+            v-if="!loading && (isGrades ? !grades.length : !diary.length)"
+          />
           <template v-if="isGrades">
             <subject-grades
               v-for="item in grades"
@@ -107,12 +100,12 @@
         <subject-diary :hoverable="false" :subject="subject.current" />
         <loading-dots v-if="loading" />
         <template v-else>
-          <error
+          <div
             v-if="error && loadingEndpoint === 'SUBJECT'"
             class="p-2 text-center"
           >
             {{ errorMessage }}
-          </error>
+          </div>
           <template v-else>
             <subject-sections label="СОР" :subject="subject.SAU" />
             <subject-sections label="СОЧ" :subject="subject.SAT" />
@@ -128,6 +121,17 @@
           label="Текущая четверть"
           :options="$options.TERMS"
         />
+        <div class="flex items-center justify-center space-x-3">
+          <a class="settings-link" :href="$options.GH_LINK" target="_blank">
+            repo
+          </a>
+          <a class="settings-link" :href="$options.TG_LINK" target="_blank">
+            chat
+          </a>
+          <a class="settings-link" :href="$options.DA_LINK" target="_blank">
+            donate
+          </a>
+        </div>
       </div>
     </modal>
   </div>
@@ -136,6 +140,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
 import { notify } from "../services/notify.js";
+import { DA_LINK, GH_LINK, TG_LINK, ENDPOINTS } from "../settings";
 import Tabs from "../components/Tabs.vue";
 import Tab from "../components/Tab.vue";
 import BaseButton from "../components/BaseButton.vue";
@@ -179,33 +184,32 @@ export default {
       error: false,
     };
   },
+  DA_LINK,
+  GH_LINK,
+  TG_LINK,
+  ENDPOINTS,
   GREEK_NUMERALS: {
     1: "I",
     2: "II",
     3: "III",
     4: "IV",
   },
-  ERROR_MESSAGES: {
-    SUBJECT: "Не удалось загрузить информацию о предмете",
-    DIARY: "Не удалось загрузить дневник",
-    GRADES: "Не удалось загрузить табель",
-  },
   TERMS: [
     {
       value: "1",
-      label: "1",
+      label: "I",
     },
     {
       value: "2",
-      label: "2",
+      label: "II",
     },
     {
       value: "3",
-      label: "3",
+      label: "III",
     },
     {
       value: "4",
-      label: "4",
+      label: "IV",
     },
   ],
   computed: {
@@ -225,9 +229,12 @@ export default {
       getCurrentGrades: "grades/getCurrentGrades",
     }),
     errorMessage() {
-      return this.error
-        ? this.$options.ERROR_MESSAGES[this.loadingEndpoint]
-        : null;
+      const endpoint = this.$options.ENDPOINTS.find(
+        (e) => e.name === this.loadingEndpoint
+      );
+      return endpoint && endpoint.error
+        ? endpoint.error
+        : "Что-то пошло не так";
     },
     isGrades() {
       return this.currentTab === "grades";
@@ -321,11 +328,14 @@ export default {
       }
     },
     endSession() {
+      this.showError("Сессия завершена");
+      this.signOut();
+    },
+    showError(message) {
       notify.show({
         type: "danger",
-        message: "Сессия завершена",
+        message: message || this.errorMessage,
       });
-      this.signOut();
     },
     signOut() {
       this.logout();
@@ -345,9 +355,7 @@ export default {
         this.error = false;
         this.refetchAttempts = 0;
       } catch (error) {
-        if (this.refetchAttempts >= 1) {
-          return;
-        }
+        if (this.refetchAttempts >= 1) return;
         this.refetchAttempts++;
         if (error.response.status === 401) {
           await this.restoreSession();
@@ -355,6 +363,7 @@ export default {
         } else {
           await this.checkAvailability();
           this.error = true;
+          this.showError();
         }
       }
     },
@@ -377,15 +386,14 @@ export default {
         this.error = false;
         this.refetchAttempts = 0;
       } catch (error) {
-        if (this.refetchAttempts >= 1) {
-          return;
-        }
+        if (this.refetchAttempts >= 1) return;
         this.refetchAttempts++;
         if (error.response.status === 401) {
           await this.restoreSession();
           await this.startSession({ force: true });
         } else {
           this.error = true;
+          this.showError();
         }
       }
     },
@@ -400,9 +408,7 @@ export default {
         this.error = false;
         this.refetchAttempts = 0;
       } catch (error) {
-        if (this.refetchAttempts >= 1) {
-          return;
-        }
+        if (this.refetchAttempts >= 1) return;
         this.refetchAttempts++;
         if (error.response.status === 401) {
           await this.restoreSession();
@@ -428,17 +434,15 @@ export default {
         this.error = false;
         this.refetchAttempts = 0;
       } catch (error) {
-        if (this.refetchAttempts >= 1) {
-          return;
-        }
+        if (this.refetchAttempts >= 1) return;
         this.refetchAttempts++;
-        try {
+        if (error.response.status === 401) {
           await this.restoreSession();
           await this.startSession({ force: true });
           await this.fetchSubject(
             this.diary.find((s) => s.Name === subjectName)
           );
-        } catch {
+        } else {
           this.error = true;
         }
       }
@@ -465,5 +469,8 @@ export default {
 }
 .floating-nav.floating-nav--hidden {
   transform: translate3d(0, -100%, 0);
+}
+.settings-link {
+  @apply text-xs hover:underline;
 }
 </style>

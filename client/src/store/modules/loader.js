@@ -1,4 +1,4 @@
-import { HIDE_LOADER_ON_ENDPOINTS } from "../../settings";
+import { ENDPOINTS } from "../../settings";
 
 export default {
   namespaced: true,
@@ -8,7 +8,11 @@ export default {
   },
   getters: {
     showLoader: (state) => {
-      return !HIDE_LOADER_ON_ENDPOINTS.includes(state.endpoint) && state.status;
+      const hideOnEndpoints = ENDPOINTS.filter((e) => e.hideLoader);
+      return (
+        !hideOnEndpoints.find((e) => e.name === state.endpoint)?.hideLoader &&
+        state.status
+      );
     },
   },
   mutations: {

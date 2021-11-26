@@ -3,13 +3,7 @@
     <label
       v-if="label.length"
       :for="label"
-      class="
-        text-base
-        font-medium
-        select-none
-        text-gray-600-spotify
-        dark:text-gray-500-spotify
-      "
+      class="text-base font-medium select-none"
     >
       {{ label }}
     </label>
@@ -35,7 +29,7 @@
           focus:outline-none
           disabled:opacity-60
           bg-gray-50
-          dark:bg-gray-600-spotify
+          dark:bg-gray-700-spotify
         "
         placeholder="Regular input"
         :class="[

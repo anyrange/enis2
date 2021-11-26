@@ -53,8 +53,8 @@ export default {
       if (this.isDisabled || name === this.active) {
         return;
       }
-      this.$emit("selected", name);
       this.selectTab(name);
+      this.$emit("selected", name);
     },
   },
 };

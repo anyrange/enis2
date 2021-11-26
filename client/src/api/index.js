@@ -13,11 +13,7 @@ api.interceptors.request.use(
   (config) => {
     $store.commit("loader/SET_LOADING", {
       status: true,
-      endpoint: Object.keys(ENDPOINTS).find(
-        (key) =>
-          ENDPOINTS[key] ===
-          Object.values(ENDPOINTS).find((path) => config.url.includes(path))
-      ),
+      endpoint: ENDPOINTS.find((e) => config.url.includes(e.endpoint)).name,
     });
     config.params = {
       ...config.params,
@@ -51,27 +47,32 @@ api.interceptors.response.use(
   }
 );
 
-export const checkSMSavailability = () => api.get(ENDPOINTS.HEALTH_SMS);
+const getEndpoint = (name) => {
+  return ENDPOINTS.find((e) => e.name === name).endpoint;
+};
 
-export const getUserCity = () => api.get(ENDPOINTS.CITY, { timeout: 1500 });
+export const checkSMSavailability = () => api.get(getEndpoint("HEALTH_SMS"));
 
-export const login = (user) => api.post(ENDPOINTS.LOGIN, user);
+export const getUserCity = () =>
+  api.get(getEndpoint("CITY"), { timeout: 1500 });
 
-export const refreshCaptcha = () => api.get(ENDPOINTS.REFRESH_CAPTCHA);
+export const login = (user) => api.post(getEndpoint("LOGIN"), user);
 
-export const getYears = () => api.get(ENDPOINTS.YEARS);
+export const refreshCaptcha = () => api.get(getEndpoint("REFRESH_CAPTCHA"));
 
-export const getTerms = (id) => api.get(`${ENDPOINTS.TERMS}${id}`);
+export const getYears = () => api.get(getEndpoint("YEARS"));
 
-export const getDiary = (id) => api.get(`${ENDPOINTS.DIARY}${id}`);
+export const getTerms = (id) => api.get(`${getEndpoint("TERMS")}${id}`);
+
+export const getDiary = (id) => api.get(`${getEndpoint("DIARY")}${id}`);
 
 export const getSubject = (journalId, evalId) =>
-  api.get(ENDPOINTS.SUBJECT, {
+  api.get(getEndpoint("SUBJECT"), {
     params: { journalId, evalId },
   });
 
 export const getGrades = (yearID) =>
-  api.get(ENDPOINTS.GRADES, { params: { yearID } });
+  api.get(getEndpoint("GRADES"), { params: { yearID } });
 
 if (isDev) {
   const { default: MockAdapter } = await import("axios-mock-adapter");
