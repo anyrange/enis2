@@ -336,14 +336,15 @@ export default {
       }
     },
     async startSession({ forceUpdate }) {
+      this.refetchAttempts++;
       if (this.refetchAttempts > 2) {
-        return;
+        return this.showError();
       }
       try {
         await this.getTabs({ forceUpdate });
         await this.getContent({ forceUpdate });
+        this.refetchAttempts = 0;
       } catch (error) {
-        this.showError();
         return Promise.reject(error);
       }
     },
@@ -357,9 +358,7 @@ export default {
           yearName: this.currentYearName,
         });
         this.currentTab = this.currentTab || this.actualTermName;
-        this.refetchAttempts = 0;
       } catch (error) {
-        this.refetchAttempts++;
         if (error.response.status === 401) {
           await this.restoreSession();
         }
@@ -384,9 +383,7 @@ export default {
               yearName: this.currentYearName,
               force: forceUpdate,
             });
-        this.refetchAttempts = 0;
       } catch (error) {
-        this.refetchAttempts++;
         if (error.response.status === 401) {
           await this.restoreSession();
         }
@@ -411,9 +408,7 @@ export default {
       this.showSubjectModal = true;
       try {
         await this.fetchSubject(subject);
-        this.refetchAttempts = 0;
       } catch (error) {
-        this.refetchAttempts++;
         if (error.response.status === 401) {
           await this.restoreSession();
         }
