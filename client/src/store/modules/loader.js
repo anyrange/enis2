@@ -14,6 +14,9 @@ export default {
         state.status
       );
     },
+    errorMessage: (state) => {
+      return ENDPOINTS.find((e) => e.name === state.endpoint).error;
+    },
   },
   mutations: {
     SET_LOADING(state, payload) {

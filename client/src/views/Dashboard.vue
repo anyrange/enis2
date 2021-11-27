@@ -133,7 +133,7 @@
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
 import { notify } from "../services/notify.js";
-import { DA_LINK, GH_LINK, TG_LINK, ENDPOINTS } from "../settings";
+import { DA_LINK, GH_LINK, TG_LINK } from "../settings";
 import Tabs from "../components/Tabs.vue";
 import Tab from "../components/Tab.vue";
 import BaseButton from "../components/BaseButton.vue";
@@ -179,7 +179,6 @@ export default {
   DA_LINK,
   GH_LINK,
   TG_LINK,
-  ENDPOINTS,
   GREEK_NUMERALS: {
     1: "I",
     2: "II",
@@ -212,6 +211,7 @@ export default {
       alive: (state) => state.health.alive,
       loading: (state) => state.loader.status,
       loadingEndpoint: (state) => state.loader.endpoint,
+      rememberMe: (state) => state.preferences.remember,
     }),
     ...mapGetters({
       getTermId: "terms/getTermId",
@@ -219,15 +219,10 @@ export default {
       getCurrentTerms: "terms/getCurrentTerms",
       getCurrentDiary: "diary/getCurrentDiary",
       getCurrentGrades: "grades/getCurrentGrades",
+      errorMessage: "loader/errorMessage",
     }),
     contentWindow() {
       return this.$refs.content;
-    },
-    errorMessage() {
-      const endpoint = this.$options.ENDPOINTS.find(
-        (e) => e.name === this.loadingEndpoint
-      );
-      return endpoint.error || "Что-то пошло не так";
     },
     isGrades() {
       return this.currentTab === "grades";
@@ -322,17 +317,19 @@ export default {
       this.signOut();
     },
     async restoreSession() {
-      if (!this.$store.state.preferences.remember) {
+      if (this.rememberMe) {
+        try {
+          await this.$store.dispatch(
+            "auth/login",
+            this.$store.state.auth.savedAccount
+          );
+        } catch (error) {
+          this.endSession();
+          return Promise.reject(error);
+        }
+      } else {
         this.endSession();
-        return;
-      }
-      try {
-        await this.$store.dispatch(
-          "auth/login",
-          this.$store.state.auth.savedAccount
-        );
-      } catch {
-        this.endSession();
+        return Promise.reject();
       }
     },
     async startSession({ forceUpdate }) {
