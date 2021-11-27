@@ -4,7 +4,7 @@ export const isLocal =
 
 const fallbackErrorMessage = "Что-то пошло не так";
 
-export const ENDPOINTS = [
+export const ENDPOINTS = Object.freeze([
   {
     name: "HEALTH_SMS",
     endpoint: "health/sms",
@@ -59,7 +59,7 @@ export const ENDPOINTS = [
     hideLoader: false,
     error: "Не удалось загрузить табель",
   },
-];
+]);
 
 export const DA_LINK = "https://www.donationalerts.com/r/anyrange";
 export const TG_LINK = "https://t.me/joinchat/ToHSvx2gVOBkMzBi";

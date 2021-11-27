@@ -8,9 +8,7 @@
               v-for="year in years.data"
               :key="year.value"
               :name="year.label"
-              @selected="
-                getTermsAndContentByYear({ yearName: year.label, force: false })
-              "
+              @selected="getTermsAndContentByYear({ forceUpdate: false })"
             >
               {{ year.label }}
             </tab>
@@ -26,11 +24,11 @@
               v-for="(term, index) in terms"
               :key="term.Id"
               :name="term.Name"
-              @selected="getContent({ tab: term.Name })"
+              @selected="getContent({ forceUpdate: false })"
             >
               {{ $options.GREEK_NUMERALS[index + 1] }}
             </tab>
-            <tab name="grades" @selected="getContent({ tab: 'grades' })">
+            <tab name="grades" @selected="getContent({ forceUpdate: false })">
               <grades-icon />
             </tab>
           </div>
@@ -42,9 +40,7 @@
         class="flex h-full w-full justify-center overflow-y-auto"
       >
         <section class="mt-12 flex flex-col p-3 space-y-3 sm:w-450px w-full">
-          <error
-            v-if="!loading && (isGrades ? !grades.length : !diary.length)"
-          />
+          <error v-if="!loading && isEmptyContent" />
           <template v-if="isGrades">
             <subject-grades
               v-for="item in grades"
@@ -99,17 +95,14 @@
       <div class="flex flex-col space-y-2">
         <subject-diary :hoverable="false" :subject="subject.current" />
         <loading-dots v-if="loading" />
-        <template v-else>
-          <div
-            v-if="error && loadingEndpoint === 'SUBJECT'"
-            class="p-2 text-center"
-          >
+        <template v-else-if="!subject && loadingEndpoint === 'SUBJECT'">
+          <div class="p-2 text-center">
             {{ errorMessage }}
           </div>
-          <template v-else>
-            <subject-sections label="СОР" :subject="subject.SAU" />
-            <subject-sections label="СОЧ" :subject="subject.SAT" />
-          </template>
+        </template>
+        <template v-else>
+          <subject-sections label="СОР" :subject="subject.SAU" />
+          <subject-sections label="СОЧ" :subject="subject.SAT" />
         </template>
       </div>
     </modal>
@@ -181,7 +174,6 @@ export default {
       showSubjectModal: false,
       showSettingsModal: false,
       refetchAttempts: 0,
-      error: false,
     };
   },
   DA_LINK,
@@ -228,19 +220,20 @@ export default {
       getCurrentDiary: "diary/getCurrentDiary",
       getCurrentGrades: "grades/getCurrentGrades",
     }),
+    contentWindow() {
+      return this.$refs.content;
+    },
     errorMessage() {
       const endpoint = this.$options.ENDPOINTS.find(
         (e) => e.name === this.loadingEndpoint
       );
-      return endpoint && endpoint.error
-        ? endpoint.error
-        : "Что-то пошло не так";
+      return endpoint.error || "Что-то пошло не так";
     },
     isGrades() {
       return this.currentTab === "grades";
     },
-    contentWindow() {
-      return this.$refs.content;
+    isEmptyContent() {
+      return this.isGrades ? !this.grades.length : !this.diary.length;
     },
     actualTermName: {
       get() {
@@ -292,7 +285,7 @@ export default {
     },
   },
   async created() {
-    await this.startSession({ force: false });
+    await this.startSession({ forceUpdate: false });
   },
   mounted() {
     this.contentWindow.addEventListener("scroll", this.handleScroll);
@@ -310,13 +303,28 @@ export default {
       fetchTerms: "terms/fetchTerms",
       checkAvailability: "health/checkAvailability",
     }),
-    async startSession({ force }) {
-      await this.getTabs({ force });
-      await this.getContent({ tab: this.currentTab, force });
+    handleScroll() {
+      this.scrollPosition = this.contentWindow.scrollTop;
+      this.showTabs = this.scrollPosition <= 48;
+    },
+    showError(message) {
+      notify.show({
+        type: "danger",
+        message: message || this.errorMessage,
+      });
+    },
+    signOut() {
+      this.logout();
+      this.$store.commit("health/SET_AVAILABILITY", true);
+    },
+    endSession() {
+      this.showError("Сессия завершена");
+      this.signOut();
     },
     async restoreSession() {
       if (!this.$store.state.preferences.remember) {
-        return this.endSession();
+        this.endSession();
+        return;
       }
       try {
         await this.$store.dispatch(
@@ -327,99 +335,71 @@ export default {
         this.endSession();
       }
     },
-    endSession() {
-      this.showError("Сессия завершена");
-      this.signOut();
-    },
-    showError(message) {
-      notify.show({
-        type: "danger",
-        message: message || this.errorMessage,
-      });
-    },
-    signOut() {
-      this.logout();
-      this.error = false;
-      this.$store.commit("health/SET_AVAILABILITY", true);
-    },
-    async getTabs({ force }) {
+    async startSession({ forceUpdate }) {
+      if (this.refetchAttempts > 2) {
+        return;
+      }
       try {
-        await this.fetchYears({ force });
+        await this.getTabs({ forceUpdate });
+        await this.getContent({ forceUpdate });
+      } catch (error) {
+        this.showError();
+        return Promise.reject(error);
+      }
+    },
+    async getTabs({ forceUpdate }) {
+      try {
+        await this.fetchYears({ force: forceUpdate });
         this.currentYearName = this.currentYearName || this.actualYearName;
         await this.fetchTerms({
-          force,
+          force: forceUpdate,
           yearId: this.getYearId(this.currentYearName),
           yearName: this.currentYearName,
         });
         this.currentTab = this.currentTab || this.actualTermName;
-        this.error = false;
         this.refetchAttempts = 0;
       } catch (error) {
-        if (this.refetchAttempts >= 1) return;
         this.refetchAttempts++;
         if (error.response.status === 401) {
           await this.restoreSession();
-          await this.startSession({ force: true });
-        } else {
-          await this.checkAvailability();
-          this.error = true;
-          this.showError();
         }
+        await this.startSession({ forceUpdate: true });
+        return Promise.reject(error);
       }
     },
-    async getContent({ tab, force = false }) {
+    async getContent({ forceUpdate }) {
       try {
-        tab === "grades"
+        this.isGrades
           ? await this.fetchGrades({
               yearId: this.getYearId(this.currentYearName),
               yearName: this.currentYearName,
+              force: forceUpdate,
             })
           : await this.fetchDiary({
               termId: this.getTermId({
-                termName: tab,
+                termName: this.currentTab,
                 yearName: this.currentYearName,
               }),
-              termName: tab,
+              termName: this.currentTab,
               yearName: this.currentYearName,
-              force,
+              force: forceUpdate,
             });
-        this.error = false;
         this.refetchAttempts = 0;
       } catch (error) {
-        if (this.refetchAttempts >= 1) return;
         this.refetchAttempts++;
         if (error.response.status === 401) {
           await this.restoreSession();
-          await this.startSession({ force: true });
-        } else {
-          this.error = true;
-          this.showError();
         }
+        await this.startSession({ forceUpdate: true });
+        return Promise.reject(error);
       }
     },
-    async getTermsAndContentByYear({ yearName, force }) {
+    async getTermsAndContentByYear({ forceUpdate }) {
       try {
-        await this.fetchTerms({
-          yearId: this.getYearId(yearName),
-          yearName: yearName,
-          force: force,
-        });
-        await this.getContent({ tab: this.currentTab || this.actualTermName });
-        this.error = false;
-        this.refetchAttempts = 0;
+        await this.getTabs({ forceUpdate });
+        await this.getContent({ forceUpdate });
       } catch (error) {
-        if (this.refetchAttempts >= 1) return;
-        this.refetchAttempts++;
-        if (error.response.status === 401) {
-          await this.restoreSession();
-          await this.fetchYears({ force: true });
-          await this.getTermsAndContentByYear({
-            yearName: this.currentYearName,
-            force: true,
-          });
-        } else {
-          this.error = true;
-        }
+        return Promise.reject(error);
       }
     },
     async openSubjectModal(subject) {
@@ -431,25 +411,16 @@ export default {
       this.showSubjectModal = true;
       try {
         await this.fetchSubject(subject);
-        this.error = false;
         this.refetchAttempts = 0;
       } catch (error) {
-        if (this.refetchAttempts >= 1) return;
         this.refetchAttempts++;
         if (error.response.status === 401) {
           await this.restoreSession();
-          await this.startSession({ force: true });
-          await this.fetchSubject(
-            this.diary.find((s) => s.Name === subjectName)
-          );
-        } else {
-          this.error = true;
         }
+        await this.startSession({ forceUpdate: true });
+        const lastSubject = this.diary.find((s) => s.Name === subjectName);
+        await this.fetchSubject(lastSubject);
       }
-    },
-    handleScroll() {
-      this.scrollPosition = this.contentWindow.scrollTop;
-      this.showTabs = this.scrollPosition <= 48;
     },
   },
 };

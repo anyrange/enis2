@@ -32,7 +32,8 @@ export default {
   },
   actions: {
     fetchYears: async ({ commit, state }, { force }) => {
-      if (!!state.data.length && !force) {
+      const exists = state.data.length;
+      if (exists && !force) {
         return;
       }
       try {

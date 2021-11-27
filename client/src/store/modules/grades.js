@@ -35,11 +35,14 @@ export default {
       },
   },
   actions: {
-    fetchGrades: async ({ commit, state, rootState }, { yearId, yearName }) => {
+    fetchGrades: async (
+      { commit, state, rootState },
+      { yearId, yearName, force }
+    ) => {
       if (rootState.years.actual) {
         const exists = existsAtIndex(state, yearName) !== null;
         const isActualYear = rootState.years.actual === yearName;
-        if (exists && !isActualYear) {
+        if (exists && !isActualYear && !force) {
           return;
         }
       }
