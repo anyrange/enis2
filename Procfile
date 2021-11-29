@@ -1,1 +1,1 @@
-web: cd server && npm install --silent -no-fund && node .
+web: node server/index.js
