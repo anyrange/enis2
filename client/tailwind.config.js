@@ -20,9 +20,6 @@ export default {
         "q-warning": "#f2c037",
         "q-info": "#31ccec",
       },
-      fontFamily: {
-        inter: ['"Inter"', "sans-serif"],
-      },
       fontSize: {
         xxs: "0.7rem",
       },
