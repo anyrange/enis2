@@ -40,7 +40,7 @@
         class="flex h-full w-full justify-center overflow-y-auto"
       >
         <section class="mt-12 flex flex-col p-3 space-y-3 sm:w-450px w-full">
-          <error v-if="!loading && isEmptyContent" />
+          <random-emoticon v-if="!loading && isEmptyContent" />
           <template v-if="isGrades">
             <subject-grades
               v-for="item in grades"
@@ -146,7 +146,7 @@ import SubjectGrades from "../components/SubjectGrades.vue";
 import SubjectSections from "../components/SubjectSections.vue";
 import GradesIcon from "../components/icons/GradesIcon.vue";
 import SettingsIcon from "../components/icons/SettingsIcon.vue";
-import Error from "../components/Error.vue";
+import RandomEmoticon from "../components/RandomEmoticon.vue";
 import RandomGif from "../components/RandomGif.vue";
 
 export default {
@@ -164,7 +164,7 @@ export default {
     SubjectSections,
     GradesIcon,
     SettingsIcon,
-    Error,
+    RandomEmoticon,
     RandomGif,
   },
   data() {

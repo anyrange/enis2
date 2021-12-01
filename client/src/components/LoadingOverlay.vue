@@ -1,12 +1,19 @@
 <template>
-  <div class="loader" :class="{ loading: $store.getters['loader/showLoader'] }">
+  <div class="loader" :class="{ loading: active }">
     <div class="loader-element" />
   </div>
 </template>
 
 <script>
 export default {
-  name: "LoadingSpinner",
+  name: "LoadingOverlay",
+  props: {
+    active: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+  },
 };
 </script>
 

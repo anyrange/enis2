@@ -11,7 +11,7 @@
 import emoticons from "../assets/emoticons.json";
 
 export default {
-  name: "Error",
+  name: "RandomEmoticon",
   computed: {
     randomEmoticon() {
       return emoticons[Math.floor(Math.random() * emoticons.length)];

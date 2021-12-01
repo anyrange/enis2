@@ -1,6 +1,6 @@
 <template>
   <div :class="{ 'custom-scrollbars': !isMobile }">
-    <loading-spinner />
+    <loading-overlay :active="$store.getters['loader/showLoader']" />
     <modal :show="showAvailabilityModal" @close="showAvailabilityModal = false">
       <div class="flex flex-col space-y-2">
         <h1>
@@ -26,13 +26,13 @@
 <script>
 import { mapState } from "vuex";
 import Notifications from "./components/Notifications.vue";
-import LoadingSpinner from "./components/LoadingSpinner.vue";
+import LoadingOverlay from "./components/LoadingOverlay.vue";
 import Modal from "./components/Modal.vue";
 
 export default {
   components: {
     Notifications,
-    LoadingSpinner,
+    LoadingOverlay,
     Modal,
   },
   computed: {
