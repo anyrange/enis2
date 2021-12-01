@@ -107,23 +107,35 @@
       </div>
     </modal>
     <modal :show="showSettingsModal" @close="showSettingsModal = false">
-      <div class="flex flex-col space-y-4">
-        <base-checkbox id="darkTheme" v-model="darkTheme" label="Темная тема" />
-        <base-select
-          v-model="actualTermName"
-          label="Текущая четверть"
-          :options="$options.TERMS"
-        />
-        <div class="flex items-center justify-center space-x-3">
-          <a class="settings-link" :href="$options.GH_LINK" target="_blank">
-            repo
-          </a>
-          <a class="settings-link" :href="$options.TG_LINK" target="_blank">
-            chat
-          </a>
-          <a class="settings-link" :href="$options.DA_LINK" target="_blank">
-            donate
-          </a>
+      <div class="flex flex-col space-y-4 p-2">
+        <div class="flex flex-col space-y-2">
+          <span class="text-lg">Настройки</span>
+          <div class="flex justify-between items-center">
+            <span class="settings-label"> Темная тема </span>
+            <div>
+              <base-switch v-model="darkTheme" />
+            </div>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="settings-label"> Текущая четверть </span>
+            <div>
+              <base-select v-model="actualTermName" :options="$options.TERMS" />
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+          <span class="text-lg">Links</span>
+          <div class="flex items-center space-x-3">
+            <a class="settings-link" :href="$options.GH_LINK" target="_blank">
+              repo
+            </a>
+            <a class="settings-link" :href="$options.TG_LINK" target="_blank">
+              chat
+            </a>
+            <a class="settings-link" :href="$options.DA_LINK" target="_blank">
+              donate
+            </a>
+          </div>
         </div>
       </div>
     </modal>
@@ -138,7 +150,7 @@ import Tabs from "../components/Tabs.vue";
 import Tab from "../components/Tab.vue";
 import BaseButton from "../components/BaseButton.vue";
 import BaseSelect from "../components/BaseSelect.vue";
-import BaseCheckbox from "../components/BaseCheckbox.vue";
+import BaseSwitch from "../components/BaseSwitch.vue";
 import LoadingDots from "../components/LoadingDots.vue";
 import Modal from "../components/Modal.vue";
 import SubjectDiary from "../components/SubjectDiary.vue";
@@ -156,7 +168,7 @@ export default {
     Tab,
     BaseButton,
     BaseSelect,
-    BaseCheckbox,
+    BaseSwitch,
     LoadingDots,
     Modal,
     SubjectDiary,
@@ -188,19 +200,19 @@ export default {
   TERMS: [
     {
       value: "1",
-      label: "I",
+      label: "Первая",
     },
     {
       value: "2",
-      label: "II",
+      label: "Вторая",
     },
     {
       value: "3",
-      label: "III",
+      label: "Третья",
     },
     {
       value: "4",
-      label: "IV",
+      label: "Четвертая",
     },
   ],
   computed: {
@@ -433,7 +445,10 @@ export default {
 .floating-nav.floating-nav--hidden {
   transform: translate3d(0, -100%, 0);
 }
+.settings-label {
+  @apply text-base text-gray-700 dark:text-gray-500-spotify;
+}
 .settings-link {
-  @apply text-xs hover:underline;
+  @apply text-base text-gray-700 dark:text-gray-500-spotify hover:underline;
 }
 </style>
