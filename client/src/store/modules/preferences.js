@@ -8,6 +8,8 @@ const defaultState = () => {
     theme: "",
     school: "",
     remember: false,
+    sortBy: "score",
+    hideEmpty: false,
   };
 };
 
@@ -30,10 +32,19 @@ export default {
     SET_REMEMBER(state, value) {
       state.remember = value;
     },
+    SET_SORT(state, value) {
+      state.sortBy = value;
+    },
+    SET_HIDE(state, value) {
+      state.hideEmpty = value;
+    },
     CLEAR_PREFERENCES(state) {
       Object.assign(state, {
         tab: defaultState().tab,
         year: defaultState().tab,
+        sortBy: defaultState().sortBy,
+        remember: defaultState().remember,
+        hideEmpty: defaultState().hideEmpty,
       });
     },
   },

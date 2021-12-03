@@ -106,6 +106,21 @@
         </template>
       </div>
     </modal>
+    <modal :show="showSubjectModal" @close="showSubjectModal = false">
+      <div class="flex flex-col space-y-2">
+        <subject-diary :hoverable="false" :subject="subject.current" />
+        <loading-dots v-if="loading" />
+        <template v-else-if="!subject && loadingEndpoint === 'SUBJECT'">
+          <div class="p-2 text-center">
+            {{ errorMessage }}
+          </div>
+        </template>
+        <template v-else>
+          <subject-sections label="СОР" :subject="subject.SAU" />
+          <subject-sections label="СОЧ" :subject="subject.SAT" />
+        </template>
+      </div>
+    </modal>
     <modal :show="showSettingsModal" @close="showSettingsModal = false">
       <div class="flex flex-col space-y-4 p-2">
         <div class="flex flex-col space-y-2">
@@ -113,13 +128,28 @@
           <div class="flex justify-between items-center">
             <span class="settings-label"> Темная тема </span>
             <div>
-              <base-switch v-model="darkTheme" />
+              <base-switch id="darkTheme" v-model="darkTheme" />
             </div>
           </div>
           <div class="flex justify-between items-center">
             <span class="settings-label"> Текущая четверть </span>
             <div>
               <base-select v-model="actualTermName" :options="$options.TERMS" />
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col space-y-2">
+          <span class="text-lg">Журнал</span>
+          <div class="flex justify-between items-center">
+            <span class="settings-label"> Скрыть пустые </span>
+            <div>
+              <base-switch id="hideEmpty" v-model="hideEmpty" />
+            </div>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="settings-label"> Сортировать </span>
+            <div>
+              <base-select v-model="sortBy" :options="$options.SORT" />
             </div>
           </div>
         </div>
@@ -197,6 +227,16 @@ export default {
     3: "III",
     4: "IV",
   },
+  SORT: [
+    {
+      value: "score",
+      label: "По процентам",
+    },
+    {
+      value: "name",
+      label: "По алфавиту",
+    },
+  ],
   TERMS: [
     {
       value: "1",
@@ -272,6 +312,22 @@ export default {
       },
       set(value) {
         this.$store.commit("preferences/SET_YEAR", value);
+      },
+    },
+    sortBy: {
+      get() {
+        return this.$store.state.preferences.sortBy;
+      },
+      set(value) {
+        this.$store.commit("preferences/SET_SORT", value);
+      },
+    },
+    hideEmpty: {
+      get() {
+        return this.$store.state.preferences.hideEmpty;
+      },
+      set(value) {
+        this.$store.commit("preferences/SET_HIDE", value);
       },
     },
     terms() {

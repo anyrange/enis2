@@ -1,7 +1,7 @@
 <template>
   <div class="relative inline-block w-11 align-middle select-none">
     <input
-      id="toggle"
+      :id="id"
       type="checkbox"
       v-bind="$attrs"
       :checked="modelValue"
@@ -18,12 +18,13 @@
         cursor-pointer
         outline-none
         mx-0.5
+        shadow
       "
       style="top: 50%; transform: translateY(-50%)"
       @change="handleInput($event.target.checked)"
     />
     <label
-      for="toggle"
+      :for="id"
       class="
         toggle-label
         block
@@ -42,6 +43,10 @@
 export default {
   name: "BaseSwitch",
   props: {
+    id: {
+      type: String,
+      required: true,
+    },
     modelValue: {
       type: Boolean,
       required: false,

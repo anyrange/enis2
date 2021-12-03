@@ -29,15 +29,19 @@ export default {
   },
   getters: {
     getCurrentDiary:
-      (state) =>
+      (state, _, rootState) =>
       ({ termName, yearName }) => {
         const diary =
           state.data.find(
             (item) => item.termName === termName && item.yearName === yearName
           )?.diary || [];
-        return diary.sort(
-          (firstEl, secondEl) => secondEl.Score - firstEl.Score
-        );
+        const sortedDiary =
+          rootState.preferences.sortBy === "score"
+            ? diary.sort((a, b) => b.Score - a.Score)
+            : diary.sort((a, b) => a.Name.localeCompare(b.Name));
+        return rootState.preferences.hideEmpty
+          ? sortedDiary.filter((o) => o.Score !== 0)
+          : sortedDiary;
       },
   },
   actions: {

@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     activateTab(name) {
-      if (this.isDisabled || name === this.active) {
+      if (this.isDisabled) {
         return;
       }
       this.selectTab(name);
