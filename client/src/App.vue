@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'custom-scrollbars': !isMobile }">
+  <div class="h-screen">
     <loading-overlay :active="$store.getters['loader/showLoader']" />
     <modal :show="showAvailabilityModal" @close="showAvailabilityModal = false">
       <div class="flex flex-col space-y-2">
@@ -53,14 +53,30 @@ export default {
         navigator.userAgent
       );
     },
+    isSafari() {
+      return /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    },
+    changeScrollbar() {
+      return !this.isMobile && !this.isSafari;
+    },
   },
   watch: {
     theme: {
-      handler: function () {
-        if (this.theme === "dark") {
+      handler: function (value) {
+        if (value === "dark") {
           document.documentElement.classList.add("dark");
         } else {
           document.documentElement.classList.remove("dark");
+        }
+      },
+      immediate: true,
+    },
+    changeScrollbar: {
+      handler: function (value) {
+        if (value) {
+          document.documentElement.classList.add("custom-scrollbar");
+        } else {
+          document.documentElement.classList.remove("custom-scrollbar");
         }
       },
       immediate: true,

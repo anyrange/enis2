@@ -1,175 +1,154 @@
 <template>
-  <div class="flex flex-col h-screen">
-    <main v-if="alive" class="flex-1 flex flex-col overflow-y-hidden">
-      <header>
-        <tabs v-model="currentYearName" class="tabs-bg">
-          <div class="tabs-container">
-            <tab
-              v-for="year in years.data"
-              :key="year.value"
-              :name="year.label"
-              @selected="getTermsAndContentByYear({ forceUpdate: false })"
-            >
-              {{ year.label }}
-            </tab>
-          </div>
-        </tabs>
-        <tabs
-          v-model="currentTab"
-          class="tabs-bg floating-nav"
-          :class="{ 'floating-nav--hidden': !showTabs }"
-        >
-          <div class="tabs-container">
-            <tab
-              v-for="(term, index) in terms"
-              :key="term.Id"
-              :name="term.Name"
-              @selected="getContent({ forceUpdate: false })"
-            >
-              {{ $options.GREEK_NUMERALS[index + 1] }}
-            </tab>
-            <tab name="grades" @selected="getContent({ forceUpdate: false })">
-              <grades-icon />
-            </tab>
-          </div>
-        </tabs>
-      </header>
-      <section
-        id="content"
-        ref="content"
-        class="flex h-full w-full justify-center overflow-y-auto"
+  <template v-if="alive">
+    <header class="w-full sticky inset-x-0 top-0 left-0">
+      <tabs v-model="currentYearName" class="tabs-bg">
+        <div class="tabs-container">
+          <tab
+            v-for="year in years.data"
+            :key="year.value"
+            :name="year.label"
+            @selected="getTermsAndContentByYear({ forceUpdate: false })"
+          >
+            {{ year.label }}
+          </tab>
+        </div>
+      </tabs>
+      <tabs
+        v-model="currentTab"
+        class="floating-nav tabs-bg"
+        :class="{ 'is-hidden': !showYears }"
       >
-        <section class="mt-12 flex flex-col p-3 space-y-3 sm:w-450px w-full">
-          <random-emoticon v-if="!loading && isEmptyContent" />
-          <template v-if="isGrades">
-            <subject-grades
-              v-for="item in grades"
-              :key="item"
-              :subject="item"
-            />
-          </template>
-          <template v-else>
-            <subject-diary
-              v-for="item in diary"
-              :key="item"
-              :subject="item"
-              @click="openSubjectModal(item)"
-            />
-          </template>
-        </section>
+        <div class="tabs-container">
+          <tab
+            v-for="(term, index) in terms"
+            :key="term.Id"
+            :name="term.Name"
+            @selected="getContent({ forceUpdate: false })"
+          >
+            {{ $options.GREEK_NUMERALS[index + 1] }}
+          </tab>
+          <tab name="grades" @selected="getContent({ forceUpdate: false })">
+            <grades-icon />
+          </tab>
+        </div>
+      </tabs>
+    </header>
+    <main class="flex w-full h-full justify-center">
+      <section
+        class="flex flex-col h-full w-full mb-6 p-3 space-y-3 sm:w-450px"
+      >
+        <random-emoticon v-if="!loading && isEmptyContent" />
+        <template v-if="isGrades">
+          <subject-grades v-for="item in grades" :key="item" :subject="item" />
+        </template>
+        <template v-else>
+          <subject-diary
+            v-for="item in diary"
+            :key="item"
+            :subject="item"
+            @click="openSubjectModal(item)"
+          />
+        </template>
       </section>
     </main>
-    <main v-else class="flex justify-center items-center h-screen">
+  </template>
+  <template v-else>
+    <div class="flex justify-center items-center h-screen">
       <random-gif />
-    </main>
-    <footer>
-      <div
-        class="absolute bottom-4"
-        style="left: 50%; transform: translateX(-50%)"
+    </div>
+  </template>
+  <footer class="fixed bottom-0 left-0 right-0 left-0" style="height: 50px">
+    <div
+      class="absolute bottom-4"
+      style="left: 50%; transform: translateX(-50%)"
+    >
+      <base-button rounded color="negative" @click="signOut()">
+        Выйти
+      </base-button>
+    </div>
+    <div
+      class="
+        absolute
+        bottom-4
+        right-4
+        rounded-full
+        bg-gray-50
+        dark:bg-gray-900-spotify
+      "
+    >
+      <base-button
+        flat
+        icon
+        aria-label="Open Settings"
+        @click="showSettingsModal = true"
       >
-        <base-button rounded color="negative" @click="signOut()">
-          Выйти
-        </base-button>
-      </div>
-      <div
-        class="
-          absolute
-          bottom-4
-          right-4
-          rounded-full
-          bg-gray-50
-          dark:bg-gray-900-spotify
-        "
-      >
-        <base-button
-          flat
-          icon
-          aria-label="Open Settings"
-          @click="showSettingsModal = true"
-        >
-          <settings-icon />
-        </base-button>
-      </div>
-    </footer>
-    <modal :show="showSubjectModal" @close="showSubjectModal = false">
+        <settings-icon />
+      </base-button>
+    </div>
+  </footer>
+  <modal :show="showSubjectModal" @close="showSubjectModal = false">
+    <div class="flex flex-col space-y-2">
+      <subject-diary :hoverable="false" :subject="subject.current" />
+      <loading-dots v-if="loading" />
+      <template v-else-if="!subject && loadingEndpoint === 'SUBJECT'">
+        <div class="p-2 text-center">
+          {{ errorMessage }}
+        </div>
+      </template>
+      <template v-else>
+        <subject-sections label="СОР" :subject="subject.SAU" />
+        <subject-sections label="СОЧ" :subject="subject.SAT" />
+      </template>
+    </div>
+  </modal>
+  <modal :show="showSettingsModal" @close="showSettingsModal = false">
+    <div class="flex flex-col space-y-4 p-2">
       <div class="flex flex-col space-y-2">
-        <subject-diary :hoverable="false" :subject="subject.current" />
-        <loading-dots v-if="loading" />
-        <template v-else-if="!subject && loadingEndpoint === 'SUBJECT'">
-          <div class="p-2 text-center">
-            {{ errorMessage }}
+        <span class="text-lg">Настройки</span>
+        <div class="flex justify-between items-center">
+          <span class="settings-label"> Темная тема </span>
+          <div>
+            <base-switch id="darkTheme" v-model="darkTheme" />
           </div>
-        </template>
-        <template v-else>
-          <subject-sections label="СОР" :subject="subject.SAU" />
-          <subject-sections label="СОЧ" :subject="subject.SAT" />
-        </template>
+        </div>
+        <div class="flex justify-between items-center">
+          <span class="settings-label"> Текущая четверть </span>
+          <div>
+            <base-select v-model="actualTermName" :options="$options.TERMS" />
+          </div>
+        </div>
       </div>
-    </modal>
-    <modal :show="showSubjectModal" @close="showSubjectModal = false">
       <div class="flex flex-col space-y-2">
-        <subject-diary :hoverable="false" :subject="subject.current" />
-        <loading-dots v-if="loading" />
-        <template v-else-if="!subject && loadingEndpoint === 'SUBJECT'">
-          <div class="p-2 text-center">
-            {{ errorMessage }}
-          </div>
-        </template>
-        <template v-else>
-          <subject-sections label="СОР" :subject="subject.SAU" />
-          <subject-sections label="СОЧ" :subject="subject.SAT" />
-        </template>
-      </div>
-    </modal>
-    <modal :show="showSettingsModal" @close="showSettingsModal = false">
-      <div class="flex flex-col space-y-4 p-2">
-        <div class="flex flex-col space-y-2">
-          <span class="text-lg">Настройки</span>
-          <div class="flex justify-between items-center">
-            <span class="settings-label"> Темная тема </span>
-            <div>
-              <base-switch id="darkTheme" v-model="darkTheme" />
-            </div>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="settings-label"> Текущая четверть </span>
-            <div>
-              <base-select v-model="actualTermName" :options="$options.TERMS" />
-            </div>
+        <span class="text-lg">Журнал</span>
+        <div class="flex justify-between items-center">
+          <span class="settings-label"> Скрыть пустые </span>
+          <div>
+            <base-switch id="hideEmpty" v-model="hideEmpty" />
           </div>
         </div>
-        <div class="flex flex-col space-y-2">
-          <span class="text-lg">Журнал</span>
-          <div class="flex justify-between items-center">
-            <span class="settings-label"> Скрыть пустые </span>
-            <div>
-              <base-switch id="hideEmpty" v-model="hideEmpty" />
-            </div>
-          </div>
-          <div class="flex justify-between items-center">
-            <span class="settings-label"> Сортировать </span>
-            <div>
-              <base-select v-model="sortBy" :options="$options.SORT" />
-            </div>
-          </div>
-        </div>
-        <div class="flex flex-col space-y-2">
-          <span class="text-lg">Links</span>
-          <div class="flex items-center space-x-3">
-            <a class="settings-link" :href="$options.GH_LINK" target="_blank">
-              repo
-            </a>
-            <a class="settings-link" :href="$options.TG_LINK" target="_blank">
-              chat
-            </a>
-            <a class="settings-link" :href="$options.DA_LINK" target="_blank">
-              donate
-            </a>
+        <div class="flex justify-between items-center">
+          <span class="settings-label"> Сортировать </span>
+          <div>
+            <base-select v-model="sortBy" :options="$options.SORT" />
           </div>
         </div>
       </div>
-    </modal>
-  </div>
+      <div class="flex flex-col space-y-2">
+        <span class="text-lg">Links</span>
+        <div class="flex items-center space-x-3">
+          <a class="settings-link" :href="$options.GH_LINK" target="_blank">
+            repo
+          </a>
+          <a class="settings-link" :href="$options.TG_LINK" target="_blank">
+            chat
+          </a>
+          <a class="settings-link" :href="$options.DA_LINK" target="_blank">
+            donate
+          </a>
+        </div>
+      </div>
+    </div>
+  </modal>
 </template>
 
 <script>
@@ -211,11 +190,12 @@ export default {
   },
   data() {
     return {
-      showTabs: true,
-      scrollPosition: 0,
+      refetchAttempts: 0,
       showSubjectModal: false,
       showSettingsModal: false,
-      refetchAttempts: 0,
+      showYears: true,
+      scrollPosition: 0,
+      scrollOffset: 40,
     };
   },
   DA_LINK,
@@ -273,9 +253,6 @@ export default {
       getCurrentGrades: "grades/getCurrentGrades",
       errorMessage: "loader/errorMessage",
     }),
-    contentWindow() {
-      return this.$refs.content;
-    },
     isGrades() {
       return this.currentTab === "grades";
     },
@@ -351,10 +328,11 @@ export default {
     await this.startSession({ forceUpdate: false });
   },
   mounted() {
-    this.contentWindow.addEventListener("scroll", this.handleScroll);
+    this.scrollPosition = window.pageYOffset;
+    window.addEventListener("scroll", this.handleScroll);
   },
   beforeUnmount() {
-    this.contentWindow.removeEventListener("scroll", this.handleScroll);
+    window.removeEventListener("scroll", this.handleScroll);
   },
   methods: {
     ...mapActions({
@@ -367,8 +345,8 @@ export default {
       checkAvailability: "health/checkAvailability",
     }),
     handleScroll() {
-      this.scrollPosition = this.contentWindow.scrollTop;
-      this.showTabs = this.scrollPosition <= 48;
+      this.scrollPosition = window.pageYOffset;
+      this.showYears = this.scrollPosition <= this.scrollOffset;
     },
     showError(message) {
       notify.show({
@@ -494,17 +472,16 @@ export default {
   @apply flex w-full xl:w-1/2 m-auto;
 }
 .floating-nav {
-  @apply fixed w-full;
-  @apply transition transition-transform duration-300;
   transform: translate3d(0, 0, 0);
+  @apply transition transition-transform duration-300;
 }
-.floating-nav.floating-nav--hidden {
+.floating-nav.is-hidden {
   transform: translate3d(0, -100%, 0);
 }
 .settings-label {
-  @apply text-base text-gray-700 dark:text-gray-500-spotify;
+  @apply sm:text-base text-sm text-gray-700 dark:text-gray-500-spotify;
 }
 .settings-link {
-  @apply text-base text-gray-700 dark:text-gray-500-spotify hover:underline;
+  @apply sm:text-base text-sm text-gray-700 dark:text-gray-500-spotify hover:underline;
 }
 </style>
