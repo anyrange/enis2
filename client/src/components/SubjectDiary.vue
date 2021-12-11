@@ -16,24 +16,24 @@
         : 'cursor-default select-text',
     ]"
   >
-    <div class="space-y-2 p-2">
+    <div v-if="subject" class="space-y-2 p-2">
       <h3 class="flex text-base font-medium truncate">
         {{ subject.Name }}
       </h3>
       <div class="flex justify-between">
-        <div>
+        <p>
           <span class="item-title">
-            {{ beforeDecimal }}
+            {{ scoreDecimals.before }}
           </span>
-          <span v-show="afterDecimal" class="item-subtitle"
-            >.{{ afterDecimal }}
+          <span v-show="scoreDecimals.after" class="item-subtitle"
+            >.{{ scoreDecimals.after }}
           </span>
           <span class="item-subtitle">%</span>
-        </div>
-        <div>
+        </p>
+        <p>
           <span class="item-subtitle">оценка </span>
           <span class="item-title">{{ subject.Mark }}</span>
-        </div>
+        </p>
       </div>
     </div>
     <div
@@ -60,11 +60,12 @@ export default {
     },
   },
   computed: {
-    beforeDecimal() {
-      return (this.subject.Score + "").split(".")[0];
-    },
-    afterDecimal() {
-      return (this.subject.Score + "").split(".")[1];
+    scoreDecimals() {
+      const scoreParts = `${this.subject.Score}`.split(".");
+      return {
+        before: scoreParts[0],
+        after: scoreParts[1],
+      };
     },
     barClass() {
       const roundedScore = Math.ceil(this.subject.Score);

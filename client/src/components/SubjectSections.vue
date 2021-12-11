@@ -67,8 +67,8 @@ export default {
       return this.filteredSubject.reduce((n, { MaxScore }) => n + MaxScore, 0);
     },
     percent() {
-      const percent = Math.ceil((this.scores / this.maxScores) * 100) || 0;
-      return `${percent}%`;
+      const percent = (this.scores / this.maxScores) * 100 || 0;
+      return `${percent ? percent.toPrecision(4) : 0}%`;
     },
   },
 };
