@@ -12,10 +12,10 @@ const PORT = process.env.PORT || 8887;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const secret = process.env.SECRET || "secret";
-const FRONTEND_URL = process.env.FRONTEND_URL.split(",");
+const URL_WHITELIST = process.env.URL_WHITELIST.split(",");
 
 app.register(import("fastify-cors"), {
-  origin: FRONTEND_URL,
+  origin: URL_WHITELIST,
   credentials: true,
 });
 
