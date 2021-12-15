@@ -33,10 +33,8 @@
         </div>
       </tabs>
     </header>
-    <main class="flex w-full h-full justify-center">
-      <section
-        class="flex flex-col h-full w-full mb-6 p-3 space-y-3 sm:w-450px"
-      >
+    <main class="flex justify-center p-3">
+      <section class="flex flex-col space-y-3 mb-6 w-full sm:w-450px">
         <random-emoticon v-if="!loading && isEmptyContent" />
         <template v-if="isGrades">
           <subject-grades v-for="item in grades" :key="item" :subject="item" />
@@ -62,7 +60,12 @@
       class="absolute bottom-4"
       style="left: 50%; transform: translateX(-50%)"
     >
-      <base-button rounded color="negative" @click="signOut()">
+      <base-button
+        v-if="!rememberMe"
+        rounded
+        color="negative"
+        @click="signOut()"
+      >
         Выйти
       </base-button>
     </div>
@@ -132,6 +135,11 @@
             <base-select v-model="sortBy" :options="$options.SORT" />
           </div>
         </div>
+      </div>
+      <div>
+        <base-button v-if="rememberMe" color="negative" @click="signOut()">
+          Выйти
+        </base-button>
       </div>
       <div class="flex flex-col space-y-2">
         <span class="text-lg">Links</span>
