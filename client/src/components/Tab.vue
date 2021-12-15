@@ -71,7 +71,7 @@ export default {
   @apply text-blue-500 font-semibold hover:bg-blue-500 hover:bg-opacity-10;
 }
 .incative-tab {
-  @apply text-gray-500-spotify hover:bg-gray-100 dark:hover:bg-gray-700-spotify;
+  @apply text-gray-500 dark:text-gray-500-spotify hover:bg-gray-100 dark:hover:bg-gray-700-spotify;
 }
 .disabled-tab {
   @apply opacity-40 pointer-events-none;

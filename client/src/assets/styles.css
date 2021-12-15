@@ -8,14 +8,17 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow: overlay;
+  overscroll-behavior-y: none;
 }
 
-.custom-scrollbar body::-webkit-scrollbar {
+html.custom-scrollbar ::-webkit-scrollbar {
   @apply w-1.5;
 }
-
-.custom-scrollbar body::-webkit-scrollbar-thumb {
-  @apply bg-gray-400 rounded-lg;
+html.custom-scrollbar ::-webkit-scrollbar-thumb {
+  @apply bg-gray-400-spotify rounded-lg;
+}
+html.dark.custom-scrollbar ::-webkit-scrollbar-thumb {
+  @apply bg-gray-600-spotify rounded-lg;
 }
 
 .modal-opened body {
