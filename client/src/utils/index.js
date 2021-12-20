@@ -1,21 +1,21 @@
-export function debounce(func, wait, immediate) {
-  var timeout;
+export const getFilteredSection = (section) => {
+  return section.filter((s) => s.Score !== -1);
+};
 
-  return function executedFunction() {
-    var context = this;
-    var args = arguments;
+export const getScores = (section) => {
+  return section.reduce((n, { Score }) => n + Score, 0);
+};
 
-    var later = function () {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    };
+export const getMaxScores = (section) => {
+  return section.reduce((n, { MaxScore }) => n + MaxScore, 0);
+};
 
-    var callNow = immediate && !timeout;
+export const getPercent = (percent) => {
+  // const percent = (scores / maxScores) * 100 || 0;
+  return percent ? percent.toFixed(2) : 0;
+};
 
-    clearTimeout(timeout);
-
-    timeout = setTimeout(later, wait);
-
-    if (callNow) func.apply(context, args);
-  };
-}
+export const getPercentDecimals = (percent) => {
+  const [before, after] = `${percent}`.split(".");
+  return { before, after };
+};

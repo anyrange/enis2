@@ -46,6 +46,8 @@
 </template>
 
 <script>
+import { getPercentDecimals } from "../utils";
+
 export default {
   name: "SubjectDiary",
   props: {
@@ -61,11 +63,7 @@ export default {
   },
   computed: {
     scoreDecimals() {
-      const scoreParts = `${this.subject.Score}`.split(".");
-      return {
-        before: scoreParts[0],
-        after: scoreParts[1],
-      };
+      return getPercentDecimals(this.subject.Score);
     },
     barClass() {
       const roundedScore = Math.ceil(this.subject.Score);

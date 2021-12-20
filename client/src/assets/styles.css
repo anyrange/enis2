@@ -33,3 +33,17 @@ html.dark.custom-scrollbar ::-webkit-scrollbar-thumb {
 .fade-leave-to {
   opacity: 0;
 }
+
+html {
+  --autofill-background: #eff6ff;
+  --autofill-color: #000000;
+  --scroll-picker-border-color: white;
+  --scroll-picker-item-color: #333;
+}
+
+html.dark {
+  --autofill-background: #282828;
+  --autofill-color: #ffffff;
+  --scroll-picker-border-color: #1d1d1d;
+  --scroll-picker-item-color: #ababab;
+}

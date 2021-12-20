@@ -34,8 +34,8 @@
       </tabs>
     </header>
     <main class="flex justify-center p-3">
-      <section class="flex flex-col space-y-3 mb-6 w-full sm:w-450px">
-        <random-emoticon v-if="!loading && isEmptyContent" />
+      <section class="flex flex-col h-80vh space-y-3 mb-6 w-full sm:w-450px">
+        <random-emoticon v-if="!loading && isEmptyContent" class="m-auto" />
         <template v-if="isGrades">
           <subject-grades v-for="item in grades" :key="item" :subject="item" />
         </template>
@@ -90,8 +90,23 @@
     </div>
   </footer>
   <modal :show="showSubjectModal" @close="showSubjectModal = false">
+    <template #top-right>
+      <base-button
+        flat
+        icon
+        aria-label="Toggle GM"
+        class="!shadow-transparent !text-light-50"
+        :ripple="false"
+        @click="GM = !GM"
+      >
+        <span role="img" aria-label="GodMode" class="text-lg"> 🤔 </span>
+      </base-button>
+    </template>
     <div class="flex flex-col space-y-2">
-      <subject-diary :hoverable="false" :subject="subject.current" />
+      <subject-diary
+        :hoverable="false"
+        :subject="GM ? customSubject : subject.originalSubject"
+      />
       <loading-dots v-if="loading" />
       <template v-else-if="!subject && loadingEndpoint === 'SUBJECT'">
         <div class="p-2 text-center">
@@ -99,8 +114,18 @@
         </div>
       </template>
       <template v-else>
-        <subject-sections label="СОР" :subject="subject.SAU" />
-        <subject-sections label="СОЧ" :subject="subject.SAT" />
+        <subject-sections
+          label="СОР"
+          :subject="
+            GM ? subject.customSections.SAU : subject.originalSections.SAU
+          "
+        />
+        <subject-sections
+          label="СОЧ"
+          :subject="
+            GM ? subject.customSections.SAT : subject.originalSections.SAT
+          "
+        />
       </template>
     </div>
   </modal>
@@ -260,12 +285,21 @@ export default {
       getCurrentDiary: "diary/getCurrentDiary",
       getCurrentGrades: "grades/getCurrentGrades",
       errorMessage: "loader/errorMessage",
+      customSubject: "subject/customSubject",
     }),
     isGrades() {
       return this.currentTab === "grades";
     },
     isEmptyContent() {
       return this.isGrades ? !this.grades.length : !this.diary.length;
+    },
+    GM: {
+      get() {
+        return this.$store.state.subject.GM;
+      },
+      set(value) {
+        this.$store.commit("subject/SET_GM", value);
+      },
     },
     actualTermName: {
       get() {
@@ -351,6 +385,7 @@ export default {
       fetchYears: "years/fetchYears",
       fetchTerms: "terms/fetchTerms",
       checkAvailability: "health/checkAvailability",
+      toggleGM: "subject/toggleGM",
     }),
     handleScroll() {
       this.scrollPosition = window.pageYOffset;
@@ -451,7 +486,10 @@ export default {
       }
     },
     async openSubjectModal(subject) {
-      if (subject.Name === this.subject.current.Name && this.showSubjectModal) {
+      if (
+        subject.Name === this.subject.originalSubject.Name &&
+        this.showSubjectModal
+      ) {
         return;
       }
       const subjectName = subject.Name;

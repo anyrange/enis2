@@ -68,15 +68,6 @@ export default {
 </script>
 
 <style lang="postcss">
-html {
-  --autofill-background: #eff6ff;
-  --autofill-color: #000000;
-}
-html.dark {
-  --autofill-background: #282828;
-  --autofill-color: #ffffff;
-}
-
 .md-input {
   caret-color: var(--autofill-color);
   @apply w-full h-10 appearance-none outline-none text-base bg-transparent focus:outline-none;
@@ -129,6 +120,6 @@ html.dark {
 }
 
 .md-input:-webkit-autofill::first-line {
-  @apply !text-base font-inter tracking-tight;
+  @apply !text-base tracking-tight;
 }
 </style>

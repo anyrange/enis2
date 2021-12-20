@@ -25,27 +25,56 @@
         {{ label }}
       </h4>
       <span class="font-normal text-xs">
-        {{ scores }}/{{ maxScores }} - {{ percent }}
+        {{ scores }}/{{ maxScores }} - {{ percent }}%
       </span>
     </div>
     <div
       v-for="item in subject"
       :key="item"
-      class="flex flex-row justify-between space-x-1"
+      class="flex flex-row justify-between items-start space-x-2"
     >
-      <span>{{ item.Name }}</span>
-      <span>
-        {{ item.Score === -1 ? "-" : item.Score }}/{{
-          item.MaxScore === 0 ? "-" : item.MaxScore
-        }}
-      </span>
+      <span class="w-4/5 justify-start">{{ item.Name }}</span>
+      <div class="w-auto justify-end">
+        <div class="w-full flex items-start justify-evenly text-center">
+          <div class="w-4.5">
+            <template v-if="$store.state.subject.GM">
+              <scroll-picker
+                v-model="item.Score"
+                :options="
+                  new Array(item.MaxScore + 1)
+                    .fill()
+                    .map((e, i) => ({ name: i, value: i }))
+                "
+              />
+            </template>
+            <template v-else>
+              {{ item.Score === -1 ? "-" : item.Score }}
+            </template>
+          </div>
+          <div class="w-2">/</div>
+          <div class="w-4.5">
+            {{ item.MaxScore === 0 ? "-" : item.MaxScore }}
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import { VueScrollPicker as ScrollPicker } from "vue-scroll-picker";
+import {
+  getFilteredSection,
+  getScores,
+  getMaxScores,
+  getPercent,
+} from "../utils";
+
 export default {
   name: "SubjectSections",
+  components: {
+    ScrollPicker,
+  },
   props: {
     subject: {
       type: Object,
@@ -57,19 +86,85 @@ export default {
     },
   },
   computed: {
-    filteredSubject() {
-      return this.subject.filter((s) => s.Score !== -1);
+    filteredSections() {
+      return getFilteredSection(this.subject);
     },
     scores() {
-      return this.filteredSubject.reduce((n, { Score }) => n + Score, 0);
+      return getScores(this.filteredSections);
     },
     maxScores() {
-      return this.filteredSubject.reduce((n, { MaxScore }) => n + MaxScore, 0);
+      return getMaxScores(this.filteredSections);
     },
     percent() {
       const percent = (this.scores / this.maxScores) * 100 || 0;
-      return `${percent ? percent.toPrecision(4) : 0}%`;
+      return percent ? getPercent(percent) : 0;
     },
   },
 };
 </script>
+
+<style>
+.vue-scroll-picker {
+  position: relative;
+  width: 100%;
+  height: 1.5em;
+  overflow: hidden;
+}
+
+.vue-scroll-picker-rotator {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 0.6em);
+}
+
+.vue-scroll-picker-rotator-transition {
+  transition: top ease 200ms;
+}
+
+.vue-scroll-picker-item {
+  text-align: center;
+  line-height: 1em;
+  color: var(--scroll-picker-item-color);
+}
+
+.vue-scroll-picker-item-selected {
+  color: #007bff;
+}
+
+.vue-scroll-picker-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+
+.vue-scroll-picker-layer-top,
+.vue-scroll-picker-layer-selection,
+.vue-scroll-picker-layer-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.vue-scroll-picker-layer-top {
+  box-sizing: border-box;
+  top: 0;
+  height: calc(50% - 1em);
+  cursor: pointer;
+  border-top: 3px solid var(--scroll-picker-border-color);
+}
+
+.vue-scroll-picker-layer-selection {
+  top: calc(50% - 1em);
+  bottom: calc(50% - 1em);
+}
+
+.vue-scroll-picker-layer-bottom {
+  bottom: 0;
+  height: calc(50% - 1em);
+  cursor: pointer;
+  border-top: 3px solid var(--scroll-picker-border-color);
+}
+</style>
