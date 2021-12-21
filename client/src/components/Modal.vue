@@ -48,7 +48,7 @@
             leave-to-class="opacity-50 translate-y-10 scale-50"
           >
             <div
-              v-show="show"
+              v-if="show"
               class="
                 relative
                 bg-gray-100
