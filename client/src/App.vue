@@ -2,20 +2,32 @@
   <div class="h-screen">
     <loading-overlay :active="$store.getters['loader/showLoader']" />
     <modal :show="showAvailabilityModal" @close="showAvailabilityModal = false">
-      <div class="flex flex-col space-y-2">
-        <h1>
-          <span role="img" aria-label="Disappointed Face">😞</span>
-        </h1>
-        <p>
-          <a
-            :href="`https://sms.${school}.nis.edu.kz/`"
-            target="_blank"
-            class="underline"
-          >
-            Оригинальный клиент</a
-          >
-          не работает
-        </p>
+      <div class="relative overflow-hidden -m-2">
+        <random-gif class="w-full h-auto opacity-25" />
+        <div
+          class="
+            absolute
+            w-full
+            h-auto
+            absolute
+            top-1/2
+            left-1/2
+            transform
+            -translate-x-1/2 -translate-y-1/2
+            text-center
+          "
+        >
+          <p class="text-lg">
+            <a
+              :href="`https://sms.${school}.nis.edu.kz/`"
+              target="_blank"
+              class="underline"
+              >Оригинальный клиент</a
+            >
+            &nbsp;не работает
+            <span role="img" aria-label="Disappointed Face">😞</span>
+          </p>
+        </div>
       </div>
     </modal>
     <router-view />
@@ -28,17 +40,20 @@ import { mapState } from "vuex";
 import Notifications from "./components/Notifications.vue";
 import LoadingOverlay from "./components/LoadingOverlay.vue";
 import Modal from "./components/Modal.vue";
+import RandomGif from "./components/RandomGif.vue";
 
 export default {
   components: {
     Notifications,
     LoadingOverlay,
     Modal,
+    RandomGif,
   },
   computed: {
     ...mapState({
       theme: (state) => state.preferences.theme,
       school: (state) => state.preferences.school,
+      alive: (state) => state.health.alive,
     }),
     showAvailabilityModal: {
       get() {

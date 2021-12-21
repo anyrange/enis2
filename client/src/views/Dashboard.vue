@@ -1,60 +1,53 @@
 <template>
-  <template v-if="alive">
-    <header class="w-full sticky inset-x-0 top-0 left-0">
-      <tabs v-model="currentYearName" class="tabs-bg">
-        <div class="tabs-container">
-          <tab
-            v-for="year in years.data"
-            :key="year.value"
-            :name="year.label"
-            @selected="getTermsAndContentByYear({ forceUpdate: false })"
-          >
-            {{ year.label }}
-          </tab>
-        </div>
-      </tabs>
-      <tabs
-        v-model="currentTab"
-        class="floating-nav tabs-bg"
-        :class="{ 'is-hidden': !showYears }"
-      >
-        <div class="tabs-container">
-          <tab
-            v-for="(term, index) in terms"
-            :key="term.Id"
-            :name="term.Name"
-            @selected="getContent({ forceUpdate: false })"
-          >
-            {{ $options.GREEK_NUMERALS[index + 1] }}
-          </tab>
-          <tab name="grades" @selected="getContent({ forceUpdate: false })">
-            <grades-icon />
-          </tab>
-        </div>
-      </tabs>
-    </header>
-    <main class="flex justify-center p-3">
-      <section class="flex flex-col h-80vh space-y-3 mb-6 w-full sm:w-450px">
-        <random-emoticon v-if="!loading && isEmptyContent" class="m-auto" />
-        <template v-if="isGrades">
-          <subject-grades v-for="item in grades" :key="item" :subject="item" />
-        </template>
-        <template v-else>
-          <subject-diary
-            v-for="item in diary"
-            :key="item"
-            :subject="item"
-            @click="openSubjectModal(item)"
-          />
-        </template>
-      </section>
-    </main>
-  </template>
-  <template v-else>
-    <div class="flex justify-center items-center h-screen">
-      <random-gif />
-    </div>
-  </template>
+  <header class="w-full sticky inset-x-0 top-0 left-0">
+    <tabs v-model="currentYearName" class="tabs-bg">
+      <div class="tabs-container">
+        <tab
+          v-for="year in years.data"
+          :key="year.value"
+          :name="year.label"
+          @selected="getTermsAndContentByYear({ forceUpdate: false })"
+        >
+          {{ year.label }}
+        </tab>
+      </div>
+    </tabs>
+    <tabs
+      v-model="currentTab"
+      class="floating-nav tabs-bg"
+      :class="{ 'is-hidden': !showYears }"
+    >
+      <div class="tabs-container">
+        <tab
+          v-for="(term, index) in terms"
+          :key="term.Id"
+          :name="term.Name"
+          @selected="getContent({ forceUpdate: false })"
+        >
+          {{ $options.GREEK_NUMERALS[index + 1] }}
+        </tab>
+        <tab name="grades" @selected="getContent({ forceUpdate: false })">
+          <grades-icon />
+        </tab>
+      </div>
+    </tabs>
+  </header>
+  <main class="flex justify-center p-3">
+    <section class="flex flex-col h-80vh space-y-3 mb-6 w-full sm:w-450px">
+      <random-emoticon v-if="!loading && isEmptyContent" class="m-auto" />
+      <template v-if="isGrades">
+        <subject-grades v-for="item in grades" :key="item" :subject="item" />
+      </template>
+      <template v-else>
+        <subject-diary
+          v-for="item in diary"
+          :key="item"
+          :subject="item"
+          @click="openSubjectModal(item)"
+        />
+      </template>
+    </section>
+  </main>
   <footer class="fixed bottom-0 left-0 right-0 left-0" style="height: 50px">
     <div
       class="absolute bottom-4"
@@ -201,7 +194,6 @@ import SubjectSections from "../components/SubjectSections.vue";
 import GradesIcon from "../components/icons/GradesIcon.vue";
 import SettingsIcon from "../components/icons/SettingsIcon.vue";
 import RandomEmoticon from "../components/RandomEmoticon.vue";
-import RandomGif from "../components/RandomGif.vue";
 
 export default {
   name: "Dashboard",
@@ -219,7 +211,6 @@ export default {
     GradesIcon,
     SettingsIcon,
     RandomEmoticon,
-    RandomGif,
   },
   data() {
     return {
@@ -273,7 +264,6 @@ export default {
       years: "years",
       subject: "subject",
       actualYearName: (state) => state.years.actual,
-      alive: (state) => state.health.alive,
       loading: (state) => state.loader.status,
       loadingEndpoint: (state) => state.loader.endpoint,
       rememberMe: (state) => state.preferences.remember,
@@ -385,7 +375,6 @@ export default {
       fetchYears: "years/fetchYears",
       fetchTerms: "terms/fetchTerms",
       checkAvailability: "health/checkAvailability",
-      toggleGM: "subject/toggleGM",
     }),
     handleScroll() {
       this.scrollPosition = window.pageYOffset;
@@ -431,6 +420,7 @@ export default {
         await this.getContent({ forceUpdate });
         this.refetchAttempts = 0;
       } catch (error) {
+        await this.checkAvailability();
         return Promise.reject(error);
       }
     },

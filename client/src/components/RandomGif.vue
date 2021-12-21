@@ -1,5 +1,5 @@
 <template>
-  <img class="max-w-120" :src="randomGIF.src" :alt="randomGIF.name" />
+  <img :src="randomGIF.src" :alt="randomGIF.name" />
 </template>
 
 <script>

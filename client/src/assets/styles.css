@@ -21,8 +21,24 @@ html.dark.custom-scrollbar ::-webkit-scrollbar-thumb {
   @apply bg-gray-600-spotify rounded-lg;
 }
 
-.modal-opened body {
+html.modal-opened {
   @apply overflow-hidden;
+}
+
+html.modal-opened body {
+  overflow: hidden;
+  touch-action: none;
+  -ms-touch-action: none;
+}
+
+/* iOS 9 */
+
+html.modal-opened body {
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  touch-action: none;
+  -ms-touch-action: none;
 }
 
 .fade-enter-active,
