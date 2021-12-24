@@ -1,6 +1,5 @@
 <template>
   <div
-    id="subjectDiary"
     tabindex="0"
     class="
       rounded
@@ -12,9 +11,12 @@
       outline-none
     "
     :class="[
-      hoverable
-        ? 'cursor-pointer hover:bg-gray-200 hover:bg-opacity-10 dark:hover:bg-gray-700-spotify'
-        : 'cursor-default select-text',
+      [
+        hoverable
+          ? 'cursor-pointer hover:bg-gray-200 hover:bg-opacity-10 dark:hover:bg-gray-700-spotify'
+          : 'cursor-default select-text',
+      ],
+      { 'opacity-50 pointer-events-none	': !subject.Evaluations.length },
     ]"
     @click="$emit('click')"
     @keyup.enter="$emit('click')"
