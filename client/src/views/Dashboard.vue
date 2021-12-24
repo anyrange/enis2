@@ -33,7 +33,10 @@
     </tabs>
   </header>
   <main class="flex justify-center p-3">
-    <section class="flex flex-col h-80vh space-y-3 mb-6 w-full sm:w-450px">
+    <section
+      class="flex flex-col space-y-3 mb-6 w-full sm:w-450px"
+      :class="{ 'h-80vh': isEmptyContent }"
+    >
       <random-emoticon v-if="!loading && isEmptyContent" class="m-auto" />
       <template v-if="isGrades">
         <subject-grades v-for="item in grades" :key="item" :subject="item" />
@@ -101,7 +104,13 @@
         :subject="GM ? customSubject : subject.originalSubject"
       />
       <loading-dots v-if="loading" />
-      <template v-else-if="!subject && loadingEndpoint === 'SUBJECT'">
+      <template
+        v-else-if="
+          !subject.customSections.SAU.length &&
+          !loading &&
+          loadingEndpoint === 'SUBJECT'
+        "
+      >
         <div class="p-2 text-center">
           {{ errorMessage }}
         </div>
