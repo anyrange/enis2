@@ -27,8 +27,7 @@ export default {
   getters: {
     customSubject: (state) => {
       return {
-        Name: state.originalSubject.Name,
-        Mark: state.originalSubject.Mark,
+        ...state.originalSubject,
         Score: getPercent(
           (getScores(getFilteredSection(state.customSections.SAU)) /
             getMaxScores(getFilteredSection(state.customSections.SAU)) /
