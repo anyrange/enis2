@@ -102,7 +102,7 @@ export default async function (fastify) {
         cookie,
       });
 
-      const token = fastify.jwt.sign({ cookie });
+      const token = fastify.jwt.sign({ cookies: cookie });
 
       reply.send({
         data: periodsData.data.map((el) => {
