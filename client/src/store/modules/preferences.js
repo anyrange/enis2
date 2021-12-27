@@ -1,5 +1,5 @@
-import { getUserCity } from "../../api";
-import schools from "../../assets/schools.json";
+import { getUserCity } from "@/api";
+import schools from "@/assets/schools.json";
 
 const defaultState = () => {
   return {

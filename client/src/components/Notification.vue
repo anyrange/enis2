@@ -40,71 +40,76 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "Notification",
-  props: {
-    notification: {
-      type: Object,
-      required: true,
-    },
+<script setup>
+import { computed, onMounted, ref } from "vue";
+
+const props = defineProps({
+  notification: {
+    type: Object,
+    required: true,
   },
-  emits: ["close-notification"],
-  data() {
-    return {
-      interval: 0,
-      timeLeft: 0,
-      speed: 100,
-    };
-  },
-  computed: {
-    notifyClass() {
-      const type = this.notification.type;
-      return {
-        "notify-success": type === "success",
-        "notify-warning": type === "warning",
-        "notify-danger": type === "danger",
-        "notify-info": type === "info",
-      };
-    },
-    timeLeftPercent() {
-      return Math.round(
-        (((this.timeLeft * 100) / this.notification.delay) * 100) / 100
-      );
-    },
-    progressStyle() {
-      return `width: ${this.timeLeftPercent}%; transition: width 0.1s linear;`;
-    },
-  },
-  mounted() {
-    if (this.notification.delay && this.notification.progress) {
-      this.timeLeft = this.notification.delay - 100;
-      this.interval = setInterval(() => this.updateTime(), this.speed);
-    }
-  },
-  methods: {
-    closeNotification(notification) {
-      this.$emit("close-notification", notification);
-      this.destroy();
-    },
-    updateTime() {
-      this.timeLeft -= this.speed;
-      if (this.timeLeft === 0) {
-        this.destroy();
-      }
-    },
-    handleAction(action) {
-      action();
-      this.closeNotification();
-    },
-    destroy() {
-      clearInterval(this.interval);
-    },
-  },
+});
+
+const emit = defineEmits(["close-notification"]);
+
+const interval = ref(null);
+const timeLeft = ref(0);
+const speed = ref(100);
+
+const notifyClass = computed(() => {
+  const type = props.notification.type;
+  return {
+    "notify-success": type === "success",
+    "notify-warning": type === "warning",
+    "notify-danger": type === "danger",
+    "notify-info": type === "info",
+  };
+});
+
+const timeLeftPercent = computed(() => {
+  return Math.round(
+    (((timeLeft.value * 100) / props.notification.delay) * 100) / 100
+  );
+});
+
+const progressStyle = computed(() => {
+  return {
+    width: timeLeftPercent.value + "%",
+    transition: "width 0.1s linear",
+  };
+});
+
+onMounted(() => {
+  const { delay, progress } = props.notification;
+  if (delay && progress) {
+    timeLeft.value = delay - 100;
+    interval.value = setInterval(() => updateTime(), speed.value);
+  }
+});
+
+const closeNotification = (notification) => {
+  emit("close-notification", notification);
+  destroy();
+};
+
+const updateTime = () => {
+  timeLeft.value -= speed.value;
+  if (timeLeft.value === 0) {
+    destroy();
+  }
+};
+
+const handleAction = (action) => {
+  action();
+  closeNotification();
+};
+
+const destroy = () => {
+  clearInterval(interval.value);
 };
 </script>
 
-<style lang="postcss">
+<style scoped>
 .notify {
   @apply relative mt-4 p-2 table rounded text-sm shadow-md drop-shadow-md;
 }

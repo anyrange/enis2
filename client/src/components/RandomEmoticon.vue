@@ -7,15 +7,8 @@
   </div>
 </template>
 
-<script>
-import emoticons from "../assets/emoticons.json";
+<script setup>
+import useRandom from "@/composables/useRandom";
 
-export default {
-  name: "RandomEmoticon",
-  computed: {
-    randomEmoticon() {
-      return emoticons[Math.floor(Math.random() * emoticons.length)];
-    },
-  },
-};
+const { randomEmoticon } = useRandom();
 </script>

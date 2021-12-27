@@ -1,10 +1,10 @@
-import { getSubject } from "../../api";
+import { getSubject } from "@/api";
 import {
   getFilteredSection,
   getScores,
   getMaxScores,
   getPercent,
-} from "../../utils";
+} from "@/utils";
 
 const defaultState = () => {
   return {

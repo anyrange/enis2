@@ -24,7 +24,7 @@
           :name="term.Name"
           @selected="getContent({ forceUpdate: false })"
         >
-          {{ $options.GREEK_NUMERALS[index + 1] }}
+          {{ GREEK_NUMERALS[index + 1] }}
         </tab>
         <tab name="grades" @selected="getContent({ forceUpdate: false })">
           <grades-icon />
@@ -60,7 +60,7 @@
         v-if="!rememberMe"
         rounded
         color="negative"
-        @click="signOut()"
+        @click="logout()"
       >
         Выйти
       </base-button>
@@ -85,431 +85,188 @@
       </base-button>
     </div>
   </footer>
-  <modal :show="showSubjectModal" @close="showSubjectModal = false">
-    <template #top-right>
-      <base-button
-        flat
-        icon
-        aria-label="Toggle GM"
-        class="!shadow-transparent !text-light-50"
-        :ripple="false"
-        @click="GM = !GM"
-      >
-        <span role="img" aria-label="GodMode" class="text-lg"> 🤔 </span>
-      </base-button>
-    </template>
-    <div class="flex flex-col space-y-2">
-      <subject-diary
-        :hoverable="false"
-        :subject="GM ? customSubject : subject.originalSubject"
-      />
-      <loading-dots v-if="loading" />
-      <template
-        v-else-if="
-          !subject.customSections.SAU.length &&
-          !loading &&
-          loadingEndpoint === 'SUBJECT'
-        "
-      >
-        <div class="p-2 text-center">
-          {{ errorMessage }}
-        </div>
-      </template>
-      <template v-else>
-        <subject-sections
-          label="СОР"
-          :subject="
-            GM ? subject.customSections.SAU : subject.originalSections.SAU
-          "
-        />
-        <subject-sections
-          label="СОЧ"
-          :subject="
-            GM ? subject.customSections.SAT : subject.originalSections.SAT
-          "
-        />
-      </template>
-    </div>
-  </modal>
-  <modal :show="showSettingsModal" @close="showSettingsModal = false">
-    <div class="flex flex-col space-y-4 p-2">
-      <div class="flex flex-col space-y-2">
-        <span class="text-lg">Настройки</span>
-        <div class="flex justify-between items-center">
-          <span class="settings-label"> Темная тема </span>
-          <div>
-            <base-switch id="darkTheme" v-model="darkTheme" />
-          </div>
-        </div>
-        <div class="flex justify-between items-center">
-          <span class="settings-label"> Текущая четверть </span>
-          <div>
-            <base-select v-model="actualTermName" :options="$options.TERMS" />
-          </div>
-        </div>
-      </div>
-      <div class="flex flex-col space-y-2">
-        <span class="text-lg">Журнал</span>
-        <div class="flex justify-between items-center">
-          <span class="settings-label"> Скрыть пустые </span>
-          <div>
-            <base-switch id="hideEmpty" v-model="hideEmpty" />
-          </div>
-        </div>
-        <div class="flex justify-between items-center">
-          <span class="settings-label"> Сортировать </span>
-          <div>
-            <base-select v-model="sortBy" :options="$options.SORT" />
-          </div>
-        </div>
-      </div>
-      <div>
-        <base-button v-if="rememberMe" color="negative" @click="signOut()">
-          Выйти
-        </base-button>
-      </div>
-      <div class="flex flex-col space-y-2">
-        <span class="text-lg">Links</span>
-        <div class="flex items-center space-x-3">
-          <a class="settings-link" :href="$options.GH_LINK" target="_blank">
-            repo
-          </a>
-          <a class="settings-link" :href="$options.TG_LINK" target="_blank">
-            chat
-          </a>
-          <a class="settings-link" :href="$options.DA_LINK" target="_blank">
-            donate
-          </a>
-        </div>
-      </div>
-    </div>
-  </modal>
+  <subject-modal :show="showSubjectModal" @close="showSubjectModal = false" />
+  <settings-modal
+    :show="showSettingsModal"
+    @close="showSettingsModal = false"
+  />
 </template>
 
-<script>
-import { mapActions, mapGetters, mapState } from "vuex";
-import { notify } from "../services/notify.js";
-import { DA_LINK, GH_LINK, TG_LINK } from "../settings";
-import Tabs from "../components/Tabs.vue";
-import Tab from "../components/Tab.vue";
-import BaseButton from "../components/BaseButton.vue";
-import BaseSelect from "../components/BaseSelect.vue";
-import BaseSwitch from "../components/BaseSwitch.vue";
-import LoadingDots from "../components/LoadingDots.vue";
-import Modal from "../components/Modal.vue";
-import SubjectDiary from "../components/SubjectDiary.vue";
-import SubjectGrades from "../components/SubjectGrades.vue";
-import SubjectSections from "../components/SubjectSections.vue";
-import GradesIcon from "../components/icons/GradesIcon.vue";
-import SettingsIcon from "../components/icons/SettingsIcon.vue";
-import RandomEmoticon from "../components/RandomEmoticon.vue";
+<script setup>
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { notify } from "@/services/notify.js";
+import SettingsModal from "@/views/modals/SettingsModal.vue";
+import SubjectModal from "@/views/modals/SubjectModal.vue";
+import useSettings from "@/composables/useSettings";
+import useSubject from "@/composables/useSubject";
+import useLoader from "@/composables/useLoader";
+import useYears from "@/composables/useYears";
+import useTerms from "@/composables/useTerms";
+import useDiary from "@/composables/useDiary";
+import useGrades from "@/composables/useGrades";
+import useHealth from "@/composables/useHealth";
+import useAuth from "@/composables/useAuth";
 
-export default {
-  name: "Dashboard",
-  components: {
-    Tabs,
-    Tab,
-    BaseButton,
-    BaseSelect,
-    BaseSwitch,
-    LoadingDots,
-    Modal,
-    SubjectDiary,
-    SubjectGrades,
-    SubjectSections,
-    GradesIcon,
-    SettingsIcon,
-    RandomEmoticon,
-  },
-  data() {
-    return {
-      refetchAttempts: 0,
-      showSubjectModal: false,
-      showSettingsModal: false,
-      showYears: true,
-      scrollPosition: 0,
-      scrollOffset: 40,
-    };
-  },
-  DA_LINK,
-  GH_LINK,
-  TG_LINK,
-  GREEK_NUMERALS: {
-    1: "I",
-    2: "II",
-    3: "III",
-    4: "IV",
-  },
-  SORT: [
-    {
-      value: "score",
-      label: "По процентам",
-    },
-    {
-      value: "name",
-      label: "По алфавиту",
-    },
-  ],
-  TERMS: [
-    {
-      value: "1",
-      label: "Первая",
-    },
-    {
-      value: "2",
-      label: "Вторая",
-    },
-    {
-      value: "3",
-      label: "Третья",
-    },
-    {
-      value: "4",
-      label: "Четвертая",
-    },
-  ],
-  computed: {
-    ...mapState({
-      years: "years",
-      subject: "subject",
-      actualYearName: (state) => state.years.actual,
-      loading: (state) => state.loader.status,
-      loadingEndpoint: (state) => state.loader.endpoint,
-      rememberMe: (state) => state.preferences.remember,
-    }),
-    ...mapGetters({
-      getTermId: "terms/getTermId",
-      getYearId: "years/getYearId",
-      getCurrentTerms: "terms/getCurrentTerms",
-      getCurrentDiary: "diary/getCurrentDiary",
-      getCurrentGrades: "grades/getCurrentGrades",
-      errorMessage: "loader/errorMessage",
-      customSubject: "subject/customSubject",
-    }),
-    isGrades() {
-      return this.currentTab === "grades";
-    },
-    isEmptyContent() {
-      return this.isGrades ? !this.grades.length : !this.diary.length;
-    },
-    GM: {
-      get() {
-        return this.$store.state.subject.GM;
-      },
-      set(value) {
-        this.$store.commit("subject/SET_GM", value);
-      },
-    },
-    actualTermName: {
-      get() {
-        return this.$store.state.terms.actual;
-      },
-      set(value) {
-        this.$store.commit("terms/SET_ACTUAL", value);
-      },
-    },
-    darkTheme: {
-      get() {
-        return this.$store.state.preferences.theme === "dark";
-      },
-      set(value) {
-        this.$store.commit("preferences/SET_THEME", value ? "dark" : "light");
-      },
-    },
-    currentTab: {
-      get() {
-        return this.$store.state.preferences.tab;
-      },
-      set(value) {
-        this.$store.commit("preferences/SET_TAB", value);
-      },
-    },
-    currentYearName: {
-      get() {
-        return this.$store.state.preferences.year;
-      },
-      set(value) {
-        this.$store.commit("preferences/SET_YEAR", value);
-      },
-    },
-    sortBy: {
-      get() {
-        return this.$store.state.preferences.sortBy;
-      },
-      set(value) {
-        this.$store.commit("preferences/SET_SORT", value);
-      },
-    },
-    hideEmpty: {
-      get() {
-        return this.$store.state.preferences.hideEmpty;
-      },
-      set(value) {
-        this.$store.commit("preferences/SET_HIDE", value);
-      },
-    },
-    terms() {
-      return this.getCurrentTerms({
-        yearName: this.currentYearName,
-      });
-    },
-    diary() {
-      return this.getCurrentDiary({
-        termName: this.currentTab,
-        yearName: this.currentYearName,
-      });
-    },
-    grades() {
-      return this.getCurrentGrades({
-        yearName: this.currentYearName,
-      });
-    },
-  },
-  async created() {
-    await this.startSession({ forceUpdate: false });
-  },
-  mounted() {
-    this.scrollPosition = window.pageYOffset;
-    window.addEventListener("scroll", this.handleScroll);
-  },
-  beforeUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
-  },
-  methods: {
-    ...mapActions({
-      logout: "auth/logout",
-      fetchDiary: "diary/fetchDiary",
-      fetchGrades: "grades/fetchGrades",
-      fetchSubject: "subject/fetchSubject",
-      fetchYears: "years/fetchYears",
-      fetchTerms: "terms/fetchTerms",
-      checkAvailability: "health/checkAvailability",
-    }),
-    handleScroll() {
-      this.scrollPosition = window.pageYOffset;
-      this.showYears = this.scrollPosition <= this.scrollOffset;
-    },
-    showError(message) {
-      notify.show({
-        type: "danger",
-        message: message || this.errorMessage,
-      });
-    },
-    signOut() {
-      this.logout();
-      this.$store.commit("health/SET_AVAILABILITY", true);
-    },
-    endSession() {
-      this.showError("Сессия завершена");
-      this.signOut();
-    },
-    async restoreSession() {
-      if (this.rememberMe) {
-        try {
-          await this.$store.dispatch(
-            "auth/login",
-            this.$store.state.auth.savedAccount
-          );
-        } catch (error) {
-          this.endSession();
-          return Promise.reject(error);
-        }
-      } else {
-        this.endSession();
-        return Promise.reject();
-      }
-    },
-    async startSession({ forceUpdate }) {
-      this.refetchAttempts++;
-      if (this.refetchAttempts > 2) {
-        return this.showError();
-      }
-      try {
-        await this.getTabs({ forceUpdate });
-        await this.getContent({ forceUpdate });
-        this.refetchAttempts = 0;
-      } catch (error) {
-        await this.checkAvailability();
-        return Promise.reject(error);
-      }
-    },
-    async getTabs({ forceUpdate }) {
-      try {
-        await this.fetchYears({ force: forceUpdate });
-        this.currentYearName = this.currentYearName || this.actualYearName;
-        await this.fetchTerms({
-          force: forceUpdate,
-          yearId: this.getYearId(this.currentYearName),
-          yearName: this.currentYearName,
-        });
-        this.currentTab = this.currentTab || this.actualTermName;
-      } catch (error) {
-        if (error.response.status === 401) {
-          await this.restoreSession();
-        }
-        await this.startSession({ forceUpdate: true });
-        return Promise.reject(error);
-      }
-    },
-    async getContent({ forceUpdate }) {
-      try {
-        this.isGrades
-          ? await this.fetchGrades({
-              yearId: this.getYearId(this.currentYearName),
-              yearName: this.currentYearName,
-              force: forceUpdate,
-            })
-          : await this.fetchDiary({
-              termId: this.getTermId({
-                termName: this.currentTab,
-                yearName: this.currentYearName,
-              }),
-              termName: this.currentTab,
-              yearName: this.currentYearName,
-              force: forceUpdate,
-            });
-      } catch (error) {
-        if (error.response.status === 401) {
-          await this.restoreSession();
-        }
-        await this.startSession({ forceUpdate: true });
-        return Promise.reject(error);
-      }
-    },
-    async getTermsAndContentByYear({ forceUpdate }) {
-      try {
-        await this.getTabs({ forceUpdate });
-        await this.getContent({ forceUpdate });
-      } catch (error) {
-        return Promise.reject(error);
-      }
-    },
-    async openSubjectModal(subject) {
-      if (
-        subject.Name === this.subject.originalSubject.Name &&
-        this.showSubjectModal
-      ) {
-        return;
-      }
-      const subjectName = subject.Name;
-      this.$store.commit("subject/CLEAR_SUBJECT");
-      this.showSubjectModal = true;
-      try {
-        await this.fetchSubject(subject);
-      } catch (error) {
-        if (error.response.status === 401) {
-          await this.restoreSession();
-        }
-        await this.startSession({ forceUpdate: true });
-        const lastSubject = this.diary.find((s) => s.Name === subjectName);
-        await this.fetchSubject(lastSubject);
-      }
-    },
-  },
+const GREEK_NUMERALS = {
+  1: "I",
+  2: "II",
+  3: "III",
+  4: "IV",
 };
+
+const refetchAttempts = ref(0);
+const showSubjectModal = ref(false);
+const showSettingsModal = ref(false);
+const showYears = ref(true);
+const scrollPosition = ref(0);
+const scrollOffset = ref(40);
+
+const { errorMessage, loading, loadingEndpoint } = useLoader();
+const { subject, customSubject, GM, fetchSubject, clearSubject } = useSubject();
+const { currentTab, currentYearName, rememberMe } = useSettings();
+const { years, actualYearName, currentYearId, fetchYears } = useYears();
+const { terms, actualTermName, currentTermId, fetchTerms } = useTerms();
+const { diary, fetchDiary } = useDiary();
+const { grades, fetchGrades } = useGrades();
+const { checkAvailability } = useHealth();
+const { login, logout, savedAccount } = useAuth();
+
+const isGrades = computed(() => currentTab.value === "grades");
+const isEmptyContent = computed(() =>
+  isGrades.value ? !grades.value.length : !diary.value.length
+);
+
+const handleScroll = () => {
+  scrollPosition.value = window.pageYOffset;
+  showYears.value = scrollPosition.value <= scrollOffset.value;
+};
+
+onMounted(() => {
+  scrollPosition.value = window.pageYOffset;
+  window.addEventListener("scroll", handleScroll);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener("scroll", handleScroll);
+});
+
+const showError = (message) => {
+  notify.show({
+    type: "danger",
+    message: message || errorMessage.value,
+  });
+};
+
+const startSession = async ({ forceUpdate }) => {
+  refetchAttempts.value++;
+  if (refetchAttempts.value > 2) {
+    return showError();
+  }
+  try {
+    await getTabs({ forceUpdate });
+    await getContent({ forceUpdate });
+    refetchAttempts.value = 0;
+  } catch (error) {
+    await checkAvailability();
+    return Promise.reject(error);
+  }
+};
+
+const endSession = () => {
+  showError("Сессия завершена");
+  logout();
+};
+
+const restoreSession = async () => {
+  if (rememberMe.value) {
+    try {
+      await login(savedAccount.value);
+    } catch (error) {
+      endSession();
+      return Promise.reject(error);
+    }
+  } else {
+    endSession();
+    return Promise.reject();
+  }
+};
+
+const getTabs = async ({ forceUpdate }) => {
+  try {
+    await fetchYears({ force: forceUpdate });
+    currentYearName.value = currentYearName.value || actualYearName.value;
+    await fetchTerms({
+      force: forceUpdate,
+      yearId: currentYearId.value,
+      yearName: currentYearName.value,
+    });
+    currentTab.value = currentTab.value || actualTermName.value;
+  } catch (error) {
+    if (error.response.status === 401) {
+      await restoreSession();
+    }
+    await startSession({ forceUpdate: true });
+    return Promise.reject(error);
+  }
+};
+
+const getContent = async ({ forceUpdate }) => {
+  try {
+    isGrades.value
+      ? await fetchGrades({
+          yearId: currentYearId.value,
+          yearName: currentYearName.value,
+          force: forceUpdate,
+        })
+      : await fetchDiary({
+          termId: currentTermId.value,
+          termName: currentTab.value,
+          yearName: currentYearName.value,
+          force: forceUpdate,
+        });
+  } catch (error) {
+    if (error.response.status === 401) {
+      await restoreSession();
+    }
+    await startSession({ forceUpdate: true });
+    return Promise.reject(error);
+  }
+};
+
+const getTermsAndContentByYear = async ({ forceUpdate }) => {
+  try {
+    await getTabs({ forceUpdate });
+    await getContent({ forceUpdate });
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+const openSubjectModal = async (selectedSubject) => {
+  if (
+    selectedSubject.Name === subject.value.originalSubject.Name &&
+    showSubjectModal.value
+  ) {
+    return;
+  }
+  const subjectName = selectedSubject.Name;
+  clearSubject();
+  showSubjectModal.value = true;
+  try {
+    await fetchSubject(selectedSubject);
+  } catch (error) {
+    if (error.response.status === 401) {
+      await restoreSession();
+    }
+    await startSession({ forceUpdate: true });
+    const lastSubject = diary.value.find((s) => s.Name === subjectName);
+    await fetchSubject(lastSubject);
+  }
+};
+
+startSession({ forceUpdate: false });
 </script>
 
-<style lang="postcss">
+<style>
 .tabs-bg {
   @apply bg-white dark:bg-gray-800-spotify;
 }

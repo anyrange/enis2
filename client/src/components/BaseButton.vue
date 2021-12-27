@@ -22,7 +22,7 @@
       [icon ? 'base-button-icon' : 'base-button-default'],
     ]"
     v-bind="$attrs"
-    @click.stop="$emit('click', $event)"
+    @click.stop="emit('click', $event)"
   >
     <svg
       v-if="loading"
@@ -51,92 +51,89 @@
   </component>
 </template>
 
-<script>
-export default {
-  name: "BaseButton",
-  props: {
-    color: {
-      type: String,
-      required: false,
-      default: "primary",
-      validator(value) {
-        return ["primary", "negative"].includes(value);
-      },
-    },
-    type: {
-      type: String,
-      required: false,
-      default: "button",
-    },
-    ripple: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-    tag: {
-      type: String,
-      required: false,
-      default: "button",
-      validator(value) {
-        return ["button", "a"].includes(value);
-      },
-    },
-    href: {
-      type: String,
-      required: false,
-      default: "",
-    },
-    target: {
-      type: String,
-      required: false,
-      default: "_blank",
-    },
-    rel: {
-      type: String,
-      required: false,
-      default: "noopener",
-    },
-    loading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    wFull: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    rounded: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    icon: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    flat: {
-      type: Boolean,
-      required: false,
-      default: false,
+<script setup>
+import { computed } from "vue";
+
+const props = defineProps({
+  color: {
+    type: String,
+    required: false,
+    default: "primary",
+    validator(value) {
+      return ["primary", "negative"].includes(value);
     },
   },
-  emits: ["click"],
-  computed: {
-    isDisabled() {
-      return this.disabled || this.loading;
+  type: {
+    type: String,
+    required: false,
+    default: "button",
+  },
+  ripple: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
+  tag: {
+    type: String,
+    required: false,
+    default: "button",
+    validator(value) {
+      return ["button", "a"].includes(value);
     },
   },
-};
+  href: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  target: {
+    type: String,
+    required: false,
+    default: "_blank",
+  },
+  rel: {
+    type: String,
+    required: false,
+    default: "noopener",
+  },
+  loading: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  wFull: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  disabled: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  rounded: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  icon: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  flat: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+});
+
+const emit = defineEmits(["click"]);
+
+const isDisabled = computed(() => props.disabled || props.loading);
 </script>
 
-<style lang="postcss">
+<style scoped>
 .base-button {
   @apply flex rounded-sm appearance-none shadow duration-200 transition-colors items-center justify-center uppercase text-center select-none text-sm font-medium focus:outline-none visited:text-current;
 }

@@ -1,4 +1,4 @@
-import { getTerms } from "../../api";
+import { getTerms } from "@/api";
 
 const shorterTermName = (name) => {
   return name.substring(0, 1);

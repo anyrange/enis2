@@ -14,18 +14,7 @@
           @click="close"
         >
           <svg
-            class="
-              w-6
-              h-6
-              text-gray-500
-              hover:text-gray-300
-              rounded-full
-              duration-100
-              cursor-pointer
-              absolute
-              right-1
-              top-1
-            "
+            class="close-icon"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -49,22 +38,7 @@
           >
             <div
               v-if="show"
-              class="
-                relative
-                bg-gray-100
-                dark:bg-gray-900-spotify
-                rounded
-                text-left
-                overflow-hidden
-                shadow-xl
-                transition-transform
-                align-middle
-                sm:max-w-lg
-                w-full
-                overflow-hidden
-                mr-0
-                sm:mr-2
-              "
+              class="modal-window"
               role="dialog"
               aria-modal="true"
               aria-labelledby="modal-headline"
@@ -84,45 +58,52 @@
   </teleport>
 </template>
 
-<script>
-export default {
-  name: "Modal",
-  props: {
-    show: {
-      type: Boolean,
-      required: true,
-    },
+<script setup>
+import { computed, onMounted, onBeforeUnmount } from "vue";
+import useDocument from "@/composables/useDocument";
+
+const props = defineProps({
+  show: {
+    type: Boolean,
+    required: true,
   },
-  emits: {
-    close: null,
-  },
-  watch: {
-    show: {
-      handler: function (value) {
-        if (value) {
-          document.documentElement.classList.add("modal-opened");
-        } else {
-          document.documentElement.classList.remove("modal-opened");
-        }
-      },
-      immediate: true,
-    },
-  },
-  mounted() {
-    document.addEventListener("keydown", this.handleKeydown);
-  },
-  beforeUnmount() {
-    document.removeEventListener("keydown", this.handleKeydown);
-  },
-  methods: {
-    handleKeydown(e) {
-      if (this.show && e.key === "Escape") {
-        this.close();
-      }
-    },
-    close() {
-      this.$emit("close");
-    },
-  },
+});
+
+const emit = defineEmits(["close"]);
+
+const { toggleClass } = useDocument();
+
+toggleClass(
+  computed(() => props.show),
+  "modal-opened"
+);
+
+const handleKeydown = (e) => {
+  if (props.show && e.key === "Escape") {
+    close();
+  }
 };
+
+const close = () => {
+  emit("close");
+};
+
+onMounted(() => {
+  document.addEventListener("keydown", handleKeydown);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener("keydown", handleKeydown);
+});
 </script>
+
+<style scoped>
+.close-icon {
+  @apply w-6 h-6 text-gray-500 hover:text-gray-300 rounded-full duration-100 cursor-pointer absolute right-1 top-1;
+}
+.modal-window {
+  @apply bg-gray-100 dark:bg-gray-900-spotify rounded text-left;
+  @apply relative shadow-xl transition-transform align-middle;
+  @apply sm:max-w-lg w-full overflow-hidden mr-0 sm:mr-2;
+}
+</style>

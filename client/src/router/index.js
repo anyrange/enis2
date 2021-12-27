@@ -1,28 +1,18 @@
 import { createRouter, createWebHistory } from "vue-router";
-import $store from "../store";
-import Login from "../views/Login.vue";
-import Dashboard from "../views/Dashboard.vue";
-
-const authenticated = () => {
-  return $store.state.auth.authenticated;
-};
+import store from "@/store";
 
 const routes = [
   {
     path: "/",
     name: "login",
-    component: Login,
-    beforeEnter(to, from, next) {
-      authenticated() ? next({ name: "dashboard" }) : next();
-    },
+    component: () => import("@/views/Login.vue"),
+    meta: { authForbidden: true },
   },
   {
     path: "/home",
     name: "dashboard",
-    component: Dashboard,
-    beforeEnter(to, from, next) {
-      authenticated() ? next() : next({ name: "login" });
-    },
+    component: () => import("@/views/Dashboard.vue"),
+    meta: { authRequired: true },
   },
   {
     path: "/:pathMatch(.*)*",
@@ -33,6 +23,13 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const isAuthorized = store.getters["auth/authenticated"];
+  if (to.meta.authRequired && !isAuthorized) return next({ name: "login" });
+  if (to.meta.authForbidden && isAuthorized) return next({ name: "dashboard" });
+  next();
 });
 
 export default router;

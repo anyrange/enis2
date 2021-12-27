@@ -37,7 +37,7 @@
       <div class="w-auto justify-end">
         <div class="w-full flex items-start justify-evenly text-center">
           <div class="w-4.5">
-            <template v-if="$store.state.subject.GM">
+            <template v-if="originalSubject.GM">
               <scroll-picker
                 v-model="item.Score"
                 :options="
@@ -61,46 +61,37 @@
   </div>
 </template>
 
-<script>
+<script setup>
 import { VueScrollPicker as ScrollPicker } from "vue-scroll-picker";
 import {
   getFilteredSection,
   getScores,
   getMaxScores,
   getPercent,
-} from "../utils";
+} from "@/utils";
+import useSubject from "@/composables/useSubject";
+import { computed } from "vue";
 
-export default {
-  name: "SubjectSections",
-  components: {
-    ScrollPicker,
+const props = defineProps({
+  subject: {
+    type: Object,
+    required: true,
   },
-  props: {
-    subject: {
-      type: Object,
-      required: true,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
+  label: {
+    type: String,
+    required: true,
   },
-  computed: {
-    filteredSections() {
-      return getFilteredSection(this.subject);
-    },
-    scores() {
-      return getScores(this.filteredSections);
-    },
-    maxScores() {
-      return getMaxScores(this.filteredSections);
-    },
-    percent() {
-      const percent = (this.scores / this.maxScores) * 100 || 0;
-      return percent ? getPercent(percent) : 0;
-    },
-  },
-};
+});
+
+const { subject: originalSubject, customSubject, GM } = useSubject();
+
+const filteredSections = computed(() => getFilteredSection(props.subject));
+const scores = computed(() => getScores(filteredSections.value));
+const maxScores = computed(() => getMaxScores(filteredSections.value));
+const percent = computed(() => {
+  const p = (scores.value / maxScores.value) * 100 || 0;
+  return p ? getPercent(p) : 0;
+});
 </script>
 
 <style>

@@ -15,43 +15,33 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from "vue";
+import { emitter } from "@/services/notify.js";
 import Notification from "./Notification.vue";
-import { emitter } from "../services/notify.js";
 
-export default {
-  name: "Notifications",
-  components: {
-    Notification,
-  },
-  data() {
-    return {
-      notifications: [],
-    };
-  },
-  created() {
-    emitter.on("newNotification", (notification) => {
-      this.addNotification(notification);
-    });
-    emitter.on("dismissNotification", (id) => {
-      this.removeNotification(id);
-    });
-    emitter.on("clearNotifications", () => {
-      this.notifications = [];
-    });
-  },
-  methods: {
-    addNotification(notification) {
-      this.notifications = [...this.notifications, notification];
-      if (notification.progress && notification.delay > 0) {
-        setTimeout(() => {
-          this.removeNotification(notification.id);
-        }, notification.delay);
-      }
-    },
-    removeNotification(id) {
-      this.notifications = this.notifications.filter((item) => item.id !== id);
-    },
-  },
+const notifications = ref([]);
+
+const addNotification = (notification) => {
+  notifications.value = [...notifications.value, notification];
+  if (notification.progress && notification.delay > 0) {
+    setTimeout(() => {
+      removeNotification(notification.id);
+    }, notification.delay);
+  }
 };
+
+const removeNotification = (id) => {
+  notifications.value = notifications.value.filter((item) => item.id !== id);
+};
+
+emitter.on("newNotification", (notification) => {
+  addNotification(notification);
+});
+emitter.on("dismissNotification", (id) => {
+  removeNotification(id);
+});
+emitter.on("clearNotifications", () => {
+  notifications.value = [];
+});
 </script>

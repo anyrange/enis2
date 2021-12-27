@@ -8,13 +8,7 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "LoadingDots",
-};
-</script>
-
-<style>
+<style scoped>
 .loader-dots div {
   animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }

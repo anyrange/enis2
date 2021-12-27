@@ -13,50 +13,44 @@
   </button>
 </template>
 
-<script>
-export default {
-  name: "Tab",
-  inject: ["state", "selectTab"],
-  props: {
-    name: {
-      type: String,
-      required: true,
-    },
-    visible: {
-      type: Boolean,
-      default: true,
-      required: false,
-    },
-    disabled: {
-      type: Boolean,
-      required: false,
-    },
-    loading: {
-      type: Boolean,
-      required: false,
-    },
+<script setup>
+import { inject, computed } from "vue";
+
+const props = defineProps({
+  name: {
+    type: String,
+    required: true,
   },
-  emits: ["selected"],
-  computed: {
-    isDisabled() {
-      return this.disabled || this.loading;
-    },
-    active() {
-      return this.state.active();
-    },
-    isActive() {
-      return this.name === this.active;
-    },
+  visible: {
+    type: Boolean,
+    default: true,
+    required: false,
   },
-  methods: {
-    activateTab(name) {
-      if (this.isDisabled) {
-        return;
-      }
-      this.selectTab(name);
-      this.$emit("selected", name);
-    },
+  disabled: {
+    type: Boolean,
+    required: false,
   },
+  loading: {
+    type: Boolean,
+    required: false,
+  },
+});
+
+const emit = defineEmits(["selected"]);
+
+const state = inject("state");
+const selectTab = inject("selectTab");
+
+const active = computed(() => state.active());
+const isDisabled = computed(() => props.disabled || props.loading);
+const isActive = computed(() => props.name === active.value);
+
+const activateTab = (name) => {
+  if (isDisabled.value) {
+    return;
+  }
+  selectTab(name);
+  emit("selected", name);
 };
 </script>
 

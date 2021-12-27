@@ -64,33 +64,29 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "SubjectGrades",
-  props: {
-    subject: {
-      type: Object,
-      required: true,
-    },
+<script setup>
+defineProps({
+  subject: {
+    type: Object,
+    required: true,
   },
-  methods: {
-    formatScore(score) {
-      switch (score) {
-        case "true":
-          return "Зачёт";
-        case "false":
-          return "Незачёт";
-        case "none":
-          return "-";
-        default:
-          return score;
-      }
-    },
-  },
+});
+
+const formatScore = (score) => {
+  switch (score) {
+    case "true":
+      return "Зачёт";
+    case "false":
+      return "Незачёт";
+    case "none":
+      return "-";
+    default:
+      return score;
+  }
 };
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .item {
   @apply flex flex-col space-y-6 w-full justify-center rounded shadow-sm bg-white dark:bg-gray-800-spotify;
 }

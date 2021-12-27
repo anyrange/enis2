@@ -21,7 +21,7 @@
         shadow
       "
       style="top: 50%; transform: translateY(-50%)"
-      @change="handleInput($event.target.checked)"
+      @change="emit('update:modelValue', $event.target.checked)"
     />
     <label
       :for="id"
@@ -39,29 +39,22 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "BaseSwitch",
-  props: {
-    id: {
-      type: String,
-      required: true,
-    },
-    modelValue: {
-      type: Boolean,
-      required: false,
-    },
+<script setup>
+defineProps({
+  modelValue: {
+    type: Boolean,
+    required: false,
   },
-  emits: ["update:modelValue"],
-  methods: {
-    handleInput(value) {
-      this.$emit("update:modelValue", value);
-    },
+  id: {
+    type: String,
+    required: true,
   },
-};
+});
+
+defineEmits(["update:modelValue"]);
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .toggle:checked {
   @apply right-0 border-blue-500;
 }

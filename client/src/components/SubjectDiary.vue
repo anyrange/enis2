@@ -18,8 +18,8 @@
       ],
       { 'opacity-50 pointer-events-none	': !subject?.Evaluations?.length },
     ]"
-    @click="$emit('click')"
-    @keyup.enter="$emit('click')"
+    @click="emit('click')"
+    @keyup.enter="emit('click')"
   >
     <div v-if="subject" class="space-y-2 p-2">
       <h3 class="flex text-base font-medium truncate">
@@ -55,43 +55,41 @@
   </div>
 </template>
 
-<script>
-import { getPercentDecimals } from "../utils";
+<script setup>
+import { getPercentDecimals } from "@/utils";
+import { computed } from "vue";
 
-export default {
-  name: "SubjectDiary",
-  props: {
-    subject: {
-      type: Object,
-      required: true,
-    },
-    hoverable: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
+const props = defineProps({
+  subject: {
+    type: Object,
+    required: true,
   },
-  emits: ["click"],
-  computed: {
-    scoreDecimals() {
-      return getPercentDecimals(this.subject.Score);
-    },
-    barClass() {
-      const roundedScore = Math.round(this.subject.Score);
-      if (roundedScore >= 85) return "bg-q-positive";
-      if (roundedScore >= 65) return "bg-q-warning";
-      return "bg-q-negative";
-    },
-    barStyle() {
-      return {
-        width: this.subject.Score + "%",
-      };
-    },
+  hoverable: {
+    type: Boolean,
+    required: false,
+    default: true,
   },
-};
+});
+
+const emit = defineEmits(["click"]);
+
+const scoreDecimals = computed(() => getPercentDecimals(props.subject.Score));
+
+const barClass = computed(() => {
+  const roundedScore = Math.round(props.subject.Score);
+  if (roundedScore >= 85) return "bg-q-positive";
+  if (roundedScore >= 65) return "bg-q-warning";
+  return "bg-q-negative";
+});
+
+const barStyle = computed(() => {
+  return {
+    width: props.subject.Score + "%",
+  };
+});
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 #subjectDiary:focus-visible {
   @apply focus:ring-2;
 }

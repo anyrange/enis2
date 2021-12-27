@@ -10,7 +10,7 @@
     <div class="relative inline-block w-full">
       <select
         :id="label"
-        v-model="value"
+        v-model="model"
         class="
           w-full
           h-9
@@ -80,47 +80,43 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "BaseSelect",
-  props: {
-    modelValue: {
-      type: [String, Number],
-      required: true,
-    },
-    label: {
-      type: [Boolean, String],
-      required: false,
-      default: false,
-    },
-    options: {
-      type: Array,
-      required: true,
-    },
-    loading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
+<script setup>
+import { computed } from "vue";
+
+const props = defineProps({
+  modelValue: {
+    type: [String, Number],
+    required: true,
   },
-  emits: ["update:modelValue"],
-  computed: {
-    isDisabled() {
-      return this.disabled || this.loading;
-    },
-    value: {
-      get() {
-        return this.loading ? "loading" : this.modelValue || "none";
-      },
-      set(value) {
-        this.$emit("update:modelValue", value);
-      },
-    },
+  options: {
+    type: Array,
+    required: true,
   },
-};
+  label: {
+    type: [Boolean, String],
+    required: false,
+    default: false,
+  },
+  loading: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+  disabled: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
+});
+
+const emit = defineEmits(["update:modelValue"]);
+
+const isDisabled = computed(() => props.disabled || props.loading);
+
+const model = computed({
+  get: () => (props.loading ? "loading" : props.modelValue || "none"),
+  set: (value) => {
+    emit("update:modelValue", value);
+  },
+});
 </script>

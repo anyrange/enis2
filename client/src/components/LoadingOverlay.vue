@@ -4,20 +4,17 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "LoadingOverlay",
-  props: {
-    active: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
+<script setup>
+defineProps({
+  active: {
+    type: Boolean,
+    required: true,
+    default: false,
   },
-};
+});
 </script>
 
-<style>
+<style scoped>
 .loader {
   position: fixed;
   height: 100vh;

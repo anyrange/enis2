@@ -1,4 +1,4 @@
-import { isDev, isLocal } from "../settings";
+import { isDev, isLocal } from "../config";
 import { createStore } from "vuex";
 import createPersistedState from "vuex-persistedstate";
 import SecureLS from "secure-ls";

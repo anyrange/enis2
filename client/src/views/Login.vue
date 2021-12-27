@@ -95,15 +95,15 @@
               <base-select
                 v-model="school"
                 :loading="loading && loadingEndpoint === 'CITY'"
-                :options="$options.schools"
+                :options="schools"
               >
                 <template #default>Выберите школу</template>
                 <template #loading>Угадываю школу...</template>
               </base-select>
               <base-checkbox
+                label="Запомнить меня"
                 id="rememberMe"
                 v-model="rememberMe"
-                label="Запомнить меня"
               />
               <base-button type="submit" w-full color="primary">
                 Войти
@@ -117,7 +117,7 @@
                 icon
                 tag="a"
                 flat
-                :href="$options.TG_LINK"
+                :href="TG_LINK"
                 aria-label="Telegram Link"
               >
                 <telegram-icon />
@@ -126,7 +126,7 @@
                 icon
                 tag="a"
                 flat
-                :href="$options.GH_LINK"
+                :href="GH_LINK"
                 aria-label="Github Link"
               >
                 <github-icon />
@@ -139,153 +139,83 @@
   </div>
 </template>
 
-<script>
-import { mapActions, mapState } from "vuex";
-import { refreshCaptcha } from "../api";
-import { notify } from "../services/notify.js";
-import { GH_LINK, TG_LINK } from "../settings";
-import schools from "../assets/schools.json";
-import emojis from "../assets/emojis.json";
-import BaseInput from "../components/BaseInput.vue";
-import BaseButton from "../components/BaseButton.vue";
-import BaseSelect from "../components/BaseSelect.vue";
-import BaseCheckbox from "../components/BaseCheckbox.vue";
-import ThemeToggler from "../components/ThemeToggler.vue";
-import AppIcon from "../components/icons/AppIcon.vue";
-import GithubIcon from "../components/icons/GithubIcon.vue";
-import TelegramIcon from "../components/icons/TelegramIcon.vue";
+<script setup>
+import { reactive, computed, watch, ref } from "vue";
+import { GH_LINK, TG_LINK } from "@/config";
+import schools from "@/assets/schools.json";
+import useSettings from "@/composables/useSettings";
+import useLoader from "@/composables/useLoader";
+import useHealth from "@/composables/useHealth";
+import useAuth from "@/composables/useAuth";
+import useRandom from "@/composables/useRandom";
 
-export default {
-  name: "Login",
-  components: {
-    BaseInput,
-    BaseButton,
-    BaseSelect,
-    BaseCheckbox,
-    ThemeToggler,
-    AppIcon,
-    GithubIcon,
-    TelegramIcon,
-  },
-  data() {
-    return {
-      form: {
-        login: {
-          value: "",
-          valid: true,
-        },
-        password: {
-          value: "",
-          valid: true,
-        },
-        captchaInput: "",
-      },
-      validationStarted: false,
-      captcha: "",
-    };
-  },
-  schools,
-  GH_LINK,
-  TG_LINK,
-  computed: {
-    ...mapState({
-      loading: (state) => state.loader.status,
-      loadingEndpoint: (state) => state.loader.endpoint,
-      theme: (state) => state.preferences.theme,
-    }),
-    school: {
-      get() {
-        return this.$store.state.preferences.school;
-      },
-      set(value) {
-        this.$store.commit("preferences/SET_SCHOOL", value);
-      },
-    },
-    rememberMe: {
-      get() {
-        return this.$store.state.preferences.remember;
-      },
-      set(value) {
-        this.$store.commit("preferences/SET_REMEMBER", value);
-      },
-    },
-    formValidated() {
-      return this.form.login.valid && this.form.password.valid;
-    },
-    randomEmoji() {
-      return emojis[Math.floor(Math.random() * emojis.length)];
-    },
-  },
-  watch: {
-    form: {
-      handler({ login, password }) {
-        if (!this.validationStarted) return;
-        this.validateForm({
-          login: login.value,
-          password: password.value,
-        });
-      },
-      deep: true,
-    },
-  },
-  async created() {
-    await this.predictSchool();
-  },
-  methods: {
-    ...mapActions({
-      login: "auth/login",
-      predictSchool: "preferences/predictSchool",
-      toggleTheme: "preferences/toggleTheme",
-      checkAvailability: "health/checkAvailability",
-    }),
-    validateForm({ login, password }) {
-      this.form.login.valid = login.length === 12;
-      this.form.password.valid = password.length > 6;
-    },
-    async submit() {
-      const form = this.form;
-      const account = {
-        login: form.login.value,
-        password: form.password.value,
-      };
+const { school, rememberMe, predictSchool } = useSettings();
+const { loading, loadingEndpoint } = useLoader();
+const { checkAvailability } = useHealth();
+const { login, saveAccount, captcha, updateCaptcha } = useAuth();
+const { randomEmoji } = useRandom();
 
-      this.validationStarted = true;
-      this.validateForm(account);
+predictSchool();
 
-      if (!this.formValidated || !this.school) {
-        return;
-      }
-      try {
-        await this.login({
-          ...account,
-          captchaInput: form.captchaInput,
-        });
-        this.$store.commit("auth/SET_ACCOUNT", account);
-      } catch (error) {
-        notify.show({
-          type: "danger",
-          message: error.response.data.message,
-        });
-        if (error.response.data && error.response.data.data) {
-          this.captcha = error.response.data.data.base64img;
-          this.form.captchaInput = "";
-        }
-        if (error.response.status === 400) {
-          return;
-        }
-        await this.checkAvailability();
-      }
-    },
-    async updateCaptcha() {
-      try {
-        this.captcha = await refreshCaptcha();
-      } catch (error) {
-        notify.show({
-          type: "danger",
-          message: error.response.data.message,
-        });
-      }
-    },
+const form = reactive({
+  login: {
+    value: "",
+    valid: true,
   },
+  password: {
+    value: "",
+    valid: true,
+  },
+  captchaInput: "",
+});
+const validationStarted = ref(false);
+
+const formValidated = computed(() => form.login.valid && form.password.valid);
+
+watch(
+  () => form,
+  ({ login, password }) => {
+    if (!validationStarted.value) return;
+    validateForm({
+      login: login.value,
+      password: password.value,
+    });
+  },
+  {
+    deep: true,
+  }
+);
+
+const validateForm = ({ login, password }) => {
+  form.login.valid = login.length === 12;
+  form.password.valid = password.length > 6;
+};
+
+const submit = async () => {
+  const account = {
+    login: form.login.value,
+    password: form.password.value,
+  };
+  validationStarted.value = true;
+  validateForm(account);
+  if (!formValidated.value || !school.value) {
+    return;
+  }
+  try {
+    await login({
+      ...account,
+      captchaInput: form.captchaInput,
+    });
+    rememberMe.value && saveAccount(account);
+  } catch (error) {
+    if (error.response.data && error.response.data.data) {
+      captcha.value = error.response.data.data.base64img;
+      form.captchaInput = "";
+    }
+    if (error.response.status === 400) {
+      return;
+    }
+    await checkAvailability();
+  }
 };
 </script>

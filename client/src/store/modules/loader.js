@@ -1,4 +1,4 @@
-import { ENDPOINTS } from "../../settings";
+import { ENDPOINTS } from "@/config";
 
 export default {
   namespaced: true,
@@ -15,7 +15,7 @@ export default {
       );
     },
     errorMessage: (state) => {
-      return ENDPOINTS.find((e) => e.name === state.endpoint).error;
+      return ENDPOINTS.find((e) => e.name === state.endpoint)?.error || null;
     },
   },
   mutations: {

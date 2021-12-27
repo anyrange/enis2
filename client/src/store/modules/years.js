@@ -1,4 +1,4 @@
-import { getYears } from "../../api";
+import { getYears } from "@/api";
 
 const shorterYearName = (name) => {
   return name.substring(0, 9);

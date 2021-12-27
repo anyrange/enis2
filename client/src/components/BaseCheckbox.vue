@@ -41,37 +41,35 @@
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    label: {
-      type: String,
-      required: true,
-    },
-    id: {
-      type: String,
-      required: true,
-    },
-    modelValue: {
-      type: Boolean,
-      required: true,
-    },
+<script setup>
+import { computed } from "vue";
+
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    required: true,
   },
-  emits: ["update:modelValue"],
-  computed: {
-    model: {
-      get() {
-        return this.modelValue;
-      },
-      set(val) {
-        this.$emit("update:modelValue", val);
-      },
-    },
+  label: {
+    type: String,
+    required: true,
   },
-};
+  id: {
+    type: String,
+    required: true,
+  },
+});
+
+const emit = defineEmits(["update:modelValue"]);
+
+const model = computed({
+  get: () => props.modelValue,
+  set: (value) => {
+    emit("update:modelValue", value);
+  },
+});
 </script>
 
-<style lang="postcss">
+<style scoped>
 input:checked + div {
   @apply !border-blue-500;
 }

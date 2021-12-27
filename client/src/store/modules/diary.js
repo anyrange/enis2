@@ -1,4 +1,4 @@
-import { getDiary } from "../../api";
+import { getDiary } from "@/api";
 
 const existsAtIndex = (state, termName, yearName) => {
   const index = state.data.findIndex(
@@ -58,11 +58,13 @@ export default {
         }
       }
       try {
+        const { data, token } = await getDiary(termId);
         commit("ADD_DIARY", {
-          diary: await getDiary(termId),
+          diary: data,
           termName,
           yearName,
         });
+        commit("auth/SET_TOKEN", token, { root: true });
       } catch (err) {
         return Promise.reject(err);
       }

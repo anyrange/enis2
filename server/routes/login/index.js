@@ -62,7 +62,6 @@ export default async function (fastify) {
       const cookies = fastify.cookieParse(res);
 
       const token = fastify.jwt.sign({ cookies });
-      console.log(cookies);
       const statusCode = body.success ? 200 : 400;
       body.data = Object.assign({}, body.data);
 

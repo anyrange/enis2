@@ -1,6 +1,6 @@
 import axios from "axios";
-import $store from "../store";
-import { isDev, ENDPOINTS } from "../settings";
+import store from "@/store";
+import { isDev, ENDPOINTS } from "@/config";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -11,18 +11,19 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    $store.commit("loader/SET_LOADING", {
+    store.commit("loader/SET_LOADING", {
       status: true,
       endpoint: ENDPOINTS.find((e) => config.url.includes(e.endpoint)).name,
     });
     config.params = {
       ...config.params,
-      city: $store.state.preferences.school,
+      city: store.state.preferences.school,
+      token: store.state.auth.token,
     };
     return config;
   },
   (error) => {
-    $store.commit("loader/SET_LOADING", {
+    store.commit("loader/SET_LOADING", {
       status: false,
     });
     return Promise.reject(error);
@@ -31,13 +32,13 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
-    $store.commit("loader/SET_LOADING", {
+    store.commit("loader/SET_LOADING", {
       status: false,
     });
     return response.data;
   },
   async (error) => {
-    $store.commit("loader/SET_LOADING", {
+    store.commit("loader/SET_LOADING", {
       status: false,
     });
     error.response.data = error.response.data || {};
@@ -74,7 +75,7 @@ export const getSubject = (journalId, evalId) =>
 export const getGrades = (yearID) =>
   api.get(getEndpoint("GRADES"), { params: { yearID } });
 
-if (isDev) {
+export const installMockApi = async (api) => {
   const { default: MockAdapter } = await import("axios-mock-adapter");
   const {
     mockCaptcha,
@@ -104,4 +105,8 @@ if (isDev) {
     if (match("term4id")) return [200, mockDiary[3]];
   });
   mock.onGet(new RegExp("subject")).reply(200, mockSubject);
+};
+
+if (isDev) {
+  installMockApi(api);
 }

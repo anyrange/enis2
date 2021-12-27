@@ -8,66 +8,49 @@
       :placeholder="label"
       autocomplete="false"
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
+      @input="emit('update:modelValue', $event.target.value)"
     />
     <div class="md-input-underline" />
   </div>
 </template>
 
-<script>
-import { maska } from "maska";
+<script setup>
+import { computed, reactive } from "vue";
+import { maska as vMaska } from "maska";
 import colors from "windicss/colors";
 
-export default {
-  name: "BaseInput",
-  directives: {
-    maska,
+const props = defineProps({
+  modelValue: {
+    type: [String, Number],
+    required: true,
   },
-  props: {
-    modelValue: {
-      type: [String, Number],
-      required: true,
-    },
-    mask: {
-      type: [String, Boolean],
-      required: false,
-      default: false,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    valid: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
+  mask: {
+    type: [String, Boolean],
+    required: false,
+    default: false,
   },
-  emits: ["update:modelValue"],
-  data() {
-    return {
-      gray500: "rgb(171, 171, 171)",
-      blue500: "rgb(59, 130, 246)",
-      red500: "rgb(239, 68, 68)",
-    };
+  label: {
+    type: String,
+    required: true,
   },
-  colors,
-  computed: {
-    defaultColor() {
-      return this.valid
-        ? this.$options.colors.gray["500"]
-        : this.$options.colors.red["500"];
-    },
-    activeColor() {
-      return this.valid
-        ? this.$options.colors.blue["500"]
-        : this.$options.colors.red["500"];
-    },
+  valid: {
+    type: Boolean,
+    required: false,
+    default: true,
   },
-};
+});
+
+const emit = defineEmits(["update:modelValue"]);
+
+const defaultColor = computed(() =>
+  props.valid ? colors.gray["500"] : colors.red["500"]
+);
+const activeColor = computed(() =>
+  props.valid ? colors.blue["500"] : colors.red["500"]
+);
 </script>
 
-<style lang="postcss">
+<style scoped>
 .md-input {
   caret-color: var(--autofill-color);
   @apply w-full h-10 appearance-none outline-none text-base bg-transparent focus:outline-none;

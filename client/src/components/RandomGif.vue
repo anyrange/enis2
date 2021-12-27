@@ -2,19 +2,8 @@
   <img :src="randomGIF.src" :alt="randomGIF.name" />
 </template>
 
-<script>
-import gifs from "../assets/gifs.json";
+<script setup>
+import useRandom from "@/composables/useRandom";
 
-export default {
-  name: "RandomGif",
-  computed: {
-    randomGIF() {
-      const { url, name } = gifs[Math.floor(Math.random() * gifs.length)];
-      return {
-        src: url,
-        name: name,
-      };
-    },
-  },
-};
+const { randomGIF } = useRandom();
 </script>

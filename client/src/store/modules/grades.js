@@ -1,4 +1,4 @@
-import { getGrades } from "../../api";
+import { getGrades } from "@/api";
 
 const existsAtIndex = (state, yearName) => {
   const index = state.data.findIndex((item) => item.yearName === yearName);
