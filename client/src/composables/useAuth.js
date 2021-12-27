@@ -49,13 +49,16 @@ export default () => {
 
   const authenticated = computed(() => store.getters["auth/authenticated"]);
 
+  const setToken = (...args) => store.commit("auth/SET_TOKEN", ...args);
+
   return {
     login,
     logout,
-    saveAccount,
     captcha,
     savedAccount,
+    saveAccount,
     updateCaptcha,
+    setToken,
     authenticated,
   };
 };

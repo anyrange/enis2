@@ -102,16 +102,16 @@ export default async function (fastify) {
         cookie,
       });
 
-      const token = fastify.jwt.sign({ cookies: cookie });
+      fastify.jwt.sign({ cookies: cookie }, null, (err, token) => {
+        if (err) throw err;
 
-      reply.send({
-        data: periodsData.data.map((el) => {
-          return {
+        reply.send({
+          data: periodsData.data.map((el) => ({
             ...el,
             Evaluations: el.Evaluations.map((el2) => el2.Id),
-          };
-        }),
-        token,
+          })),
+          token,
+        });
       });
     }
   );
