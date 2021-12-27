@@ -22,6 +22,7 @@ export default async function (fastify) {
             type: "object",
             properties: {
               message: { type: "string" },
+              token: { type: "string" },
             },
           },
           400: {
@@ -49,13 +50,10 @@ export default async function (fastify) {
       params.append("password", password);
       if (captchaInput) params.append("captchaInput", captchaInput);
 
-      const cookie = fastify.cookieStringify(req.cookies);
-
       const res = await fetch(
         `https://sms.${req.query.city}.nis.edu.kz/root/Account/LogOn`,
         {
           method: "POST",
-          headers: { cookie },
           body: params,
         }
       );
@@ -63,12 +61,13 @@ export default async function (fastify) {
       const body = await res.json();
       const cookies = fastify.cookieParse(res);
 
-      cookies.forEach(({ name, value }) => {
-        reply.setCookie(name, value, fastify.cookieOptions);
-      });
-
+      const token = fastify.jwt.sign({ cookies });
+      console.log(cookies);
       const statusCode = body.success ? 200 : 400;
       body.data = Object.assign({}, body.data);
+
+      body.token = token;
+
       reply.code(statusCode).send(body);
     }
   );

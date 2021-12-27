@@ -16,21 +16,27 @@ export default async function (fastify) {
         },
         response: {
           200: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                Name: { type: "string" },
-                JournalId: { type: "string" },
-                Score: { type: "number" },
-                Mark: { type: "number" },
-                Evaluations: {
-                  type: "array",
-                  items: {
-                    type: "string",
+            type: "object",
+            properties: {
+              data: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    Name: { type: "string" },
+                    JournalId: { type: "string" },
+                    Score: { type: "number" },
+                    Mark: { type: "number" },
+                    Evaluations: {
+                      type: "array",
+                      items: {
+                        type: "string",
+                      },
+                    },
                   },
                 },
               },
+              token: { type: "string" },
             },
           },
         },
@@ -40,7 +46,7 @@ export default async function (fastify) {
     async (req, reply) => {
       const baseUrl = `https://sms.${req.query.city}.nis.edu.kz`;
 
-      let cookie = fastify.cookieStringify(req.cookies);
+      let cookie = req.cookies;
 
       const params = new URLSearchParams();
       params.append("periodId", req.params.termID);
@@ -87,12 +93,7 @@ export default async function (fastify) {
 
       const newCookies = fastify.cookieParse(cookieResponse);
 
-      if (newCookies && newCookies.length) {
-        const { name, value } = newCookies[0];
-        cookie += "; " + name + "=" + value;
-
-        reply.setCookie(name, value, fastify.cookieOptions);
-      }
+      if (newCookies) cookie += "; " + newCookies;
 
       const periodsData = await fastify.api({
         url: `${baseUrl}/Jce/Diary/GetSubjects`,
@@ -101,14 +102,17 @@ export default async function (fastify) {
         cookie,
       });
 
-      reply.send(
-        periodsData.data.map((el) => {
+      const token = fastify.jwt.sign({ cookie });
+
+      reply.send({
+        data: periodsData.data.map((el) => {
           return {
             ...el,
             Evaluations: el.Evaluations.map((el2) => el2.Id),
           };
-        })
-      );
+        }),
+        token,
+      });
     }
   );
 }

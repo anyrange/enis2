@@ -11,6 +11,7 @@ export default async function (fastify) {
           properties: {
             city: fastify.getSchema("city"),
             yearID: { type: "string" },
+            token: { type: "string" },
           },
         },
         response: {
@@ -41,7 +42,7 @@ export default async function (fastify) {
       const baseUrl = `https://sms.${city}.nis.edu.kz`;
 
       const params = new URLSearchParams();
-      const cookie = fastify.cookieStringify(req.cookies);
+      const cookie = req.cookies;
 
       const organization = await fastify.api({
         method: "POST",

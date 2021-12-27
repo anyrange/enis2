@@ -59,7 +59,6 @@ export default fp(async function plugin(fastify) {
       }
 
       json.statusCode = response.status;
-      json.cookies = fastify.cookieParse(response);
       return json;
     }
   );

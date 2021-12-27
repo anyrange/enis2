@@ -19,7 +19,7 @@ app.register(import("fastify-cors"), {
   credentials: true,
 });
 
-app.register(import("fastify-cookie"), { secret });
+app.register(import("fastify-jwt"), { secret });
 
 if (process.env.NODE_ENV !== "production") {
   app.register(import("fastify-swagger"), {

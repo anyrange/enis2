@@ -31,7 +31,7 @@ export default async function (fastify) {
       },
     },
     async (req, reply) => {
-      const cookie = fastify.cookieStringify(req.cookies);
+      const cookie = req.cookies;
 
       const params = new URLSearchParams();
       params.append("schoolYearId", req.params.yearID);

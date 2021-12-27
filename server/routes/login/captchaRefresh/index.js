@@ -12,7 +12,7 @@ export default async function (fastify) {
       },
     },
     async (req, reply) => {
-      const cookie = fastify.cookieStringify(req.cookies);
+      const cookie = req.cookies;
 
       const response = await fetch(
         `https://sms.${req.query.city}.nis.edu.kz/root/Account/RefreshCaptcha`,

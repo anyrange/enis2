@@ -27,7 +27,7 @@ export default async function (fastify) {
     async (req, reply) => {
       const baseUrl = `https://sms.${req.query.city}.nis.edu.kz/Ref`;
 
-      const cookie = fastify.cookieStringify(req.cookies);
+      const cookie = req.cookies;
 
       const dates = await fastify.api({
         url: `${baseUrl}/GetSchoolYears?fullData=true`,

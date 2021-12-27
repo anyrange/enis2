@@ -12,6 +12,7 @@ export default async function (fastify) {
             journalId: { type: "string", minLength: 36, maxLength: 36 },
             evalId: { type: "string", minLength: 36, maxLength: 36 },
             city: fastify.getSchema("city"),
+            token: { type: "string" },
           },
         },
         response: {
@@ -37,7 +38,7 @@ export default async function (fastify) {
       params.append("journalId", req.query.journalId);
       params.append("evalId", req.query.evalId);
 
-      const cookie = fastify.cookieStringify(req.cookies);
+      const cookie = req.cookies;
 
       const response = await fastify.api({
         url: `https://sms.${req.query.city}.nis.edu.kz/Jce/Diary/GetResultByEvalution`,
