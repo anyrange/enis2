@@ -31,7 +31,6 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
 import useSettings from "@/composables/useSettings";
 
 defineProps({
