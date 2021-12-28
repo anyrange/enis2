@@ -30,10 +30,6 @@ export default () => {
     });
   };
 
-  const saveAccount = (...args) => store.commit("auth/SET_ACCOUNT", ...args);
-
-  const savedAccount = computed(() => store.state.auth.savedAccount);
-
   const captcha = ref("");
 
   const updateCaptcha = async () => {
@@ -55,8 +51,6 @@ export default () => {
     login,
     logout,
     captcha,
-    savedAccount,
-    saveAccount,
     updateCaptcha,
     setToken,
     authenticated,

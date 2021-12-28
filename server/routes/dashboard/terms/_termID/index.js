@@ -93,7 +93,7 @@ export default async function (fastify) {
 
       const newCookies = fastify.cookieParse(cookieResponse);
 
-      if (newCookies) cookie += "; " + newCookies;
+      if (newCookies) cookie = fastify.mergeCookies(cookie, newCookies);
 
       const periodsData = await fastify.api({
         url: `${baseUrl}/Jce/Diary/GetSubjects`,
@@ -102,17 +102,21 @@ export default async function (fastify) {
         cookie,
       });
 
-      fastify.jwt.sign({ cookies: cookie }, null, (err, token) => {
-        if (err) throw err;
+      fastify.jwt.sign(
+        { cookies: cookie, account: req.account },
+        null,
+        (err, token) => {
+          if (err) throw err;
 
-        reply.send({
-          data: periodsData.data.map((el) => ({
-            ...el,
-            Evaluations: el.Evaluations.map((el2) => el2.Id),
-          })),
-          token,
-        });
-      });
+          reply.send({
+            data: periodsData.data.map((el) => ({
+              ...el,
+              Evaluations: el.Evaluations.map((el2) => el2.Id),
+            })),
+            token,
+          });
+        }
+      );
     }
   );
 }

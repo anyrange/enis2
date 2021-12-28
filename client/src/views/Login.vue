@@ -152,7 +152,7 @@ import useRandom from "@/composables/useRandom";
 const { school, rememberMe, predictSchool } = useSettings();
 const { loading, loadingEndpoint } = useLoader();
 const { checkAvailability } = useHealth();
-const { login, saveAccount, captcha, updateCaptcha, setToken } = useAuth();
+const { login, captcha, updateCaptcha, setToken } = useAuth();
 const { randomEmoji } = useRandom();
 
 predictSchool();
@@ -206,7 +206,6 @@ const submit = async () => {
       ...account,
       captchaInput: form.captchaInput,
     });
-    rememberMe.value && saveAccount(account);
   } catch (error) {
     if (error.response.data && error.response.data.data) {
       captcha.value = error.response.data.data.base64img;

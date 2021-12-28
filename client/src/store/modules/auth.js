@@ -3,15 +3,11 @@ import { login } from "@/api";
 export default {
   namespaced: true,
   state: {
-    savedAccount: null,
     token: null,
   },
   mutations: {
     SET_TOKEN(state, value) {
       state.token = value;
-    },
-    SET_ACCOUNT(state, account) {
-      state.savedAccount = account;
     },
   },
   getters: {
@@ -24,7 +20,6 @@ export default {
       try {
         const { token } = await login(credentials);
         commit("SET_TOKEN", token);
-        commit("SET_ACCOUNT", credentials);
       } catch (err) {
         commit("SET_TOKEN", null);
         return Promise.reject(err);

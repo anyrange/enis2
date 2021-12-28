@@ -5,7 +5,10 @@ const plugin = fp(async function plugin(fastify) {
 
     if (!rawCookies) return null;
 
-    return rawCookies.map((cookie) => cookie.split(";")[0]).join("; ");
+    return rawCookies
+      .map((cookie) => cookie.split(";")[0])
+      .filter((cookie) => cookie.split("=")[0] !== "lang")
+      .join("; ");
   });
 });
 export default plugin;

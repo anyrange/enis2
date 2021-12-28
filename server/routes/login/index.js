@@ -10,7 +10,6 @@ export default async function (fastify) {
         querystring,
         body: {
           type: "object",
-          required: ["login", "password"],
           properties: {
             login: { type: "string", minLength: 12, maxLength: 12 },
             password: { type: "string", minLength: 1 },
@@ -43,11 +42,18 @@ export default async function (fastify) {
       },
     },
     async (req, reply) => {
-      const { login, password, captchaInput } = req.body;
-      const cookie = req.cookies;
+      const { captchaInput } = req.body;
+      const { cookies: cookie, account } = req;
+
+      const login = req.body.login || account?.login;
+      const password = req.body.password || account?.password;
+
+      if (!login || !password)
+        return reply
+          .code(401)
+          .send({ message: "Neither token nor credentials were provided" });
 
       const params = new URLSearchParams();
-
       params.append("login", login);
       params.append("password", password);
       if (captchaInput) params.append("captchaInput", captchaInput);
@@ -60,20 +66,31 @@ export default async function (fastify) {
           body: params,
         }
       );
-
       const body = await res.json();
-      const cookies = fastify.cookieParse(res) + "; " + cookie;
 
-      fastify.jwt.sign({ cookies }, null, (err, token) => {
-        if (err) throw err;
+      const newCookie = fastify.cookieParse(res);
+      const cookies = fastify.mergeCookies(cookie, newCookie);
 
-        const statusCode = body.success ? 200 : 400;
-        body.data = Object.assign({}, body.data);
+      fastify.jwt.sign(
+        {
+          cookies,
+          account: {
+            login,
+            password,
+          },
+        },
+        null,
+        (err, token) => {
+          if (err) throw err;
 
-        body.token = token;
+          const statusCode = body.success ? 200 : 400;
+          body.data = Object.assign({}, body.data);
 
-        reply.code(statusCode).send(body);
-      });
+          body.token = token;
+
+          reply.code(statusCode).send(body);
+        }
+      );
     }
   );
 }

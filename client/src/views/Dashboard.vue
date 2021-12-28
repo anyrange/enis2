@@ -129,7 +129,7 @@ const { terms, actualTermName, currentTermId, fetchTerms } = useTerms();
 const { diary, fetchDiary } = useDiary();
 const { grades, fetchGrades } = useGrades();
 const { checkAvailability } = useHealth();
-const { login, logout, savedAccount } = useAuth();
+const { login, logout } = useAuth();
 
 const isGrades = computed(() => currentTab.value === "grades");
 const isEmptyContent = computed(() =>
@@ -179,7 +179,7 @@ const endSession = () => {
 const restoreSession = async () => {
   if (rememberMe.value) {
     try {
-      await login(savedAccount.value);
+      await login({});
     } catch (error) {
       endSession();
       return Promise.reject(error);
