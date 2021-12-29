@@ -22,7 +22,7 @@ html.dark.custom-scrollbar ::-webkit-scrollbar-thumb {
 }
 
 html.modal-opened {
-  @apply overflow-hidden;
+  overflow: initial;
 }
 
 html.modal-opened body {
