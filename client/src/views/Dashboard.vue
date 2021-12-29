@@ -114,6 +114,8 @@ const GREEK_NUMERALS = {
   4: "IV",
 };
 
+const REFETCH_ATTEMPTS = 1;
+
 const refetchAttempts = ref(0);
 const showSubjectModal = ref(false);
 const showSettingsModal = ref(false);
@@ -156,27 +158,28 @@ const showError = (message) => {
   });
 };
 
-const startSession = async ({ forceUpdate }) => {
-  refetchAttempts.value++;
-  if (refetchAttempts.value > 2) {
-    return showError();
-  }
-  try {
-    await getTabs({ forceUpdate });
-    await getContent({ forceUpdate });
-    refetchAttempts.value = 0;
-  } catch (error) {
-    await checkAvailability();
-    return Promise.reject(error);
-  }
-};
-
 const endSession = () => {
   showError("Сессия завершена");
   logout();
 };
 
+const startSession = async ({ forceUpdate }) => {
+  try {
+    await getTermsAndContentByYear({ forceUpdate });
+    refetchAttempts.value = 0;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 const restoreSession = async () => {
+  refetchAttempts.value++;
+  if (
+    refetchAttempts.value === REFETCH_ATTEMPTS ||
+    refetchAttempts.value < REFETCH_ATTEMPTS
+  ) {
+    await checkAvailability();
+  }
   if (rememberMe.value) {
     try {
       await login({});
@@ -201,11 +204,14 @@ const getTabs = async ({ forceUpdate }) => {
     });
     currentTab.value = currentTab.value || actualTermName.value;
   } catch (error) {
-    if (error.response.status === 401) {
-      await restoreSession();
+    try {
+      if (error.response.status === 401) {
+        await restoreSession();
+      }
+      await startSession({ forceUpdate: true });
+    } catch (error) {
+      return Promise.reject(error);
     }
-    await startSession({ forceUpdate: true });
-    return Promise.reject(error);
   }
 };
 
@@ -224,11 +230,14 @@ const getContent = async ({ forceUpdate }) => {
           force: forceUpdate,
         });
   } catch (error) {
-    if (error.response.status === 401) {
-      await restoreSession();
+    try {
+      if (error.response.status === 401) {
+        await restoreSession();
+      }
+      await startSession({ forceUpdate: true });
+    } catch (error) {
+      return Promise.reject(error);
     }
-    await startSession({ forceUpdate: true });
-    return Promise.reject(error);
   }
 };
 
@@ -248,7 +257,6 @@ const openSubjectModal = async (selectedSubject) => {
   ) {
     return;
   }
-  const subjectName = selectedSubject.Name;
   clearSubject();
   showSubjectModal.value = true;
   try {
@@ -258,7 +266,9 @@ const openSubjectModal = async (selectedSubject) => {
       await restoreSession();
     }
     await startSession({ forceUpdate: true });
-    const lastSubject = diary.value.find((s) => s.Name === subjectName);
+    const lastSubject = diary.value.find(
+      (s) => s.Name === selectedSubject.Name
+    );
     await fetchSubject(lastSubject);
   }
 };
