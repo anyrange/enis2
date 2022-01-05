@@ -31,7 +31,7 @@
 </template>
 
 <script setup>
-import useSettings from "@/composables/useSettings";
+import { useSettings } from "@/composables/useStore";
 
 defineProps({
   show: {

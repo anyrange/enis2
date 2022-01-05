@@ -2,13 +2,8 @@
   <header class="w-full sticky inset-x-0 top-0 left-0">
     <tabs v-model="currentYearName" class="tabs-bg">
       <div class="tabs-container">
-        <tab
-          v-for="year in years.data"
-          :key="year.value"
-          :name="year.label"
-          @selected="getTermsAndContentByYear({ forceUpdate: false })"
-        >
-          {{ year.label }}
+        <tab v-for="{ value, label } in years.data" :key="value" :name="label">
+          {{ label }}
         </tab>
       </div>
     </tabs>
@@ -18,15 +13,10 @@
       :class="{ 'is-hidden': !showYears }"
     >
       <div class="tabs-container">
-        <tab
-          v-for="(term, index) in terms"
-          :key="term.Id"
-          :name="term.Name"
-          @selected="getContent({ forceUpdate: false })"
-        >
+        <tab v-for="({ Id, Name }, index) in terms" :key="Id" :name="Name">
           {{ GREEK_NUMERALS[index + 1] }}
         </tab>
-        <tab name="grades" @selected="getContent({ forceUpdate: false })">
+        <tab name="grades">
           <grades-icon />
         </tab>
       </div>
@@ -93,19 +83,21 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { notify } from "@/services/notify.js";
 import SettingsModal from "@/views/modals/SettingsModal.vue";
 import SubjectModal from "@/views/modals/SubjectModal.vue";
-import useSettings from "@/composables/useSettings";
-import useSubject from "@/composables/useSubject";
-import useLoader from "@/composables/useLoader";
-import useYears from "@/composables/useYears";
-import useTerms from "@/composables/useTerms";
-import useDiary from "@/composables/useDiary";
-import useGrades from "@/composables/useGrades";
-import useHealth from "@/composables/useHealth";
-import useAuth from "@/composables/useAuth";
+import {
+  useSettings,
+  useAuth,
+  useYears,
+  useHealth,
+  useLoader,
+  useSubject,
+  useDiary,
+  useTerms,
+  useGrades,
+} from "@/composables/useStore";
 
 const GREEK_NUMERALS = {
   1: "I",
@@ -123,8 +115,8 @@ const showYears = ref(true);
 const scrollPosition = ref(0);
 const scrollOffset = ref(40);
 
-const { errorMessage, loading, loadingEndpoint } = useLoader();
-const { subject, customSubject, GM, fetchSubject, clearSubject } = useSubject();
+const { errorMessage, loading } = useLoader();
+const { subject, fetchSubject, clearSubject } = useSubject();
 const { currentTab, currentYearName, rememberMe } = useSettings();
 const { years, actualYearName, currentYearId, fetchYears } = useYears();
 const { terms, actualTermName, currentTermId, fetchTerms } = useTerms();
@@ -273,7 +265,26 @@ const openSubjectModal = async (selectedSubject) => {
   }
 };
 
-startSession({ forceUpdate: false });
+watch(
+  [currentYearName, currentTab],
+  async ([newYearName, newTab], [oldYearName, oldTab]) => {
+    if (
+      (!newYearName && !oldYearName && !newTab && !oldTab) ||
+      (newYearName && newTab && !oldYearName && !oldTab)
+    ) {
+      await startSession({ forceUpdate: false });
+    }
+    if (oldYearName && newYearName && newYearName !== oldYearName) {
+      await getTermsAndContentByYear({ forceUpdate: false });
+    }
+    if (oldTab && newTab && newTab !== oldTab) {
+      await getContent({ forceUpdate: false });
+    }
+  },
+  {
+    immediate: true,
+  }
+);
 </script>
 
 <style>

@@ -1,21 +1,19 @@
 export const isDev = import.meta.env.DEV;
 export const isLocal =
   location.hostname === "localhost" || location.hostname === "127.0.0.1";
-
-const fallbackErrorMessage = "Что-то пошло не так";
+export const isMock = import.meta.env.MODE === "mock";
+export const fallbackErrorMessage = "Что-то пошло не так";
 
 export const ENDPOINTS = Object.freeze([
   {
     name: "HEALTH_SMS",
     endpoint: "health/sms",
     hideLoader: false,
-    error: fallbackErrorMessage,
   },
   {
     name: "CITY",
     endpoint: "city",
     hideLoader: true,
-    error: fallbackErrorMessage,
   },
   {
     name: "LOGIN",

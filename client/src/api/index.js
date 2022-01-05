@@ -1,6 +1,6 @@
 import axios from "axios";
 import store from "@/store";
-import { isDev, ENDPOINTS } from "@/config";
+import { isMock, ENDPOINTS } from "@/config";
 
 const SERVER_URL = import.meta.env.VITE_SERVER_URL;
 
@@ -12,7 +12,7 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     store.commit("loader/SET_LOADING", {
-      status: true,
+      status: "loading",
       endpoint: ENDPOINTS.find((e) => config.url.includes(e.endpoint)).name,
     });
     config.params = {
@@ -23,24 +23,18 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
-    store.commit("loader/SET_LOADING", {
-      status: false,
-    });
+    store.commit("loader/SET_LOADING", { status: "error" });
     return Promise.reject(error);
   }
 );
 
 api.interceptors.response.use(
   (response) => {
-    store.commit("loader/SET_LOADING", {
-      status: false,
-    });
+    store.commit("loader/SET_LOADING", { status: "pending" });
     return response.data;
   },
   async (error) => {
-    store.commit("loader/SET_LOADING", {
-      status: false,
-    });
+    store.commit("loader/SET_LOADING", { status: "error" });
     error.response.data = error.response.data || {};
     error.response.data.message =
       error.response.data.message || "Что-то пошло не так";
@@ -107,6 +101,6 @@ export const installMockApi = async (api) => {
   mock.onGet(new RegExp("subject")).reply(200, mockSubject);
 };
 
-if (isDev) {
+if (isMock) {
   installMockApi(api);
 }

@@ -10,6 +10,10 @@ export const debounce = (fn, delay = 0, immediate = false) => {
   };
 };
 
+export const isEmpty = (str) => {
+  return !str || str.length === 0;
+};
+
 export const getFilteredSection = (section) => {
   return section.filter((s) => s.Score !== -1);
 };

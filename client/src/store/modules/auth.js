@@ -1,4 +1,5 @@
 import { login } from "@/api";
+import { isEmpty } from "@/utils";
 
 export default {
   namespaced: true,
@@ -12,7 +13,7 @@ export default {
   },
   getters: {
     authenticated(state) {
-      return state.token;
+      return !isEmpty(state.token);
     },
   },
   actions: {

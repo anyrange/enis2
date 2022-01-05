@@ -1,18 +1,15 @@
-import { watch, ref } from "vue";
+import { watch } from "vue";
 
 export default () => {
   const toggleClass = (watcher, className) => {
-    const watcherRef = ref(watcher);
     watch(
-      () => watcherRef.value,
+      watcher,
       (value) => {
         value
           ? document.documentElement.classList.add(className)
           : document.documentElement.classList.remove(className);
       },
-      {
-        immediate: true,
-      }
+      { immediate: true }
     );
   };
   return {

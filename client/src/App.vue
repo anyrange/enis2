@@ -14,9 +14,7 @@
 import { computed, watch } from "vue";
 import useNavigator from "@/composables/useNavigator";
 import useDocument from "@/composables/useDocument";
-import useSettings from "@/composables/useSettings";
-import useHealth from "@/composables/useHealth";
-import useLoader from "@/composables/useLoader";
+import { useSettings, useHealth, useLoader } from "@/composables/useStore";
 import AvailabilityModal from "@/views/modals/AvailabilityModal.vue";
 
 const { isMobile, isSafari } = useNavigator();
@@ -27,12 +25,9 @@ const { showLoader } = useLoader();
 
 setTheme();
 
-watch(
-  () => alive.value,
-  (value) => {
-    value && (showAvailabilityModal.value = true);
-  }
-);
+watch(alive, (value) => {
+  !value && (showAvailabilityModal.value = true);
+});
 
 toggleClass(
   computed(() => theme.value === "dark"),

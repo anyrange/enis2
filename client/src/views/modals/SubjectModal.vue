@@ -48,8 +48,7 @@
 </template>
 
 <script setup>
-import useSubject from "@/composables/useSubject";
-import useLoader from "@/composables/useLoader";
+import { useSubject, useLoader } from "@/composables/useStore";
 
 defineProps({
   show: {

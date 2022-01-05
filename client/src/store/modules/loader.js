@@ -1,21 +1,34 @@
-import { ENDPOINTS } from "@/config";
+import { ENDPOINTS, fallbackErrorMessage } from "@/config";
+
+const hideOnEndpoints = ENDPOINTS.filter((e) => e.hideLoader);
 
 export default {
   namespaced: true,
   state: {
-    status: false,
-    endpoint: "",
+    /**
+     * @param {('pending'|'loading'|'error')} status
+     */
+    status: "pending",
+    endpoint: null,
   },
   getters: {
-    showLoader: (state) => {
-      const hideOnEndpoints = ENDPOINTS.filter((e) => e.hideLoader);
-      return (
-        !hideOnEndpoints.find((e) => e.name === state.endpoint)?.hideLoader &&
-        state.status
-      );
+    isLoading: (state) => state.status === "loading",
+    isError: (state) => state.status === "error",
+    isPending: (state) => state.status === "pending",
+    loadingEndpoint: ({ endpoint }, { isLoading }) => {
+      return isLoading ? endpoint : null;
     },
-    errorMessage: (state) => {
-      return ENDPOINTS.find((e) => e.name === state.endpoint)?.error || null;
+    showLoader: ({ endpoint }, { isLoading }) => {
+      const hideLoader = hideOnEndpoints.find(
+        (e) => e.name === endpoint
+      )?.hideLoader;
+      return !hideLoader && isLoading;
+    },
+    errorMessage: ({ endpoint }, { isError }) => {
+      const message =
+        ENDPOINTS.find((e) => e.name === endpoint)?.error ||
+        fallbackErrorMessage;
+      return isError ? message : null;
     },
   },
   mutations: {

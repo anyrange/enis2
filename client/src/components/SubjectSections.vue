@@ -69,7 +69,7 @@ import {
   getMaxScores,
   getPercent,
 } from "@/utils";
-import useSubject from "@/composables/useSubject";
+import { useSubject } from "@/composables/useStore";
 import { computed } from "vue";
 
 const props = defineProps({

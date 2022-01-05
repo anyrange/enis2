@@ -8,7 +8,7 @@
 import BaseButton from "./BaseButton.vue";
 import SunIcon from "./icons/SunIcon.vue";
 import MoonIcon from "./icons/MoonIcon.vue";
-import useSettings from "@/composables/useSettings";
+import { useSettings } from "@/composables/useStore";
 
 const { toggleTheme, theme } = useSettings();
 </script>

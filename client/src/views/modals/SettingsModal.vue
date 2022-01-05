@@ -50,10 +50,12 @@
 
 <script setup>
 import { DA_LINK, GH_LINK, TG_LINK } from "@/config";
-import useSettings from "@/composables/useSettings";
-import useAuth from "@/composables/useAuth";
-import useSubject from "@/composables/useSubject";
-import useTerms from "@/composables/useTerms";
+import {
+  useSettings,
+  useAuth,
+  useSubject,
+  useTerms,
+} from "@/composables/useStore";
 
 defineProps({
   show: {

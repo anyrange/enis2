@@ -143,10 +143,12 @@
 import { reactive, computed, watch, ref } from "vue";
 import { GH_LINK, TG_LINK } from "@/config";
 import schools from "@/assets/schools.json";
-import useSettings from "@/composables/useSettings";
-import useLoader from "@/composables/useLoader";
-import useHealth from "@/composables/useHealth";
-import useAuth from "@/composables/useAuth";
+import {
+  useAuth,
+  useHealth,
+  useLoader,
+  useSettings,
+} from "@/composables/useStore";
 import useRandom from "@/composables/useRandom";
 
 const { school, rememberMe, predictSchool } = useSettings();
@@ -173,7 +175,7 @@ const validationStarted = ref(false);
 const formValidated = computed(() => form.login.valid && form.password.valid);
 
 watch(
-  () => form,
+  form,
   ({ login, password }) => {
     if (!validationStarted.value) return;
     validateForm({
