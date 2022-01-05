@@ -17,7 +17,7 @@ Run client and server concurrently
 
 Or separately using commands
 
-`npm run serve`  
+`npm run client`  
 `npm run server`
 
 ### Environment variables
