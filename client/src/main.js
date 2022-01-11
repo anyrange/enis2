@@ -5,6 +5,9 @@ import "virtual:windi.css";
 import "./assets/styles.css";
 import router from "./router";
 import store from "./store";
+import { registerSW } from "virtual:pwa-register";
+
+registerSW({ immediate: true });
 
 const app = createApp(App);
 
