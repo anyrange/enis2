@@ -6,9 +6,8 @@
       shadow
       bg-white
       dark:bg-gray-800-spotify
-      appearence-none
-      focus:outline-none
-      outline-none
+      appearance-none
+      default-focus
     "
     :class="[
       [
@@ -90,9 +89,6 @@ const barStyle = computed(() => {
 </script>
 
 <style scoped>
-#subjectDiary:focus-visible {
-  @apply focus:ring-2;
-}
 .item-title {
   @apply text-lg font-medium;
 }

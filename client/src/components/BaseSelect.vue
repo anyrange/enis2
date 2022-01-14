@@ -23,10 +23,7 @@
           text-left
           border border-gray-200
           dark:border-gray-800-spotify
-          focus:ring-blue-500
-          focus:border-blue-500
-          focus:ring-1
-          focus:outline-none
+          default-focus
           disabled:opacity-60
           bg-gray-50
           dark:bg-gray-700-spotify

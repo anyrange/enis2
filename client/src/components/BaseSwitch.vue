@@ -1,42 +1,13 @@
 <template>
-  <div class="relative inline-block w-11 align-middle select-none">
+  <label class="switch-label">
     <input
-      :id="id"
+      class="switch default-focus rounded-full cursor-pointer"
       type="checkbox"
-      v-bind="$attrs"
       :checked="modelValue"
-      class="
-        toggle
-        absolute
-        block
-        w-5
-        h-5
-        items-center
-        rounded-full
-        bg-gray-100
-        appearance-none
-        cursor-pointer
-        outline-none
-        mx-0.5
-        shadow
-      "
-      style="top: 50%; transform: translateY(-50%)"
       @change="emit('update:modelValue', $event.target.checked)"
     />
-    <label
-      :for="id"
-      class="
-        toggle-label
-        block
-        overflow-hidden
-        h-6
-        rounded-full
-        dark:bg-gray-600-spotify
-        bg-gray-300
-        cursor-pointer
-      "
-    />
-  </div>
+    <span class="switch-label-sr">Slider</span>
+  </label>
 </template>
 
 <script setup>
@@ -55,10 +26,55 @@ const emit = defineEmits(["update:modelValue"]);
 </script>
 
 <style scoped>
-.toggle:checked {
-  @apply right-0 border-blue-500;
+.switch-label {
+  display: flex;
+  transition: transform 0.3s ease-in-out;
+  -webkit-tap-highlight-color: transparent;
 }
-.toggle:checked + .toggle-label {
-  @apply bg-blue-500;
+.switch-label-sr {
+  clip: rect(1px, 1px, 1px, 1px);
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+}
+.switch {
+  position: relative;
+  width: 3em;
+  height: 1.5em;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.switch:before,
+.switch:after {
+  animation-duration: 0.6s;
+  animation-timing-function: ease-in-out;
+  content: "";
+  display: block;
+  position: absolute;
+}
+.switch:before {
+  background-color: #ccc;
+  border-radius: 0.75em;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: background-color 0.3s ease-in-out;
+}
+.switch:after {
+  background-color: hsl(0, 0%, 100%);
+  border-radius: 50%;
+  top: 0.25em;
+  left: 0.25em;
+  width: 1em;
+  height: 1em;
+  transition: left 0.3s ease-in-out;
+}
+.switch:checked:before {
+  background-color: #2196f3;
+}
+.switch:checked:after {
+  left: 1.75em;
 }
 </style>

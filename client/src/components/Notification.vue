@@ -138,6 +138,6 @@ const destroy = () => {
   @apply rounded-full text-gray-200 justify-center inline-flex duration-150 cursor-pointer p-1 hover:bg-gray-200 hover:bg-opacity-20;
 }
 .notify-action-btn {
-  @apply p-2 rounded-sm uppercase duration-100 hover:bg-white hover:bg-opacity-20 focus:outline-none;
+  @apply p-2 rounded-sm uppercase duration-100 hover:bg-white hover:bg-opacity-20 default-focus;
 }
 </style>

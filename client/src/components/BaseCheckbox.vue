@@ -1,10 +1,10 @@
 <template>
-  <div class="flex items-center">
+  <label class="inline-flex">
     <input
       :id="id"
       v-model="model"
       type="checkbox"
-      class="opacity-0 absolute h-8 w-8"
+      class="appearance-none absolute h-6 w-6 rounded-sm default-focus"
     />
     <div
       class="
@@ -17,9 +17,9 @@
         justify-center
         items-center
         mr-2
-        focus-within:border-blue-500
         transition-all
         duration-100
+        focus-visible:border-blue-500
       "
     >
       <svg
@@ -37,8 +37,8 @@
         </g>
       </svg>
     </div>
-    <label :for="id" class="select-none">{{ label }}</label>
-  </div>
+    {{ label }}
+  </label>
 </template>
 
 <script setup>

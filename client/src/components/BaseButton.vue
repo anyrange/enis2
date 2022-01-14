@@ -2,7 +2,7 @@
   <component
     :is="tag"
     v-wave="isDisabled ? false : ripple"
-    class="base-button"
+    class="base-button default-focus"
     :type="type"
     :disabled="isDisabled"
     :href="href"
@@ -135,10 +135,7 @@ const isDisabled = computed(() => props.disabled || props.loading);
 
 <style scoped>
 .base-button {
-  @apply flex rounded-sm appearance-none shadow duration-200 transition-colors items-center justify-center uppercase text-center select-none text-sm font-medium focus:outline-none visited:text-current;
-}
-.base-button:focus-visible {
-  @apply focus:ring-2;
+  @apply flex rounded-sm appearance-none shadow duration-200 transition-colors items-center justify-center uppercase text-center select-none text-sm font-medium visited:text-current;
 }
 .base-button-icon {
   @apply h-9 w-9 rounded-full;

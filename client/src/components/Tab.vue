@@ -5,7 +5,7 @@
     class="tab"
     :class="[
       { 'disabled-tab': isDisabled },
-      [isActive ? 'active-tab' : 'incative-tab'],
+      [isActive ? 'active-tab' : 'inactive-tab'],
     ]"
     @click="activateTab(name)"
   >
@@ -54,17 +54,14 @@ const activateTab = (name) => {
 };
 </script>
 
-<style lang="postcss" scoped>
+<style scoped>
 .tab {
-  @apply h-12 w-12 flex flex-grow items-center justify-center text-base font-medium cursor-pointer select-none duration-200 outline-none;
-}
-.tab:focus-visible {
-  @apply focus:ring-2 ring-inset;
+  @apply default-focus ring-inset h-12 w-12 flex flex-grow items-center justify-center text-base font-medium cursor-pointer select-none duration-200 outline-none;
 }
 .active-tab {
   @apply text-blue-500 font-semibold hover:bg-blue-500 hover:bg-opacity-10;
 }
-.incative-tab {
+.inactive-tab {
   @apply text-gray-500 dark:text-gray-500-spotify hover:bg-gray-100 dark:hover:bg-gray-700-spotify;
 }
 .disabled-tab {

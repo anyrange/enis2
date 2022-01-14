@@ -2,6 +2,9 @@ import colors from "windicss/colors";
 
 export default {
   darkMode: "class",
+  shortcuts: {
+    "default-focus": "outline-none focus:outline-none focus-visible:ring-2 ",
+  },
   theme: {
     extend: {
       colors: {

@@ -39,8 +39,12 @@ export default {
           rootState.preferences.sortBy === "score"
             ? diary.sort((a, b) => b.Score - a.Score)
             : diary.sort((a, b) => a.Name.localeCompare(b.Name));
+        const filteredDiary = sortedDiary.filter((o) => o.Score !== 0);
+        const allEmpty = !filteredDiary.length;
         return rootState.preferences.hideEmpty
-          ? sortedDiary.filter((o) => o.Score !== 0)
+          ? allEmpty
+            ? sortedDiary
+            : filteredDiary
           : sortedDiary;
       },
   },
