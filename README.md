@@ -5,28 +5,28 @@ Unofficial NIS client, inspired by [enis](https://github.com/superhooman/enis)
 [![Uptime Robot](https://img.shields.io/uptimerobot/status/m788722189-0972bdac9b2e03392769f154?label=heroku)](https://stats.uptimerobot.com/kXD0runRnw/788722189)
 [![Netlify](https://img.shields.io/netlify/23dfe53d-5fee-4df5-820d-45d6109b713a)](https://app.netlify.com/sites/enis2/deploys)
 
-## Installation
+## Build Setup
 
-Install dependencies
+**Requires Node.js 16+ and pnpm (preferably)**
 
-`npm install`
+```bash
+# install dependencies
+pnpm install # or npm/yarn
 
-Run client and server concurrently
+# run client and server concurrently
+pnpm dev
 
-`npm run dev`
+# with mock data
+pnpm dev:mock
 
-Or separately using commands
-
-`npm run client`  
-`npm run server`
+# or separately using commands
+pnpm client
+pnpm server
+```
 
 ### Environment variables
 
 Rename [.env.example](/.env.example) to .env and set your variables or keep the default
-
-### Mock API
-
-Due to the fact that the original client was unavailable during development, mock data was added, run `npm run dev:mock` to use it
 
 ### API documentation
 
