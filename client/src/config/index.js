@@ -3,7 +3,8 @@ export const isMock = import.meta.env.MODE === "mock";
 export const isLocal =
   location.hostname === "localhost" || location.hostname === "127.0.0.1";
 
-export const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+export const SERVER_URL =
+  import.meta.env.VITE_SERVER_URL || "http://localhost:8887";
 
 export const fallbackErrorMessage = "Что-то пошло не так";
 
