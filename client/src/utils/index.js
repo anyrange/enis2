@@ -38,3 +38,10 @@ export const getPercentDecimals = (percent) => {
 export const getRandomItem = (array) => {
   return array[Math.floor(Math.random() * array.length)];
 };
+
+export const existsAtIndex = (data, query) => {
+  const index = data.findIndex((rec) =>
+    Object.entries(query).every(([k, v]) => rec[k].toString().includes(v))
+  );
+  return index === -1 ? null : index;
+};

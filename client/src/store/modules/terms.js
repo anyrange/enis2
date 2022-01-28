@@ -1,12 +1,8 @@
 import { getTerms } from "@/api";
+import { existsAtIndex } from "@/utils";
 
 const shorterTermName = (name) => {
   return name.substring(0, 1);
-};
-
-const existsAtIndex = (state, yearName) => {
-  const index = state.data.findIndex((item) => item.yearName === yearName);
-  return index === -1 ? null : index;
 };
 
 const defaultState = () => {
@@ -21,7 +17,7 @@ export default {
   state: defaultState(),
   mutations: {
     SET_TERMS(state, { terms, yearName }) {
-      const index = existsAtIndex(state, yearName);
+      const index = existsAtIndex(state.data, { yearName });
       index === null
         ? (state.data = [...state.data, { terms, yearName }])
         : (state.data[index].terms = terms);
@@ -58,7 +54,7 @@ export default {
   },
   actions: {
     fetchTerms: async ({ commit, state }, { yearId, yearName, force }) => {
-      const exists = existsAtIndex(state, yearName) !== null;
+      const exists = existsAtIndex(state.data, { yearName }) !== null;
       if (exists && !force) {
         return;
       }

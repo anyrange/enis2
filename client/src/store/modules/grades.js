@@ -1,9 +1,5 @@
 import { getGrades } from "@/api";
-
-const existsAtIndex = (state, yearName) => {
-  const index = state.data.findIndex((item) => item.yearName === yearName);
-  return index === -1 ? null : index;
-};
+import { existsAtIndex } from "@/utils";
 
 const defaultState = () => {
   return {
@@ -16,7 +12,7 @@ export default {
   state: defaultState(),
   mutations: {
     ADD_GRADES(state, { grades, yearName }) {
-      const index = existsAtIndex(state, yearName);
+      const index = existsAtIndex(state.data, { yearName });
       index === null
         ? (state.data = [...state.data, { grades, yearName }])
         : (state.data[index].grades = grades);
@@ -40,7 +36,7 @@ export default {
       { yearId, yearName, force }
     ) => {
       if (rootState.years.actual) {
-        const exists = existsAtIndex(state, yearName) !== null;
+        const exists = existsAtIndex(state.data, { yearName }) !== null;
         const isActualYear = rootState.years.actual === yearName;
         if (exists && !isActualYear && !force) {
           return;

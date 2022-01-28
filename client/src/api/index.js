@@ -1,8 +1,6 @@
 import axios from "axios";
 import store from "@/store";
-import { isMock, ENDPOINTS } from "@/config";
-
-const SERVER_URL = import.meta.env.VITE_SERVER_URL;
+import { isMock, ENDPOINTS, SERVER_URL, fallbackErrorMessage } from "@/config";
 
 const api = axios.create({
   baseURL: SERVER_URL,
@@ -37,7 +35,7 @@ api.interceptors.response.use(
     store.commit("loader/SET_LOADING", { status: "error" });
     error.response.data = error.response.data || {};
     error.response.data.message =
-      error.response.data.message || "Что-то пошло не так";
+      error.response.data.message || fallbackErrorMessage;
     return Promise.reject(error);
   }
 );
@@ -102,5 +100,5 @@ export const installMockApi = async (api) => {
 };
 
 if (isMock) {
-  installMockApi(api);
+  await installMockApi(api);
 }

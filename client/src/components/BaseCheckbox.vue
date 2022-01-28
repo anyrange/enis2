@@ -1,7 +1,6 @@
 <template>
   <label class="inline-flex">
     <input
-      :id="id"
       v-model="model"
       type="checkbox"
       class="appearance-none absolute h-6 w-6 rounded-sm default-focus"

@@ -1,11 +1,5 @@
 import { getDiary } from "@/api";
-
-const existsAtIndex = (state, termName, yearName) => {
-  const index = state.data.findIndex(
-    (item) => item.termName === termName && item.yearName === yearName
-  );
-  return index === -1 ? null : index;
-};
+import { existsAtIndex } from "@/utils";
 
 const defaultState = () => {
   return {
@@ -18,7 +12,7 @@ export default {
   state: defaultState(),
   mutations: {
     ADD_DIARY(state, { diary, termName, yearName }) {
-      const index = existsAtIndex(state, termName, yearName);
+      const index = existsAtIndex(state.data, { termName, yearName });
       index === null
         ? (state.data = [...state.data, { diary, termName, yearName }])
         : (state.data[index].diary = diary);
@@ -54,7 +48,8 @@ export default {
       { termId, termName, yearName, force = false }
     ) => {
       if (rootState.years.actual && rootState.terms.actual) {
-        const exists = existsAtIndex(state, termName, yearName) !== null;
+        const exists =
+          existsAtIndex(state.data, { termName, yearName }) !== null;
         const isActualTerm = rootState.terms.actual === termName;
         const isActualYear = rootState.years.actual === yearName;
         if (exists && !(isActualTerm && isActualYear) && !force) {
