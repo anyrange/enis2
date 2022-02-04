@@ -3,21 +3,11 @@
     <div class="relative overflow-hidden -m-2">
       <random-gif class="w-full h-auto opacity-25" />
       <div
-        class="
-          absolute
-          w-full
-          h-auto
-          absolute
-          top-1/2
-          left-1/2
-          transform
-          -translate-x-1/2 -translate-y-1/2
-          text-center
-        "
+        class="absolute w-full h-auto absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center"
       >
         <p class="text-lg">
           <a
-            :href="`https://sms.${school}.nis.edu.kz/`"
+            :href="`https://sms.${settingsStore.settings.school}.nis.edu.kz/`"
             target="_blank"
             class="underline"
             >Оригинальный клиент</a
@@ -31,7 +21,7 @@
 </template>
 
 <script setup>
-import { useSettings } from "@/composables/useStore";
+import { useSettings } from "@/store";
 
 defineProps({
   show: {
@@ -42,5 +32,5 @@ defineProps({
 
 const emit = defineEmits(["close"]);
 
-const { school } = useSettings();
+const settingsStore = useSettings();
 </script>

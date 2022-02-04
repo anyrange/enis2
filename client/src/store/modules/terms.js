@@ -1,78 +1,86 @@
+import { ref, computed } from "vue";
+import { defineStore } from "pinia";
 import { getTerms } from "@/api";
 import { existsAtIndex } from "@/utils";
+import useSettingsStore from "./settings.js";
 
-const shorterTermName = (name) => {
-  return name.substring(0, 1);
-};
+export default defineStore("terms", () => {
+  const settingsStore = useSettingsStore();
 
-const defaultState = () => {
-  return {
-    data: [],
-    actual: null,
+  const termsData = ref([]);
+  const actual = ref(null);
+
+  const YEAR = computed(() => settingsStore.settings.year);
+  const TAB = computed(() => settingsStore.settings.tab);
+
+  const matchedTerm = computed(() => {
+    return termsData.value.find((item) => {
+      return item.yearName === YEAR.value;
+    });
+  });
+
+  const currentTermId = computed(() => {
+    const termData =
+      matchedTerm.value &&
+      matchedTerm.value.terms.find((term) => {
+        return term.Name === TAB.value;
+      });
+    return termData ? termData.Id : "";
+  });
+
+  const terms = computed(() => {
+    const fallbackTerms = [
+      { Name: "1" },
+      { Name: "2" },
+      { Name: "3" },
+      { Name: "4" },
+    ];
+    return matchedTerm.value ? matchedTerm.value.terms : fallbackTerms;
+  });
+
+  const clearTerms = () => {
+    termsData.value = [];
+    actual.value = null;
   };
-};
 
-export default {
-  namespaced: true,
-  state: defaultState(),
-  mutations: {
-    SET_TERMS(state, { terms, yearName }) {
-      const index = existsAtIndex(state.data, { yearName });
-      index === null
-        ? (state.data = [...state.data, { terms, yearName }])
-        : (state.data[index].terms = terms);
-    },
-    SET_ACTUAL(state, payload) {
-      state.actual = payload;
-    },
-    CLEAR_TERMS(state) {
-      Object.assign(state, defaultState());
-    },
-  },
-  getters: {
-    getTermId:
-      (state) =>
-      ({ termName, yearName }) => {
-        return (
-          state.data
-            .find((item) => item.yearName === yearName)
-            ?.terms.find((term) => term.Name === termName)?.Id || ""
-        );
-      },
-    getCurrentTerms:
-      (state) =>
-      ({ yearName }) => {
-        return (
-          state.data.find((item) => item.yearName === yearName)?.terms || [
-            { Name: "1" },
-            { Name: "2" },
-            { Name: "3" },
-            { Name: "4" },
-          ]
-        );
-      },
-  },
-  actions: {
-    fetchTerms: async ({ commit, state }, { yearId, yearName, force }) => {
-      const exists = existsAtIndex(state.data, { yearName }) !== null;
-      if (exists && !force) {
-        return;
-      }
-      try {
-        const terms = await getTerms(yearId);
-        const actualTerm = terms.find((term) => term.isActual);
-        !state.actual && commit("SET_ACTUAL", shorterTermName(actualTerm.Name));
-        const formattedTerms = terms.map(({ Id, Name: label }) => ({
-          Id,
-          Name: shorterTermName(label),
-        }));
-        commit("SET_TERMS", {
+  const shorterTermName = (name) => {
+    return name.substring(0, 1);
+  };
+
+  const fetchTerms = async ({ yearId, yearName, force }) => {
+    const index = existsAtIndex(termsData.value, { yearName });
+    const exists = index !== null;
+
+    if (exists && !force) return;
+
+    try {
+      const terms = await getTerms(yearId);
+      const actualTerm = terms.find((term) => term.isActual);
+      actual.value = shorterTermName(actualTerm.Name);
+      const formattedTerms = terms.map(({ Id, Name: label }) => ({
+        Id,
+        Name: shorterTermName(label),
+      }));
+      if (exists) {
+        termsData.value[index].terms = formattedTerms;
+      } else {
+        const termObject = {
           yearName: yearName,
           terms: formattedTerms,
-        });
-      } catch (err) {
-        return Promise.reject(err);
+        };
+        termsData.value = [...termsData.value, termObject];
       }
-    },
-  },
-};
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  return {
+    termsData,
+    terms,
+    actualTermName: actual,
+    currentTermId,
+    fetchTerms,
+    clearTerms,
+  };
+});

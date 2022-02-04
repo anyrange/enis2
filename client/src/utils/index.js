@@ -30,6 +30,18 @@ export const getPercent = (percent) => {
   return percent ? percent.toFixed(2) : 0;
 };
 
+export const getScore = (SAU, SAT) => {
+  return getPercent(
+    (getScores(getFilteredSection(SAU)) /
+      getMaxScores(getFilteredSection(SAU)) /
+      2 +
+      getScores(getFilteredSection(SAT)) /
+        getMaxScores(getFilteredSection(SAT)) /
+        2) *
+      100
+  );
+};
+
 export const getPercentDecimals = (percent) => {
   const [before, after] = `${percent}`.split(".");
   return { before, after };

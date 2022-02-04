@@ -6,17 +6,14 @@ import { VitePWA } from "vite-plugin-pwa";
 import WindiCSS from "vite-plugin-windicss";
 import unpluginComponents from "unplugin-vue-components/vite";
 
-// https://antfu.me/posts/publish-esm-and-cjs
-const _dirname =
-  typeof __dirname !== "undefined"
-    ? __dirname
-    : dirname(fileURLToPath(import.meta.url));
+const _dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   root: "./client",
   resolve: {
     alias: {
       "@": resolve(_dirname, "./client/src"),
+      "#shared": resolve(_dirname, "./shared"),
     },
   },
   plugins: [

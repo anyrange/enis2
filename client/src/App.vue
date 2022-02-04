@@ -1,6 +1,6 @@
 <template>
   <div class="h-screen">
-    <loading-overlay :active="showLoader" />
+    <loading-overlay :active="loaderStore.showLoader" />
     <availability-modal
       :show="showAvailabilityModal"
       @close="showAvailabilityModal = false"
@@ -12,25 +12,28 @@
 
 <script setup>
 import { computed, watch } from "vue";
+import { storeToRefs } from "pinia";
+import AvailabilityModal from "@/views/modals/AvailabilityModal.vue";
 import useNavigator from "@/composables/useNavigator";
 import useDocument from "@/composables/useDocument";
-import { useSettings, useHealth, useLoader } from "@/composables/useStore";
-import AvailabilityModal from "@/views/modals/AvailabilityModal.vue";
+import { useLoader, useSettings, useHealth, useAuth } from "@/store";
 
 const { isMobile, isSafari } = useNavigator();
 const { toggleClass } = useDocument();
-const { setTheme, theme } = useSettings();
-const { alive, showAvailabilityModal } = useHealth();
-const { showLoader } = useLoader();
 
-setTheme();
+const loaderStore = useLoader();
+const settingsStore = useSettings();
+const healthStore = useHealth();
+const authStore = useAuth();
+
+const { alive, showAvailabilityModal } = storeToRefs(healthStore);
 
 watch(alive, (value) => {
   !value && (showAvailabilityModal.value = true);
 });
 
 toggleClass(
-  computed(() => theme.value === "dark"),
+  computed(() => settingsStore.settings.theme === "dark"),
   "dark"
 );
 

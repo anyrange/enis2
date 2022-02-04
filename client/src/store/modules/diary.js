@@ -1,72 +1,76 @@
+import { ref, computed } from "vue";
+import { defineStore } from "pinia";
 import { getDiary } from "@/api";
 import { existsAtIndex } from "@/utils";
+import useSettingsStore from "./settings.js";
+import useYearsStore from "./years.js";
+import useTermsStore from "./terms.js";
 
-const defaultState = () => {
-  return {
-    data: [],
+export default defineStore("diary", () => {
+  const settingsStore = useSettingsStore();
+  const yearsStore = useYearsStore();
+  const termsStore = useTermsStore();
+
+  const diaryData = ref([]);
+
+  const diary = computed(() => {
+    const TAB = settingsStore.settings.tab;
+    const YEAR = settingsStore.settings.year;
+    const SORT_BY = settingsStore.settings.sortBy;
+    const HIDE_EMPTY = settingsStore.settings.hideEmpty;
+
+    const matchedDiary = diaryData.value.find((item) => {
+      return item.termName === TAB && item.yearName === YEAR;
+    });
+    const rawDiary = matchedDiary ? matchedDiary.diary : [];
+
+    const sort = {
+      name: (array) => array.sort((a, b) => a.Name.localeCompare(b.Name)),
+      score: (array) => array.sort((a, b) => b.Score - a.Score),
+    };
+
+    const sortedDiary = sort[SORT_BY](rawDiary);
+
+    const filteredDiary = sortedDiary.filter((o) => o.Score !== 0);
+    const allEmpty = !filteredDiary.length;
+
+    return HIDE_EMPTY ? (allEmpty ? sortedDiary : filteredDiary) : sortedDiary;
+  });
+
+  const clearDiary = () => {
+    diaryData.value = [];
   };
-};
 
-export default {
-  namespaced: true,
-  state: defaultState(),
-  mutations: {
-    ADD_DIARY(state, { diary, termName, yearName }) {
-      const index = existsAtIndex(state.data, { termName, yearName });
-      index === null
-        ? (state.data = [...state.data, { diary, termName, yearName }])
-        : (state.data[index].diary = diary);
-    },
-    CLEAR_DIARY(state) {
-      Object.assign(state, defaultState());
-    },
-  },
-  getters: {
-    getCurrentDiary:
-      (state, _, rootState) =>
-      ({ termName, yearName }) => {
-        const diary =
-          state.data.find(
-            (item) => item.termName === termName && item.yearName === yearName
-          )?.diary || [];
-        const sortedDiary =
-          rootState.preferences.sortBy === "score"
-            ? diary.sort((a, b) => b.Score - a.Score)
-            : diary.sort((a, b) => a.Name.localeCompare(b.Name));
-        const filteredDiary = sortedDiary.filter((o) => o.Score !== 0);
-        const allEmpty = !filteredDiary.length;
-        return rootState.preferences.hideEmpty
-          ? allEmpty
-            ? sortedDiary
-            : filteredDiary
-          : sortedDiary;
-      },
-  },
-  actions: {
-    fetchDiary: async (
-      { commit, rootState, state },
-      { termId, termName, yearName, force = false }
-    ) => {
-      if (rootState.years.actual && rootState.terms.actual) {
-        const exists =
-          existsAtIndex(state.data, { termName, yearName }) !== null;
-        const isActualTerm = rootState.terms.actual === termName;
-        const isActualYear = rootState.years.actual === yearName;
-        if (exists && !(isActualTerm && isActualYear) && !force) {
-          return;
-        }
-      }
-      try {
-        const { data, token } = await getDiary(termId);
-        commit("ADD_DIARY", {
+  const fetchDiary = async ({ termId, termName, yearName, force = false }) => {
+    const index = existsAtIndex(diaryData.value, { termName, yearName });
+
+    const exists = index !== null;
+    const isActualTerm = termsStore.actualTermName === termName;
+    const isActualYear = yearsStore.actualYearName === yearName;
+
+    if (exists && !force && !(isActualTerm && isActualYear)) return;
+
+    try {
+      const { data } = await getDiary(termId);
+      if (exists) {
+        diaryData.value[index].diary = data;
+      } else {
+        const diaryObject = {
           diary: data,
           termName,
           yearName,
-        });
-        commit("auth/SET_TOKEN", token, { root: true });
-      } catch (err) {
-        return Promise.reject(err);
+        };
+        diaryData.value = [...diaryData.value, diaryObject];
       }
-    },
-  },
-};
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  return {
+    diaryData,
+    diary,
+    fetchDiary,
+    clearDiary,
+  };
+});

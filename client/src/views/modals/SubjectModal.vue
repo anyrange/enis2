@@ -48,7 +48,8 @@
 </template>
 
 <script setup>
-import { useSubject, useLoader } from "@/composables/useStore";
+import { storeToRefs } from "pinia";
+import { useLoader, useSubject } from "@/store";
 
 defineProps({
   show: {
@@ -59,6 +60,9 @@ defineProps({
 
 const emit = defineEmits(["close"]);
 
-const { subject, customSubject, GM } = useSubject();
-const { loading, loadingEndpoint, errorMessage } = useLoader();
+const loaderStore = useLoader();
+const subjectStore = useSubject();
+
+const { loading, loadingEndpoint, errorMessage } = storeToRefs(loaderStore);
+const { subject, customSubject, GM } = storeToRefs(subjectStore);
 </script>

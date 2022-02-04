@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import store from "@/store";
+import { useAuth } from "@/store";
 
 const routes = [
   {
@@ -33,9 +33,11 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const isAuthorized = store.getters["auth/authenticated"];
-  if (to.meta.authRequired && !isAuthorized) return next({ name: "login" });
-  if (to.meta.authForbidden && isAuthorized) return next({ name: "dashboard" });
+  const auth = useAuth();
+  if (to.meta.authRequired && !auth.authenticated)
+    return next({ name: "login" });
+  if (to.meta.authForbidden && auth.authenticated)
+    return next({ name: "dashboard" });
   next();
 });
 

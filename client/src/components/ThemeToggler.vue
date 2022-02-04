@@ -1,6 +1,13 @@
 <template>
-  <base-button flat icon aria-label="Toogle Theme" @click="toggleTheme">
-    <component :is="theme === 'dark' ? SunIcon : MoonIcon" />
+  <base-button
+    flat
+    icon
+    aria-label="Toogle Theme"
+    @click="settingsStore.toggleTheme"
+  >
+    <component
+      :is="settingsStore.settings.theme === 'dark' ? SunIcon : MoonIcon"
+    />
   </base-button>
 </template>
 
@@ -8,7 +15,7 @@
 import BaseButton from "./BaseButton.vue";
 import SunIcon from "./icons/SunIcon.vue";
 import MoonIcon from "./icons/MoonIcon.vue";
-import { useSettings } from "@/composables/useStore";
+import { useSettings } from "@/store";
 
-const { toggleTheme, theme } = useSettings();
+const settingsStore = useSettings();
 </script>

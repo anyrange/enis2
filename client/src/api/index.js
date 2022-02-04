@@ -1,38 +1,59 @@
 import axios from "axios";
-import store from "@/store";
 import { isMock, ENDPOINTS, SERVER_URL, fallbackErrorMessage } from "@/config";
+import { useLoader, useAuth, useSettings } from "@/store";
 
 const api = axios.create({
   baseURL: SERVER_URL,
   withCredentials: true,
 });
 
+const setLoader = ({ status, endpoint }) => {
+  const loader = useLoader();
+  loader.setLoader({ status, endpoint });
+};
+
+const setToken = (token) => {
+  if (!token) return;
+  const auth = useAuth();
+  auth.setToken(token);
+};
+
 api.interceptors.request.use(
   (config) => {
-    store.commit("loader/SET_LOADING", {
+    const endpintName = ENDPOINTS.find((e) => {
+      return config.url.includes(e.endpoint);
+    }).name;
+    setLoader({
       status: "loading",
-      endpoint: ENDPOINTS.find((e) => config.url.includes(e.endpoint)).name,
+      endpoint: endpintName,
     });
+    const auth = useAuth();
+    const settings = useSettings();
     config.params = {
       ...config.params,
-      city: store.state.preferences.school,
-      token: store.state.auth.token,
+      city: settings.school,
+      token: auth.token,
     };
+    if (isMock) {
+      console.log(`🚀 endpoint: ${endpintName}, url: ${config.url}`);
+    }
     return config;
   },
   (error) => {
-    store.commit("loader/SET_LOADING", { status: "error" });
+    setLoader({ status: "error", endpoint: null });
     return Promise.reject(error);
   }
 );
 
 api.interceptors.response.use(
   (response) => {
-    store.commit("loader/SET_LOADING", { status: "pending" });
+    setLoader({ status: "pending", endpoint: null });
+    setToken(response?.data?.token);
     return response.data;
   },
-  async (error) => {
-    store.commit("loader/SET_LOADING", { status: "error" });
+  (error) => {
+    setLoader({ status: "error", endpoint: null });
+    setToken(error.response?.data?.token);
     error.response.data = error.response.data || {};
     error.response.data.message =
       error.response.data.message || fallbackErrorMessage;
@@ -84,17 +105,19 @@ export const installMockApi = async (api) => {
 
   mock.onGet("city").reply(200, { city: "Pavlodar" });
 
-  mock.onPost("login").reply(200, { token: "1337" });
+  const token = "mock.token";
+
+  mock.onPost("login").reply(200, { token });
   mock.onGet("login/captchaRefresh").reply(200, mockCaptcha);
   mock.onGet("dashboard/grades").reply(200, mockGrades);
   mock.onGet("dashboard/years").reply(200, mockYears);
   mock.onGet(new RegExp("years/*")).reply(200, mockTerms);
   mock.onGet(new RegExp("terms/*")).reply((config) => {
     const match = (id) => config.url.includes(id);
-    if (match("term1id")) return [200, { data: mockDiary[0], token: "1337" }];
-    if (match("term2id")) return [200, { data: mockDiary[1], token: "1337" }];
-    if (match("term3id")) return [200, { data: mockDiary[2], token: "1337" }];
-    if (match("term4id")) return [200, { data: mockDiary[3], token: "1337" }];
+    if (match("term1id")) return [200, { data: mockDiary[0], token }];
+    if (match("term2id")) return [200, { data: mockDiary[1], token }];
+    if (match("term3id")) return [200, { data: mockDiary[2], token }];
+    if (match("term4id")) return [200, { data: mockDiary[3], token }];
   });
   mock.onGet(new RegExp("subject")).reply(200, mockSubject);
 };

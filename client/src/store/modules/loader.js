@@ -1,39 +1,34 @@
-import { ENDPOINTS, fallbackErrorMessage } from "@/config";
+import { ref, computed } from "vue";
+import { defineStore } from "pinia";
+import { ENDPOINTS } from "@/config";
 
-const hideOnEndpoints = ENDPOINTS.filter((e) => e.hideLoader);
-
-export default {
-  namespaced: true,
-  state: {
-    /**
-     * @param {('pending'|'loading'|'error')} status
-     */
+export default defineStore("loader", () => {
+  const loading = ref({
     status: "pending",
     endpoint: null,
-  },
-  getters: {
-    isLoading: (state) => state.status === "loading",
-    isError: (state) => state.status === "error",
-    isPending: (state) => state.status === "pending",
-    loadingEndpoint: ({ endpoint }, { isLoading }) => {
-      return isLoading ? endpoint : null;
-    },
-    showLoader: ({ endpoint }, { isLoading }) => {
-      const hideLoader = hideOnEndpoints.find(
-        (e) => e.name === endpoint
-      )?.hideLoader;
-      return !hideLoader && isLoading;
-    },
-    errorMessage: ({ endpoint }, { isError }) => {
-      const message =
-        ENDPOINTS.find((e) => e.name === endpoint)?.error ||
-        fallbackErrorMessage;
-      return isError ? message : null;
-    },
-  },
-  mutations: {
-    SET_LOADING(state, payload) {
-      Object.assign(state, payload);
-    },
-  },
-};
+  });
+
+  const isLoading = computed(() => loading.value.status === "loading");
+  const isError = computed(() => loading.value.status === "error");
+  const currentEndpoint = computed(() => {
+    return ENDPOINTS.find((enpoint) => enpoint.name === loading.value.endpoint);
+  });
+  const showLoader = computed(() => {
+    return isLoading.value && !currentEndpoint.value?.hideLoader;
+  });
+  const errorMessage = computed(() => {
+    return isError.value && currentEndpoint.value?.error;
+  });
+
+  const setLoader = (value) => {
+    loading.value = value;
+  };
+
+  return {
+    loading: isLoading,
+    showLoader,
+    loadingEndpoint: computed(() => loading.value.endpoint),
+    errorMessage,
+    setLoader,
+  };
+});

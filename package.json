@@ -15,6 +15,9 @@
     "heroku-postbuild": "echo Skip builds on Heroku"
   },
   "license": "MIT",
+  "imports": {
+    "#shared/*": "./shared/*"
+  },
   "dependencies": {
     "axios": "^0.21.4",
     "dotenv": "^10.0.0",
@@ -28,13 +31,11 @@
     "nanoevents": "^6.0.2",
     "nanoid": "^3.2.0",
     "node-fetch": "^2.6.7",
-    "secure-ls": "^1.2.6",
+    "pinia": "^2.0.11",
     "v-wave": "^1.3.3",
     "vue": "^3.2.29",
     "vue-router": "^4.0.12",
     "vue-scroll-picker": "^1.1.0",
-    "vuex": "^4.0.2",
-    "vuex-persistedstate": "^4.1.0",
     "workbox-window": "^6.4.2"
   },
   "devDependencies": {

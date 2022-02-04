@@ -1,14 +1,14 @@
 <template>
   <header class="w-full sticky inset-x-0 top-0 left-0">
-    <tabs v-model="currentYearName" class="tabs-bg">
+    <tabs v-model="settings.year" class="tabs-bg">
       <div class="tabs-container">
-        <tab v-for="{ value, label } in years.data" :key="value" :name="label">
+        <tab v-for="{ value, label } in years" :key="value" :name="label">
           {{ label }}
         </tab>
       </div>
     </tabs>
     <tabs
-      v-model="currentTab"
+      v-model="settings.tab"
       class="floating-nav tabs-bg"
       :class="{ 'is-hidden': !showYears }"
     >
@@ -47,7 +47,7 @@
       style="left: 50%; transform: translateX(-50%)"
     >
       <base-button
-        v-if="!rememberMe"
+        v-if="!settings.rememberMe"
         rounded
         color="negative"
         @click="logout()"
@@ -56,14 +56,7 @@
       </base-button>
     </div>
     <div
-      class="
-        absolute
-        bottom-4
-        right-4
-        rounded-full
-        bg-gray-50
-        dark:bg-gray-900-spotify
-      "
+      class="absolute bottom-4 right-4 rounded-full bg-gray-50 dark:bg-gray-900-spotify"
     >
       <base-button
         flat
@@ -84,6 +77,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
+import { storeToRefs } from "pinia";
 import { notify } from "@/services/notify.js";
 import SettingsModal from "@/views/modals/SettingsModal.vue";
 import SubjectModal from "@/views/modals/SubjectModal.vue";
@@ -97,7 +91,7 @@ import {
   useDiary,
   useTerms,
   useGrades,
-} from "@/composables/useStore";
+} from "@/store";
 
 const GREEK_NUMERALS = {
   1: "I",
@@ -115,17 +109,25 @@ const showYears = ref(true);
 const scrollPosition = ref(0);
 const scrollOffset = ref(40);
 
-const { errorMessage, loading } = useLoader();
-const { subject, fetchSubject, clearSubject } = useSubject();
-const { currentTab, currentYearName, rememberMe } = useSettings();
-const { years, actualYearName, currentYearId, fetchYears } = useYears();
-const { terms, actualTermName, currentTermId, fetchTerms } = useTerms();
-const { diary, fetchDiary } = useDiary();
-const { grades, fetchGrades } = useGrades();
+const loaderStore = useLoader();
+const subjectStore = useSubject();
+const settingsStore = useSettings();
+const yearsStore = useYears();
+const termsStore = useTerms();
+const diaryStore = useDiary();
+const gradesStore = useGrades();
 const { checkAvailability } = useHealth();
 const { login, logout } = useAuth();
 
-const isGrades = computed(() => currentTab.value === "grades");
+const { loading, errorMessage } = storeToRefs(loaderStore);
+const { settings } = storeToRefs(settingsStore);
+const { subject } = storeToRefs(subjectStore);
+const { years, actualYearName, currentYearId } = storeToRefs(yearsStore);
+const { terms, actualTermName, currentTermId } = storeToRefs(termsStore);
+const { diary } = storeToRefs(diaryStore);
+const { grades } = storeToRefs(gradesStore);
+
+const isGrades = computed(() => settings.value.tab === "grades");
 const isEmptyContent = computed(() =>
   isGrades.value ? !grades.value.length : !diary.value.length
 );
@@ -143,16 +145,12 @@ onBeforeUnmount(() => {
   window.removeEventListener("scroll", handleScroll);
 });
 
-const showError = (message) => {
+const endSession = () => {
+  logout();
   notify.show({
     type: "danger",
-    message: message || errorMessage.value,
+    message: errorMessage.value || "Сессия завершена",
   });
-};
-
-const endSession = () => {
-  showError("Сессия завершена");
-  logout();
 };
 
 const startSession = async ({ forceUpdate }) => {
@@ -166,41 +164,32 @@ const startSession = async ({ forceUpdate }) => {
 
 const restoreSession = async () => {
   refetchAttempts.value++;
-  if (
-    refetchAttempts.value === REFETCH_ATTEMPTS ||
-    refetchAttempts.value < REFETCH_ATTEMPTS
-  ) {
-    await checkAvailability();
-  }
-  if (rememberMe.value) {
-    try {
-      await login({});
-    } catch (error) {
-      endSession();
-      return Promise.reject(error);
-    }
-  } else {
+  if (refetchAttempts.value >= REFETCH_ATTEMPTS) {
     endSession();
+    return Promise.reject();
+  }
+  try {
+    settings.value.rememberMe && (await login({}));
+    await startSession({ forceUpdate: true });
+  } catch {
+    await checkAvailability();
     return Promise.reject();
   }
 };
 
 const getTabs = async ({ forceUpdate }) => {
   try {
-    await fetchYears({ force: forceUpdate });
-    currentYearName.value = currentYearName.value || actualYearName.value;
-    await fetchTerms({
+    await yearsStore.fetchYears({ force: forceUpdate });
+    settings.value.year = settings.value.year || actualYearName.value;
+    await termsStore.fetchTerms({
       force: forceUpdate,
       yearId: currentYearId.value,
-      yearName: currentYearName.value,
+      yearName: settings.value.year,
     });
-    currentTab.value = currentTab.value || actualTermName.value;
+    settings.value.tab = settings.value.tab || actualTermName.value;
   } catch (error) {
     try {
-      if (error.response.status === 401) {
-        await restoreSession();
-      }
-      await startSession({ forceUpdate: true });
+      await restoreSession();
     } catch (error) {
       return Promise.reject(error);
     }
@@ -210,23 +199,20 @@ const getTabs = async ({ forceUpdate }) => {
 const getContent = async ({ forceUpdate }) => {
   try {
     isGrades.value
-      ? await fetchGrades({
+      ? await gradesStore.fetchGrades({
           yearId: currentYearId.value,
-          yearName: currentYearName.value,
+          yearName: settings.value.year,
           force: forceUpdate,
         })
-      : await fetchDiary({
+      : await diaryStore.fetchDiary({
           termId: currentTermId.value,
-          termName: currentTab.value,
-          yearName: currentYearName.value,
+          termName: settings.value.tab,
+          yearName: settings.value.year,
           force: forceUpdate,
         });
   } catch (error) {
     try {
-      if (error.response.status === 401) {
-        await restoreSession();
-      }
-      await startSession({ forceUpdate: true });
+      await restoreSession();
     } catch (error) {
       return Promise.reject(error);
     }
@@ -249,24 +235,21 @@ const openSubjectModal = async (selectedSubject) => {
   ) {
     return;
   }
-  clearSubject();
+  subjectStore.clearSubject();
   showSubjectModal.value = true;
   try {
-    await fetchSubject(selectedSubject);
+    await subjectStore.fetchSubject(selectedSubject);
   } catch (error) {
-    if (error.response.status === 401) {
-      await restoreSession();
-    }
-    await startSession({ forceUpdate: true });
+    await restoreSession();
     const lastSubject = diary.value.find(
       (s) => s.Name === selectedSubject.Name
     );
-    await fetchSubject(lastSubject);
+    await subjectStore.fetchSubject(lastSubject);
   }
 };
 
 watch(
-  [currentYearName, currentTab],
+  [() => settings.value.year, () => settings.value.tab],
   async ([newYearName, newTab], [oldYearName, oldTab]) => {
     if (
       (!newYearName && !oldYearName && !newTab && !oldTab) ||

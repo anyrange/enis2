@@ -1,55 +1,57 @@
+import { ref, computed } from "vue";
+import { defineStore } from "pinia";
 import { getGrades } from "@/api";
 import { existsAtIndex } from "@/utils";
+import useSettingsStore from "./settings.js";
+import useYearsStore from "./years.js";
 
-const defaultState = () => {
-  return {
-    data: [],
+export default defineStore("grades", () => {
+  const settingsStore = useSettingsStore();
+  const yearsStore = useYearsStore();
+
+  const gradesData = ref([]);
+
+  const grades = computed(() => {
+    const YEAR = settingsStore.settings.year;
+
+    const matchedGrades = gradesData.value.find((item) => {
+      return item.yearName === YEAR;
+    });
+    return matchedGrades ? matchedGrades.grades : [];
+  });
+
+  const clearGrades = () => {
+    gradesData.value = [];
   };
-};
 
-export default {
-  namespaced: true,
-  state: defaultState(),
-  mutations: {
-    ADD_GRADES(state, { grades, yearName }) {
-      const index = existsAtIndex(state.data, { yearName });
-      index === null
-        ? (state.data = [...state.data, { grades, yearName }])
-        : (state.data[index].grades = grades);
-    },
-    CLEAR_GRADES(state) {
-      Object.assign(state, defaultState());
-    },
-  },
-  getters: {
-    getCurrentGrades:
-      (state) =>
-      ({ yearName }) => {
-        return (
-          state.data.find((item) => item.yearName === yearName)?.grades || []
-        );
-      },
-  },
-  actions: {
-    fetchGrades: async (
-      { commit, state, rootState },
-      { yearId, yearName, force }
-    ) => {
-      if (rootState.years.actual) {
-        const exists = existsAtIndex(state.data, { yearName }) !== null;
-        const isActualYear = rootState.years.actual === yearName;
-        if (exists && !isActualYear && !force) {
-          return;
-        }
+  const fetchGrades = async ({ yearId, yearName, force }) => {
+    const index = existsAtIndex(gradesData.value, { yearName });
+
+    const exists = index !== null;
+    const isActualYear = yearsStore.actualYearName === yearName;
+
+    if (exists && !force && !isActualYear) return;
+
+    try {
+      const data = await getGrades(yearId);
+      if (exists) {
+        gradesData.value[index].grades = data;
+      } else {
+        const gradeObject = {
+          grades: data,
+          yearName: yearName,
+        };
+        gradesData.value = [...gradesData.value, gradeObject];
       }
-      try {
-        commit("ADD_GRADES", {
-          grades: await getGrades(yearId),
-          yearName,
-        });
-      } catch (err) {
-        return Promise.reject(err);
-      }
-    },
-  },
-};
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  return {
+    gradesData,
+    grades,
+    fetchGrades,
+    clearGrades,
+  };
+});

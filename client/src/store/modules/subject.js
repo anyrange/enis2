@@ -1,13 +1,10 @@
+import { ref, reactive, computed } from "vue";
+import { defineStore } from "pinia";
 import { getSubject } from "@/api";
-import {
-  getFilteredSection,
-  getScores,
-  getMaxScores,
-  getPercent,
-} from "@/utils";
+import { getScore } from "@/utils";
 
-const defaultState = () => {
-  return {
+export default defineStore("subject", () => {
+  const initialState = {
     customSections: {
       SAU: [],
       SAT: [],
@@ -17,54 +14,41 @@ const defaultState = () => {
       SAT: [],
     },
     originalSubject: {},
-    GM: false,
   };
-};
+  const subject = reactive({ ...initialState });
+  const GM = ref(false);
 
-export default {
-  namespaced: true,
-  state: defaultState(),
-  getters: {
-    customSubject: (state) => {
-      return {
-        ...state.originalSubject,
-        Score: getPercent(
-          (getScores(getFilteredSection(state.customSections.SAU)) /
-            getMaxScores(getFilteredSection(state.customSections.SAU)) /
-            2 +
-            getScores(getFilteredSection(state.customSections.SAT)) /
-              getMaxScores(getFilteredSection(state.customSections.SAT)) /
-              2) *
-            100
-        ),
+  const customSubject = computed(() => {
+    return {
+      ...subject.originalSubject,
+      Score: getScore(subject.customSections.SAU, subject.customSections.SAT),
+    };
+  });
+
+  const clearSubject = () => {
+    Object.assign(subject, initialState);
+    GM.value = false;
+  };
+
+  const fetchSubject = async (subj) => {
+    subject.originalSubject = subj;
+    try {
+      const sections = {
+        SAU: await getSubject(subj.JournalId, subj.Evaluations[0]),
+        SAT: await getSubject(subj.JournalId, subj.Evaluations[1]),
       };
-    },
-  },
-  mutations: {
-    SET_GM(state, mode) {
-      state.GM = mode;
-    },
-    SET_SUBJECT(state, payload) {
-      Object.assign(state, payload);
-    },
-    CLEAR_SUBJECT(state) {
-      Object.assign(state, defaultState());
-    },
-  },
-  actions: {
-    fetchSubject: async ({ commit }, subject) => {
-      try {
-        commit("SET_SUBJECT", { originalSubject: subject });
-        const sections = {
-          SAU: await getSubject(subject.JournalId, subject.Evaluations[0]),
-          SAT: await getSubject(subject.JournalId, subject.Evaluations[1]),
-        };
-        commit("SET_SUBJECT", { originalSections: sections });
-        const nonReactiveSections = JSON.parse(JSON.stringify(sections));
-        commit("SET_SUBJECT", { customSections: nonReactiveSections });
-      } catch (err) {
-        return Promise.reject(err);
-      }
-    },
-  },
-};
+      subject.originalSections = sections;
+      subject.customSections = JSON.parse(JSON.stringify(sections));
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  return {
+    subject,
+    GM,
+    customSubject,
+    fetchSubject,
+    clearSubject,
+  };
+});

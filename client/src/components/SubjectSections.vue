@@ -1,25 +1,10 @@
 <template>
   <div
-    class="
-      rounded
-      p-2
-      dark:bg-gray-800-spotify
-      bg-white
-      shadow-md
-      flex flex-col
-      space-y-2
-    "
+    class="rounded p-2 dark:bg-gray-800-spotify bg-white shadow-md flex flex-col space-y-2"
   >
     <div
       v-if="!!subject.length"
-      class="
-        flex
-        space-x-1
-        items-baseline
-        text-gray-450-spotify
-        dark:text-gray-500-spotify
-        justify-between
-      "
+      class="flex space-x-1 items-baseline text-gray-450-spotify dark:text-gray-500-spotify justify-between"
     >
       <h4 class="font-medium">
         {{ label }}
@@ -37,7 +22,7 @@
       <div class="w-auto justify-end">
         <div class="w-full flex items-start justify-evenly text-center">
           <div class="w-4.5">
-            <template v-if="originalSubject.GM">
+            <template v-if="subjectStore.GM">
               <scroll-picker
                 v-model="item.Score"
                 :options="
@@ -69,7 +54,7 @@ import {
   getMaxScores,
   getPercent,
 } from "@/utils";
-import { useSubject } from "@/composables/useStore";
+import { useSubject } from "@/store";
 import { computed } from "vue";
 
 const props = defineProps({
@@ -83,7 +68,7 @@ const props = defineProps({
   },
 });
 
-const { subject: originalSubject, customSubject, GM } = useSubject();
+const subjectStore = useSubject();
 
 const filteredSections = computed(() => getFilteredSection(props.subject));
 const scores = computed(() => getScores(filteredSections.value));

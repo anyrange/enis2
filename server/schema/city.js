@@ -1,31 +1,14 @@
 import fp from "fastify-plugin";
+import schools from "#shared/schools.js";
+
+const cityValues = schools.map((school) => school.value);
 
 export default fp(async function plugin(fastify) {
   fastify.addSchema({
     $id: "city",
     title: "City",
     type: "string",
-    enum: [
-      "akt",
-      "akb",
-      "fmalm",
-      "hbalm",
-      "ast",
-      "atr",
-      "krg",
-      "kt",
-      "kst",
-      "kzl",
-      "pvl",
-      "ptr",
-      "sm",
-      "tk",
-      "trz",
-      "ura",
-      "ukk",
-      "fmsh",
-      "hbsh",
-    ],
+    enum: cityValues,
     default: "pvl",
   });
 });
