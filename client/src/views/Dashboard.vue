@@ -153,26 +153,33 @@ const endSession = () => {
   });
 };
 
-const startSession = async ({ forceUpdate }) => {
-  try {
-    await getTermsAndContentByYear({ forceUpdate });
-    refetchAttempts.value = 0;
-  } catch (error) {
-    return Promise.reject(error);
-  }
+const startSession = ({ forceUpdate }) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await getTabs({ forceUpdate });
+      await getContent({ forceUpdate });
+      refetchAttempts.value = 0;
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
 };
 
 const restoreSession = async () => {
-  refetchAttempts.value++;
   if (refetchAttempts.value >= REFETCH_ATTEMPTS) {
     endSession();
     return Promise.reject();
   }
+  refetchAttempts.value++;
   try {
-    settings.value.rememberMe && (await login({}));
+    if (settings.value.rememberMe) {
+      await login({});
+    }
     await startSession({ forceUpdate: true });
   } catch {
     await checkAvailability();
+    endSession();
     return Promise.reject();
   }
 };
@@ -219,15 +226,6 @@ const getContent = async ({ forceUpdate }) => {
   }
 };
 
-const getTermsAndContentByYear = async ({ forceUpdate }) => {
-  try {
-    await getTabs({ forceUpdate });
-    await getContent({ forceUpdate });
-  } catch (error) {
-    return Promise.reject(error);
-  }
-};
-
 const openSubjectModal = async (selectedSubject) => {
   if (
     selectedSubject.Name === subject.value.originalSubject.Name &&
@@ -258,7 +256,7 @@ watch(
       await startSession({ forceUpdate: false });
     }
     if (oldYearName && newYearName && newYearName !== oldYearName) {
-      await getTermsAndContentByYear({ forceUpdate: false });
+      await startSession({ forceUpdate: false });
     }
     if (oldTab && newTab && newTab !== oldTab) {
       await getContent({ forceUpdate: false });
