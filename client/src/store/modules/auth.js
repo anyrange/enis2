@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import { useRouter } from "vue-router";
+import router from "@/router";
 import { login as _login, refreshCaptcha } from "@/api";
 import { isEmpty } from "@/utils";
 import { notify } from "@/services/notify.js";
@@ -12,8 +12,6 @@ import useSettingsStore from "./settings.js";
 import useSubjectStore from "./subject.js";
 
 export default defineStore("auth", () => {
-  const router = useRouter();
-
   const { clearYears } = useYearsStore();
   const { clearTerms } = useTermsStore();
   const { clearDiary } = useDiaryStore();

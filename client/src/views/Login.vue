@@ -182,9 +182,7 @@ const submit = async () => {
       captcha.value = error.response.data.data.base64img;
       form.captchaInput = "";
     }
-    if (error.response?.status !== 400) {
-      await checkAvailability();
-    }
+    await checkAvailability();
   }
 };
 </script>
