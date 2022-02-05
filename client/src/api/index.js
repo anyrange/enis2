@@ -27,12 +27,12 @@ api.interceptors.request.use(
       status: "loading",
       endpoint: endpintName,
     });
-    const auth = useAuth();
-    const settings = useSettings();
+    const authStore = useAuth();
+    const settingsStore = useSettings();
     config.params = {
       ...config.params,
-      city: settings.school,
-      token: auth.token,
+      city: settingsStore.settings.school,
+      token: authStore.token,
     };
     if (isMock) {
       console.log(`🚀 endpoint: ${endpintName}, url: ${config.url}`);
