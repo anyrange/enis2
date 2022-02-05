@@ -248,17 +248,15 @@ const openSubjectModal = async (selectedSubject) => {
 
 watch(
   [() => settings.value.year, () => settings.value.tab],
-  async ([newYearName, newTab], [oldYearName, oldTab]) => {
-    if (
-      (!newYearName && !oldYearName && !newTab && !oldTab) ||
-      (newYearName && newTab && !oldYearName && !oldTab)
-    ) {
+  async ([nYear, nTab], [oYear, oTab]) => {
+    const changedYear = oYear && nYear && nYear !== oYear;
+    const changedTab = oTab && nTab && nTab !== oTab;
+    const firstLoad = !nYear && !oYear && !nTab && !oTab;
+    const secondLoad = nYear && nTab && !oYear && !oTab;
+    if (changedYear || firstLoad || secondLoad) {
       await startSession({ forceUpdate: false });
     }
-    if (oldYearName && newYearName && newYearName !== oldYearName) {
-      await startSession({ forceUpdate: false });
-    }
-    if (oldTab && newTab && newTab !== oldTab) {
+    if (changedTab) {
       await getContent({ forceUpdate: false });
     }
   },
