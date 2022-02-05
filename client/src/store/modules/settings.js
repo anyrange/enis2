@@ -32,9 +32,13 @@ export default defineStore("settings", () => {
   const predictSchool = async () => {
     if (settings.school) return;
     try {
-      const { city } = await getUserCity();
+      const { city, region } = await getUserCity();
       const predictedSchool = schools.find((item) => {
-        return item.city === city || city.includes(item.city);
+        return (
+          item.city === city ||
+          city.includes(item.city) ||
+          region.includes(item.city)
+        );
       });
       if (city && predictedSchool) {
         settings.school = predictedSchool.value;

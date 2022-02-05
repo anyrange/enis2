@@ -25,7 +25,7 @@ export default async function (fastify) {
         `https://ipinfo.io/${requestIp}/json?token=${token}`
       ).then((res) => res.json());
 
-      reply.send({ city: res.city || "" });
+      reply.send({ city: res.city || "", region: res.region || "" });
     }
   );
 }

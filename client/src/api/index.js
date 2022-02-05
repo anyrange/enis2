@@ -103,7 +103,9 @@ export const installMockApi = async (api) => {
 
   mock.onGet("health/sms").reply(200, { alive: true });
 
-  mock.onGet("city").reply(200, { city: "Pavlodar" });
+  mock
+    .onGet("city")
+    .reply(200, { city: "Pavlodar", region: "Pavlodar Region" });
 
   const token = "mock.token";
 
