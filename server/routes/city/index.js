@@ -10,6 +10,7 @@ export default async function (fastify) {
             type: "object",
             properties: {
               city: { type: "string" },
+              region: { type: "string" },
             },
           },
         },
