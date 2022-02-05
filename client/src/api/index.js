@@ -65,7 +65,7 @@ const getEndpoint = (name) => {
   return ENDPOINTS.find((e) => e.name === name).endpoint;
 };
 
-export const checkSMSavailability = () => api.get(getEndpoint("HEALTH_SMS"));
+export const checkHealth = () => api.get(getEndpoint("HEALTH_SMS"));
 
 export const getUserCity = () =>
   api.get(getEndpoint("CITY"), { timeout: 1500 });

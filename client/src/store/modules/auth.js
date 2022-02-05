@@ -1,6 +1,5 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import router from "@/router";
 import { login as _login, refreshCaptcha } from "@/api";
 import { isEmpty } from "@/utils";
 import { notify } from "@/services/notify.js";
@@ -40,7 +39,6 @@ export default defineStore("auth", () => {
     try {
       await _login(credentials);
       captcha.value = null;
-      router.push({ name: "dashboard" });
     } catch (error) {
       notify.show({
         type: "danger",
@@ -51,7 +49,6 @@ export default defineStore("auth", () => {
   };
   const logout = () => {
     token.value = null;
-    router.push({ name: "login" });
     clearStore();
   };
   const updateCaptcha = async () => {

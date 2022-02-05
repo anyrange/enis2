@@ -1,13 +1,13 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { checkSMSavailability } from "@/api";
+import { checkHealth } from "@/api";
 
 export default defineStore("health", () => {
   const showAvailabilityModal = ref(false);
 
   const checkAvailability = async () => {
     try {
-      const { alive } = await checkSMSavailability();
+      const { alive } = await checkHealth();
       !alive && (showAvailabilityModal.value = true);
     } catch (error) {
       return Promise.reject(error);

@@ -2,7 +2,7 @@ import { computed } from "vue";
 import { getRandomItem } from "@/utils";
 import emojis from "@/assets/emojis.json";
 import emoticons from "@/assets/emoticons.json";
-import gifs from "../assets/gifs.json";
+import gifs from "@/assets/gifs.json";
 
 export default () => {
   const randomEmoji = computed(() => getRandomItem(emojis));

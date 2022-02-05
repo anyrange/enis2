@@ -5,22 +5,25 @@
       :show="showAvailabilityModal"
       @close="showAvailabilityModal = false"
     />
-    <router-view />
+    <component :is="authStore.authenticated ? Dashboard : Login" />
     <notifications />
   </div>
 </template>
 
 <script setup>
-import { computed, watch } from "vue";
+import { computed } from "vue";
 import { storeToRefs } from "pinia";
-import AvailabilityModal from "@/views/modals/AvailabilityModal.vue";
+import { useLoader, useSettings, useHealth, useAuth } from "@/store";
 import useNavigator from "@/composables/useNavigator";
 import useDocument from "@/composables/useDocument";
-import { useLoader, useSettings, useHealth } from "@/store";
+import AvailabilityModal from "@/views/modals/AvailabilityModal.vue";
+import Dashboard from "@/views/Dashboard.vue";
+import Login from "@/views/Login.vue";
 
 const { isMobile, isSafari } = useNavigator();
 const { toggleClass } = useDocument();
 
+const authStore = useAuth();
 const loaderStore = useLoader();
 const settingsStore = useSettings();
 const healthStore = useHealth();

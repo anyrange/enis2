@@ -3,7 +3,6 @@ import VWave from "v-wave";
 import App from "./App.vue";
 import "virtual:windi.css";
 import "./assets/styles.css";
-import router from "./router";
 import store from "./store";
 import { registerSW } from "virtual:pwa-register";
 
@@ -11,4 +10,4 @@ registerSW({ immediate: true });
 
 const app = createApp(App);
 
-app.use(VWave).use(store).use(router).mount("#app");
+app.use(VWave).use(store).mount("#app");
