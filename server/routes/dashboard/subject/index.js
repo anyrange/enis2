@@ -7,10 +7,13 @@ export default async function (fastify) {
       schema: {
         query: {
           type: "object",
-          required: ["journalId", "evalId", "city"],
+          required: ["journalId", "evaluations[]", "city"],
           properties: {
             journalId: { type: "string", minLength: 36, maxLength: 36 },
-            evalId: { type: "string", minLength: 36, maxLength: 36 },
+            "evaluations[]": {
+              type: "array",
+              items: { type: "string", minLength: 36, maxLength: 36 },
+            },
             city: fastify.getSchema("city"),
             token: { type: "string" },
           },
@@ -19,13 +22,16 @@ export default async function (fastify) {
           200: {
             type: "array",
             items: {
-              type: "object",
-              properties: {
-                Name: { type: "string" },
-                Score: { type: "number" },
-                MaxScore: { type: "number" },
-                SectionId: { type: "string" },
-                RubricId: { type: "string" },
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  Name: { type: "string" },
+                  Score: { type: "number" },
+                  MaxScore: { type: "number" },
+                  SectionId: { type: "string" },
+                  RubricId: { type: "string" },
+                },
               },
             },
           },
@@ -34,21 +40,30 @@ export default async function (fastify) {
       },
     },
     async (req, reply) => {
-      const params = new URLSearchParams();
-      params.append("journalId", req.query.journalId);
-      params.append("evalId", req.query.evalId);
+      const evaluations = req.query["evaluations[]"];
 
-      const cookie = req.cookies;
+      const createSubjectPromise = async (evalId) => {
+        const params = new URLSearchParams();
+        params.append("journalId", req.query.journalId);
+        params.append("evalId", evalId);
 
-      const response = await fastify.api({
-        url: `https://sms.${req.query.city}.nis.edu.kz/Jce/Diary/GetResultByEvalution`,
-        method: "POST",
-        body: params,
-        cookie,
-      });
+        const cookie = req.cookies;
+        const response = await fastify.api({
+          url: `https://sms.${req.query.city}.nis.edu.kz/Jce/Diary/GetResultByEvalution`,
+          method: "POST",
+          body: params,
+          cookie,
+        });
+        response.data.forEach((item) => (item.SectionId = item.Id));
+        return response.data;
+      };
 
-      response.data.forEach((item) => (item.SectionId = item.Id));
-      reply.send(response.data);
+      const subject = await Promise.all([
+        createSubjectPromise(evaluations[0]),
+        createSubjectPromise(evaluations[1]),
+      ]);
+
+      reply.send(subject);
     }
   );
 }

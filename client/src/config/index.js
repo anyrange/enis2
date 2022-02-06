@@ -6,7 +6,7 @@ export const isLocal =
 export const SERVER_URL =
   import.meta.env.VITE_SERVER_URL || "http://localhost:8887";
 
-export const fallbackErrorMessage = "Что-то пошло не так";
+export const DEFAULT_ERROR_MESSAGE = "Что-то пошло не так";
 
 export const ENDPOINTS = Object.freeze([
   {

@@ -33,10 +33,7 @@ export default defineStore("subject", () => {
   const fetchSubject = async (subj) => {
     subject.originalSubject = subj;
     try {
-      const [SAU, SAT] = await Promise.all([
-        getSubject(subj.JournalId, subj.Evaluations[0]),
-        getSubject(subj.JournalId, subj.Evaluations[1]),
-      ]);
+      const [SAU, SAT] = await getSubject(subj.JournalId, subj.Evaluations);
       const sections = { SAU, SAT };
       subject.originalSections = sections;
       subject.customSections = JSON.parse(JSON.stringify(sections));

@@ -1,6 +1,6 @@
 import { reactive, computed } from "vue";
 import { defineStore } from "pinia";
-import { getUserCity } from "@/api";
+import { getCity } from "@/api";
 import schools from "#shared/schools.js";
 
 export default defineStore("settings", () => {
@@ -32,7 +32,7 @@ export default defineStore("settings", () => {
   const predictSchool = async () => {
     if (settings.school) return;
     try {
-      const { city, region } = await getUserCity();
+      const { city, region } = await getCity();
       const predictedSchool = schools.find((item) => {
         return (
           item.city === city ||

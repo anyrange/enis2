@@ -1,5 +1,5 @@
 import axios from "axios";
-import { isMock, ENDPOINTS, SERVER_URL, fallbackErrorMessage } from "@/config";
+import { isMock, ENDPOINTS, SERVER_URL, DEFAULT_ERROR_MESSAGE } from "@/config";
 import { useLoader, useAuth, useSettings } from "@/store";
 
 const api = axios.create({
@@ -7,36 +7,38 @@ const api = axios.create({
   withCredentials: true,
 });
 
-const setLoader = ({ status, endpoint }) => {
+const useStore = () => {
+  const auth = useAuth();
   const loader = useLoader();
+  const settings = useSettings();
+  return { loader, auth, settings };
+};
+
+const setLoader = ({ status, endpoint }) => {
+  const { loader } = useStore();
   loader.setLoader({ status, endpoint });
 };
 
 const setToken = (token) => {
-  if (!token) return;
-  const auth = useAuth();
-  auth.setToken(token);
+  const { auth } = useStore();
+  token && auth.setToken(token);
+};
+
+const getParams = () => {
+  const { auth, settings } = useStore();
+  return { city: settings.settings.school, token: auth.token };
 };
 
 api.interceptors.request.use(
   (config) => {
-    const endpintName = ENDPOINTS.find((e) => {
-      return config.url.includes(e.endpoint);
-    }).name;
-    setLoader({
-      status: "loading",
-      endpoint: endpintName,
-    });
-    const authStore = useAuth();
-    const settingsStore = useSettings();
+    const url = config.url;
+    const endpoint = ENDPOINTS.find((e) => url.includes(e.endpoint)).name;
+    setLoader({ status: "loading", endpoint });
     config.params = {
       ...config.params,
-      city: settingsStore.settings.school,
-      token: authStore.token,
+      ...getParams(),
     };
-    if (isMock) {
-      console.log(`🚀 endpoint: ${endpintName}, url: ${config.url}`);
-    }
+    if (isMock) console.log(`🚀 endpoint: ${endpoint}, url: ${url}`);
     return config;
   },
   (error) => {
@@ -56,39 +58,55 @@ api.interceptors.response.use(
     setToken(error.response?.data?.token);
     error.response.data = error.response.data || {};
     error.response.data.message =
-      error.response.data.message || fallbackErrorMessage;
+      error.response.data.message || DEFAULT_ERROR_MESSAGE;
     return Promise.reject(error);
   }
 );
 
-const getEndpoint = (name) => {
-  return ENDPOINTS.find((e) => e.name === name).endpoint;
+const createEndpoint = (name, id = "") => {
+  const url = ENDPOINTS.find((e) => e.name === name).endpoint;
+  return url + id;
 };
 
-export const checkHealth = () => api.get(getEndpoint("HEALTH_SMS"));
+export const checkHealth = () => {
+  return api.get(createEndpoint("HEALTH_SMS"));
+};
 
-export const getUserCity = () =>
-  api.get(getEndpoint("CITY"), { timeout: 1500 });
+export const getCity = () => {
+  return api.get(createEndpoint("CITY"), { timeout: 1500 });
+};
 
-export const login = (user) => api.post(getEndpoint("LOGIN"), user);
+export const login = (user) => {
+  return api.post(createEndpoint("LOGIN"), user);
+};
 
-export const refreshCaptcha = () => api.get(getEndpoint("REFRESH_CAPTCHA"));
+export const refreshCaptcha = () => {
+  return api.get(createEndpoint("REFRESH_CAPTCHA"));
+};
 
-export const getYears = () => api.get(getEndpoint("YEARS"));
+export const getYears = () => {
+  return api.get(createEndpoint("YEARS"));
+};
 
-export const getTerms = (id) => api.get(`${getEndpoint("TERMS")}${id}`);
+export const getTerms = (yearId) => {
+  return api.get(createEndpoint("TERMS", yearId));
+};
 
-export const getDiary = (id) => api.get(`${getEndpoint("DIARY")}${id}`);
+export const getDiary = (termId) => {
+  return api.get(createEndpoint("DIARY", termId));
+};
 
-export const getSubject = (journalId, evalId) =>
-  api.get(getEndpoint("SUBJECT"), {
-    params: { journalId, evalId },
+export const getSubject = (journalId, evaluations) => {
+  return api.get(createEndpoint("SUBJECT"), {
+    params: { journalId, evaluations },
   });
+};
 
-export const getGrades = (yearID) =>
-  api.get(getEndpoint("GRADES"), { params: { yearID } });
+export const getGrades = (yearID) => {
+  return api.get(createEndpoint("GRADES"), { params: { yearID } });
+};
 
-export const installMockApi = async (api) => {
+const installMockApi = async (api) => {
   const { default: MockAdapter } = await import("axios-mock-adapter");
   const {
     mockCaptcha,
@@ -103,9 +121,7 @@ export const installMockApi = async (api) => {
 
   mock.onGet("health/sms").reply(200, { alive: true });
 
-  mock
-    .onGet("city")
-    .reply(200, { city: "Pavlodar", region: "Pavlodar Region" });
+  mock.onGet("city").reply(200, { city: "Pvl", region: "Pavlodar Region" });
 
   const token = "mock.token";
 
