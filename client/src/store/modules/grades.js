@@ -1,21 +1,20 @@
 import { ref, computed } from "vue";
-import { defineStore } from "pinia";
+import { defineStore, storeToRefs } from "pinia";
 import { getGrades } from "@/api";
-import { existsAtIndex } from "@/utils";
+import { findIndex, findItem } from "@/utils";
 import useSettingsStore from "./settings.js";
 import useYearsStore from "./years.js";
 
 export default defineStore("grades", () => {
-  const settingsStore = useSettingsStore();
   const yearsStore = useYearsStore();
+  const settingsStore = useSettingsStore();
+  const { settings } = storeToRefs(settingsStore);
 
   const gradesData = ref([]);
 
   const grades = computed(() => {
-    const YEAR = settingsStore.settings.year;
-
-    const matchedGrades = gradesData.value.find((item) => {
-      return item.yearName === YEAR;
+    const matchedGrades = findItem(gradesData.value, {
+      yearName: settings.value.year,
     });
     return matchedGrades ? matchedGrades.grades : [];
   });
@@ -24,10 +23,11 @@ export default defineStore("grades", () => {
     gradesData.value = [];
   };
 
-  const fetchGrades = async ({ yearId, yearName, force }) => {
-    const index = existsAtIndex(gradesData.value, { yearName });
+  const fetchGrades = async (force = false) => {
+    const yearId = yearsStore.currentYearId;
+    const yearName = settings.value.year;
 
-    const exists = index !== null;
+    const { index, exists } = findIndex(gradesData.value, { yearName });
     const isActualYear = yearsStore.actualYearName === yearName;
 
     if (exists && !force && !isActualYear) return;

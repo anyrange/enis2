@@ -15,7 +15,7 @@
     </div>
     <div
       v-for="item in subject"
-      :key="item"
+      :key="item.Name"
       class="flex flex-row justify-between items-start space-x-2"
     >
       <span class="w-4/5 justify-start">{{ item.Name }}</span>

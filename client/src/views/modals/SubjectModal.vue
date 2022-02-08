@@ -18,15 +18,9 @@
         :subject="GM ? customSubject : subject.originalSubject"
       />
       <loading-dots v-if="loading" />
-      <template
-        v-else-if="
-          !subject.customSections.SAU.length &&
-          !loading &&
-          loadingEndpoint === 'SUBJECT'
-        "
-      >
+      <template v-else-if="!subject.customSections.SAU.length">
         <div class="p-2 text-center">
-          {{ errorMessage }}
+          Не удалось загрузить информацию о предмете.
         </div>
       </template>
       <template v-else>
@@ -63,6 +57,6 @@ const emit = defineEmits(["close"]);
 const loaderStore = useLoader();
 const subjectStore = useSubject();
 
-const { loading, loadingEndpoint, errorMessage } = storeToRefs(loaderStore);
+const { loading } = storeToRefs(loaderStore);
 const { subject, customSubject, GM } = storeToRefs(subjectStore);
 </script>

@@ -1,41 +1,33 @@
 import { ref, computed } from "vue";
-import { defineStore } from "pinia";
+import { defineStore, storeToRefs } from "pinia";
 import { getTerms } from "@/api";
-import { existsAtIndex } from "@/utils";
+import { findIndex, findItem } from "@/utils";
 import useSettingsStore from "./settings.js";
+import useYearsStore from "./years.js";
 
 export default defineStore("terms", () => {
+  const yearsStore = useYearsStore();
   const settingsStore = useSettingsStore();
+  const { settings } = storeToRefs(settingsStore);
 
   const termsData = ref([]);
   const actual = ref(null);
 
-  const YEAR = computed(() => settingsStore.settings.year);
-  const TAB = computed(() => settingsStore.settings.tab);
-
   const matchedTerm = computed(() => {
-    return termsData.value.find((item) => {
-      return item.yearName === YEAR.value;
-    });
+    return findItem(termsData.value, { yearName: settings.value.year });
   });
 
   const currentTermId = computed(() => {
     const termData =
       matchedTerm.value &&
-      matchedTerm.value.terms.find((term) => {
-        return term.Name === TAB.value;
-      });
+      findItem(matchedTerm.value.terms, { Name: settings.value.tab });
     return termData ? termData.Id : "";
   });
 
   const terms = computed(() => {
-    const fallbackTerms = [
-      { Name: "1" },
-      { Name: "2" },
-      { Name: "3" },
-      { Name: "4" },
-    ];
-    return matchedTerm.value ? matchedTerm.value.terms : fallbackTerms;
+    return matchedTerm.value
+      ? matchedTerm.value.terms
+      : [{ Name: "1" }, { Name: "2" }, { Name: "3" }, { Name: "4" }];
   });
 
   const clearTerms = () => {
@@ -47,20 +39,27 @@ export default defineStore("terms", () => {
     return name.substring(0, 1);
   };
 
-  const fetchTerms = async ({ yearId, yearName, force }) => {
-    const index = existsAtIndex(termsData.value, { yearName });
-    const exists = index !== null;
+  const fetchTerms = async (force = false) => {
+    const yearId = yearsStore.currentYearId;
+    const yearName = settings.value.year;
+
+    const { index, exists } = findIndex(termsData.value, { yearName });
 
     if (exists && !force) return;
 
     try {
       const terms = await getTerms(yearId);
+
       const actualTerm = terms.find((term) => term.isActual);
+
       actual.value = shorterTermName(actualTerm.Name);
+      settings.value.tab = settings.value.tab || actual.value;
+
       const formattedTerms = terms.map(({ Id, Name: label }) => ({
         Id,
         Name: shorterTermName(label),
       }));
+
       if (exists) {
         termsData.value[index].terms = formattedTerms;
       } else {

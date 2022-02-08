@@ -33,8 +33,8 @@
       </template>
       <template v-else>
         <subject-diary
-          v-for="item in diary"
-          :key="item"
+          v-for="(item, index) in diary"
+          :key="item.Name || index"
           :subject="item"
           @click="openSubjectModal(item)"
         />
@@ -92,6 +92,7 @@ import {
   useTerms,
   useGrades,
 } from "@/store";
+import { findItem } from "@/utils";
 
 const GREEK_NUMERALS = {
   1: "I",
@@ -100,9 +101,6 @@ const GREEK_NUMERALS = {
   4: "IV",
 };
 
-const REFETCH_ATTEMPTS = 1;
-
-const refetchAttempts = ref(0);
 const showSubjectModal = ref(false);
 const showSettingsModal = ref(false);
 const showYears = ref(true);
@@ -119,11 +117,11 @@ const gradesStore = useGrades();
 const { checkAvailability } = useHealth();
 const { login, logout } = useAuth();
 
-const { loading, errorMessage } = storeToRefs(loaderStore);
+const { loading } = storeToRefs(loaderStore);
 const { settings } = storeToRefs(settingsStore);
 const { subject } = storeToRefs(subjectStore);
-const { years, actualYearName, currentYearId } = storeToRefs(yearsStore);
-const { terms, actualTermName, currentTermId } = storeToRefs(termsStore);
+const { years } = storeToRefs(yearsStore);
+const { terms } = storeToRefs(termsStore);
 const { diary } = storeToRefs(diaryStore);
 const { grades } = storeToRefs(gradesStore);
 
@@ -145,83 +143,66 @@ onBeforeUnmount(() => {
   window.removeEventListener("scroll", handleScroll);
 });
 
-const endSession = () => {
-  logout();
+const showError = (message) => {
   notify.show({
     type: "danger",
-    message: errorMessage.value || "Сессия завершена",
+    message,
   });
 };
 
-const startSession = ({ forceUpdate }) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      await getTabs({ forceUpdate });
-      await getContent({ forceUpdate });
-      refetchAttempts.value = 0;
-      resolve();
-    } catch (error) {
-      reject(error);
-    }
-  });
+const endSession = (message = "Сессия завершена") => {
+  logout();
+  showError(message);
 };
 
-const restoreSession = async () => {
-  if (refetchAttempts.value >= REFETCH_ATTEMPTS) {
-    endSession();
-    return Promise.reject();
-  }
-  refetchAttempts.value++;
+const fetchTabs = async (force) => {
   try {
-    if (settings.value.rememberMe) {
-      await login({});
-    }
-    await startSession({ forceUpdate: true });
-  } catch {
-    await checkAvailability();
-    endSession();
-    return Promise.reject();
-  }
-};
-
-const getTabs = async ({ forceUpdate }) => {
-  try {
-    await yearsStore.fetchYears({ force: forceUpdate });
-    settings.value.year = settings.value.year || actualYearName.value;
-    await termsStore.fetchTerms({
-      force: forceUpdate,
-      yearId: currentYearId.value,
-      yearName: settings.value.year,
-    });
-    settings.value.tab = settings.value.tab || actualTermName.value;
+    await yearsStore.fetchYears(force);
+    await termsStore.fetchTerms(force);
   } catch (error) {
-    try {
-      await restoreSession();
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    return Promise.reject(error);
   }
 };
 
-const getContent = async ({ forceUpdate }) => {
+const fetchContent = async (force) => {
   try {
     isGrades.value
-      ? await gradesStore.fetchGrades({
-          yearId: currentYearId.value,
-          yearName: settings.value.year,
-          force: forceUpdate,
-        })
-      : await diaryStore.fetchDiary({
-          termId: currentTermId.value,
-          termName: settings.value.tab,
-          yearName: settings.value.year,
-          force: forceUpdate,
-        });
+      ? await gradesStore.fetchGrades(force)
+      : await diaryStore.fetchDiary(force);
   } catch (error) {
-    try {
-      await restoreSession();
-    } catch (error) {
-      return Promise.reject(error);
+    return Promise.reject(error);
+  }
+};
+
+const fetchData = async ({ force = false, includeTabs = false }) => {
+  try {
+    includeTabs && (await fetchTabs(force));
+    await fetchContent(force);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+const getData = async ({ force = false, includeTabs = false }) => {
+  try {
+    await fetchData({ force, includeTabs });
+  } catch (error) {
+    const status = error.response.status;
+    const message = error.response.data.message;
+    if (status === 401) {
+      if (settings.value.rememberMe) {
+        try {
+          await login();
+          await fetchData({ force: true, includeTabs: true });
+        } catch {
+          return endSession();
+        }
+      } else {
+        endSession();
+      }
+    } else {
+      showError(message);
+      await checkAvailability();
     }
   }
 };
@@ -235,13 +216,13 @@ const openSubjectModal = async (selectedSubject) => {
   }
   subjectStore.clearSubject();
   showSubjectModal.value = true;
+  const lastSubject = diary.value.find((s) => {
+    return s.Name === selectedSubject.Name;
+  });
   try {
     await subjectStore.fetchSubject(selectedSubject);
   } catch (error) {
-    await restoreSession();
-    const lastSubject = diary.value.find(
-      (s) => s.Name === selectedSubject.Name
-    );
+    await getData({ includeTabs: true, force: true });
     await subjectStore.fetchSubject(lastSubject);
   }
 };
@@ -254,10 +235,10 @@ watch(
     const firstLoad = !nYear && !oYear && !nTab && !oTab;
     const secondLoad = nYear && nTab && !oYear && !oTab;
     if (changedYear || firstLoad || secondLoad) {
-      await startSession({ forceUpdate: false });
+      await getData({ includeTabs: true });
     }
     if (changedTab) {
-      await getContent({ forceUpdate: false });
+      await getData({ includeTabs: false });
     }
   },
   {

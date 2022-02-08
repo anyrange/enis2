@@ -1,20 +1,18 @@
 import { ref, computed } from "vue";
-import { defineStore } from "pinia";
+import { defineStore, storeToRefs } from "pinia";
 import { getYears } from "@/api";
+import { findItem } from "@/utils";
 import useSettingsStore from "./settings.js";
 
 export default defineStore("years", () => {
   const settingsStore = useSettingsStore();
+  const { settings } = storeToRefs(settingsStore);
 
   const years = ref([]);
   const actual = ref(null);
 
-  const YEAR = computed(() => settingsStore.settings.year);
-
   const currentYearId = computed(() => {
-    const matchedYear = years.value.find((item) => {
-      return item.label === YEAR.value;
-    });
+    const matchedYear = findItem(years.value, { label: settings.value.year });
     return matchedYear ? matchedYear.value : "";
   });
 
@@ -27,7 +25,7 @@ export default defineStore("years", () => {
     return name.substring(0, 9);
   };
 
-  const fetchYears = async ({ force }) => {
+  const fetchYears = async (force = false) => {
     const exists = years.value.length;
 
     if (exists && !force) return;
@@ -35,11 +33,14 @@ export default defineStore("years", () => {
     try {
       const data = await getYears();
 
-      const actualYearIndex = data.findIndex((year) => year.isActual);
       const actualYear = data.find((year) => year.isActual);
-      actual.value = shorterYearName(actualYear.Name);
 
-      const formattedYears = data
+      actual.value = shorterYearName(actualYear.Name);
+      settings.value.year = settings.value.year || actual.value;
+
+      const actualYearIndex = data.findIndex((year) => year.isActual);
+
+      years.value = data
         .slice(actualYearIndex, actualYearIndex + 3)
         .map(({ Id: value, Name: label, isActual }) => ({
           value,
@@ -47,8 +48,6 @@ export default defineStore("years", () => {
           isActual,
         }))
         .reverse();
-
-      years.value = formattedYears;
     } catch (error) {
       return Promise.reject(error);
     }

@@ -13,55 +13,46 @@ export const ENDPOINTS = Object.freeze([
     name: "HEALTH_SMS",
     endpoint: "health/sms",
     hideLoader: false,
-    error: "Не удалось определить статус СУШа",
   },
   {
     name: "CITY",
     endpoint: "city",
     hideLoader: true,
-    error: "Не удалось определить город",
   },
   {
     name: "LOGIN",
     endpoint: "login",
     hideLoader: false,
-    error: "Не удалось войти",
   },
   {
     name: "REFRESH_CAPTCHA",
     endpoint: "login/captchaRefresh",
     hideLoader: true,
-    error: "Не удалось загрузить капчу",
   },
   {
     name: "YEARS",
     endpoint: "dashboard/years",
     hideLoader: false,
-    error: "Не удалось загрузить года",
   },
   {
     name: "TERMS",
     endpoint: "dashboard/years/",
     hideLoader: false,
-    error: "Не удалось загрузить четверти",
   },
   {
     name: "DIARY",
     endpoint: "dashboard/terms/",
     hideLoader: false,
-    error: "Не удалось загрузить дневник",
   },
   {
     name: "SUBJECT",
     endpoint: "dashboard/subject",
     hideLoader: true,
-    error: "Не удалось загрузить информацию о предмете",
   },
   {
     name: "GRADES",
     endpoint: "dashboard/grades",
     hideLoader: false,
-    error: "Не удалось загрузить табель",
   },
 ]);
 

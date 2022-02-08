@@ -9,15 +9,13 @@ export default defineStore("loader", () => {
   });
 
   const isLoading = computed(() => loading.value.status === "loading");
-  const isError = computed(() => loading.value.status === "error");
   const currentEndpoint = computed(() => {
-    return ENDPOINTS.find((enpoint) => enpoint.name === loading.value.endpoint);
+    return ENDPOINTS.find(
+      (endpoint) => endpoint.name === loading.value.endpoint
+    );
   });
   const showLoader = computed(() => {
     return isLoading.value && !currentEndpoint.value?.hideLoader;
-  });
-  const errorMessage = computed(() => {
-    return isError.value && currentEndpoint.value?.error;
   });
 
   const setLoader = (value) => {
@@ -28,7 +26,6 @@ export default defineStore("loader", () => {
     loading: isLoading,
     showLoader,
     loadingEndpoint: computed(() => loading.value.endpoint),
-    errorMessage,
     setLoader,
   };
 });

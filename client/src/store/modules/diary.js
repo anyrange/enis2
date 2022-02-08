@@ -1,50 +1,61 @@
 import { ref, computed } from "vue";
-import { defineStore } from "pinia";
+import { defineStore, storeToRefs } from "pinia";
 import { getDiary } from "@/api";
-import { existsAtIndex } from "@/utils";
+import { findIndex, findItem } from "@/utils";
 import useSettingsStore from "./settings.js";
 import useYearsStore from "./years.js";
 import useTermsStore from "./terms.js";
 
 export default defineStore("diary", () => {
   const settingsStore = useSettingsStore();
+  const { settings } = storeToRefs(settingsStore);
+
   const yearsStore = useYearsStore();
   const termsStore = useTermsStore();
 
   const diaryData = ref([]);
 
-  const diary = computed(() => {
-    const TAB = settingsStore.settings.tab;
-    const YEAR = settingsStore.settings.year;
-    const SORT_BY = settingsStore.settings.sortBy;
-    const HIDE_EMPTY = settingsStore.settings.hideEmpty;
-
-    const matchedDiary = diaryData.value.find((item) => {
-      return item.termName === TAB && item.yearName === YEAR;
+  const matchedDiary = computed(() => {
+    return findItem(diaryData.value, {
+      yearName: settings.value.year,
+      termName: settings.value.tab,
     });
-    const rawDiary = matchedDiary ? matchedDiary.diary : [];
+  });
+
+  const diary = computed(() => {
+    const rawDiary = matchedDiary.value ? matchedDiary.value.diary : [];
 
     const sort = {
       name: (array) => array.sort((a, b) => a.Name.localeCompare(b.Name)),
       score: (array) => array.sort((a, b) => b.Score - a.Score),
     };
 
-    const sortedDiary = sort[SORT_BY](rawDiary);
+    const sortedDiary = sort[settings.value.sortBy](rawDiary);
 
     const filteredDiary = sortedDiary.filter((o) => o.Score !== 0);
     const allEmpty = !filteredDiary.length;
 
-    return HIDE_EMPTY ? (allEmpty ? sortedDiary : filteredDiary) : sortedDiary;
+    return settings.value.hideEmpty
+      ? allEmpty
+        ? sortedDiary
+        : filteredDiary
+      : sortedDiary;
   });
 
   const clearDiary = () => {
     diaryData.value = [];
   };
 
-  const fetchDiary = async ({ termId, termName, yearName, force = false }) => {
-    const index = existsAtIndex(diaryData.value, { termName, yearName });
+  const fetchDiary = async (force = false) => {
+    const termId = termsStore.currentTermId;
+    const termName = settings.value.tab;
+    const yearName = settings.value.year;
 
-    const exists = index !== null;
+    const { index, exists } = findIndex(diaryData.value, {
+      termName,
+      yearName,
+    });
+
     const isActualTerm = termsStore.actualTermName === termName;
     const isActualYear = yearsStore.actualYearName === yearName;
 

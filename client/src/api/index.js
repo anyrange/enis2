@@ -76,8 +76,8 @@ export const getCity = () => {
   return api.get(createEndpoint("CITY"), { timeout: 1500 });
 };
 
-export const login = (user) => {
-  return api.post(createEndpoint("LOGIN"), user);
+export const login = (credentials = {}) => {
+  return api.post(createEndpoint("LOGIN"), credentials);
 };
 
 export const refreshCaptcha = () => {

@@ -39,9 +39,17 @@ export const getRandomItem = (array) => {
   return array[Math.floor(Math.random() * array.length)];
 };
 
-export const existsAtIndex = (data, query) => {
-  const index = data.findIndex((rec) =>
-    Object.entries(query).every(([k, v]) => rec[k].toString().includes(v))
-  );
-  return index === -1 ? null : index;
+const findByQuery = (i, query) => {
+  return Object.entries(query).every(([k, v]) => i[k].toString().includes(v));
+};
+
+export const findItem = (array, query) => {
+  return array.find((i) => findByQuery(i, query));
+};
+
+export const findIndex = (array, query) => {
+  const idx = array.findIndex((i) => findByQuery(i, query));
+  const index = idx === -1 ? null : idx;
+  const exists = index !== null;
+  return { index, exists };
 };
