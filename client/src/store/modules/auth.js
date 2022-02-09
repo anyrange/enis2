@@ -21,7 +21,8 @@ export default defineStore("auth", () => {
   const token = ref(null);
   const captcha = ref(null);
 
-  const authenticated = computed(() => !isEmpty(token.value));
+  const authenticated = ref(false);
+  const hasToken = computed(() => !isEmpty(token.value));
 
   const clearStore = () => {
     clearYears();
@@ -35,11 +36,16 @@ export default defineStore("auth", () => {
   const setToken = (newToken) => {
     token.value = newToken;
   };
+
   const login = async (credentials) => {
     try {
-      await _login(credentials);
+      const data = await _login(credentials);
+      setToken(data.token);
       captcha.value = null;
+      authenticated.value = true;
     } catch (error) {
+      authenticated.value = false;
+      setToken(error.response.data.token);
       notify.show({
         type: "danger",
         message: error.response.data.message,
@@ -49,6 +55,7 @@ export default defineStore("auth", () => {
   };
   const logout = () => {
     token.value = null;
+    authenticated.value = false;
     clearStore();
   };
   const updateCaptcha = async () => {
@@ -62,6 +69,7 @@ export default defineStore("auth", () => {
     token,
     captcha,
     authenticated,
+    hasToken,
     login,
     logout,
     updateCaptcha,

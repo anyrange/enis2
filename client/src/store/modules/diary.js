@@ -5,11 +5,13 @@ import { findIndex, findItem } from "@/utils";
 import useSettingsStore from "./settings.js";
 import useYearsStore from "./years.js";
 import useTermsStore from "./terms.js";
+import useAuthStore from "./auth.js";
 
 export default defineStore("diary", () => {
   const settingsStore = useSettingsStore();
   const { settings } = storeToRefs(settingsStore);
 
+  const authStore = useAuthStore();
   const yearsStore = useYearsStore();
   const termsStore = useTermsStore();
 
@@ -62,7 +64,8 @@ export default defineStore("diary", () => {
     if (exists && !force && !(isActualTerm && isActualYear)) return;
 
     try {
-      const { data } = await getDiary(termId);
+      const { data, token } = await getDiary(termId);
+      authStore.setToken(token);
       if (exists) {
         diaryData.value[index].diary = data;
       } else {

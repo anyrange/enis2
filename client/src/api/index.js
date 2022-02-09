@@ -19,11 +19,6 @@ const setLoader = ({ status, endpoint }) => {
   loader.setLoader({ status, endpoint });
 };
 
-const setToken = (token) => {
-  const { auth } = useStore();
-  token && auth.setToken(token);
-};
-
 const getParams = () => {
   const { auth, settings } = useStore();
   return { city: settings.settings.school, token: auth.token };
@@ -50,12 +45,10 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
     setLoader({ status: "pending", endpoint: null });
-    setToken(response?.data?.token);
     return response.data;
   },
   (error) => {
     setLoader({ status: "error", endpoint: null });
-    setToken(error.response?.data?.token);
     error.response.data = error.response.data || {};
     error.response.data.message =
       error.response.data.message || DEFAULT_ERROR_MESSAGE;

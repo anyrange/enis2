@@ -11,7 +11,7 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { storeToRefs } from "pinia";
 import { useLoader, useSettings, useHealth, useAuth } from "@/store";
 import useNavigator from "@/composables/useNavigator";
@@ -29,6 +29,13 @@ const settingsStore = useSettings();
 const healthStore = useHealth();
 
 const { showAvailabilityModal } = storeToRefs(healthStore);
+
+onMounted(() => {
+  authStore.captcha = null;
+  if (authStore.hasToken) {
+    authStore.authenticated = true;
+  }
+});
 
 toggleClass(
   computed(() => settingsStore.settings.theme === "dark"),

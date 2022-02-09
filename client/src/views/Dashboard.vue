@@ -187,23 +187,23 @@ const getData = async ({ force = false, includeTabs = false }) => {
   try {
     await fetchData({ force, includeTabs });
   } catch (error) {
-    const status = error.response.status;
+    const isUnauthorized = error.response.status === 401;
     const message = error.response.data.message;
-    if (status === 401) {
-      if (settings.value.rememberMe) {
-        try {
-          await login();
-          await fetchData({ force: true, includeTabs: true });
-        } catch {
-          return endSession();
-        }
-      } else {
-        endSession();
+    const handleError = () => {
+      isUnauthorized ? endSession() : showError(message);
+    };
+    if (settings.value.rememberMe) {
+      try {
+        await login();
+        await fetchData({ force: true, includeTabs: true });
+        return;
+      } catch {
+        handleError();
       }
     } else {
-      showError(message);
-      await checkAvailability();
+      handleError();
     }
+    await checkAvailability();
   }
 };
 
