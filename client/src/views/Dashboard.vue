@@ -216,13 +216,13 @@ const openSubjectModal = async (selectedSubject) => {
   }
   subjectStore.clearSubject();
   showSubjectModal.value = true;
-  const lastSubject = diary.value.find((s) => {
-    return s.Name === selectedSubject.Name;
-  });
   try {
     await subjectStore.fetchSubject(selectedSubject);
   } catch (error) {
     await getData({ includeTabs: true, force: true });
+    const lastSubject = diary.value.find((s) => {
+      return s.Name === selectedSubject.Name;
+    });
     await subjectStore.fetchSubject(lastSubject);
   }
 };
