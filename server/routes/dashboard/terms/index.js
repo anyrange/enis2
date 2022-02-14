@@ -8,6 +8,7 @@ export default async function (fastify) {
       schema: {
         description: "Terms of current year",
         querystring: fastify.getSchema("domain"),
+        headers: fastify.getSchema("token"),
         response: {
           200: {
             type: "array",

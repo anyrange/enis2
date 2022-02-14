@@ -5,6 +5,7 @@ export default async function (fastify) {
     "",
     {
       schema: {
+        headers: fastify.getSchema("token"),
         querystring: {
           type: "object",
           required: ["city", "yearID"],

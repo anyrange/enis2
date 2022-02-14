@@ -7,12 +7,12 @@ const getDecryptedPassword = (password) => {
 };
 
 export default async function (fastify) {
-  const querystring = fastify.getSchema("domain");
   fastify.post(
     "",
     {
       schema: {
-        querystring,
+        querystring: fastify.getSchema("domain"),
+        headers: fastify.getSchema("token"),
         body: {
           type: "object",
           properties: {

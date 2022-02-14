@@ -28,10 +28,12 @@ api.interceptors.request.use(
   (config) => {
     const url = config.url;
     const endpoint = ENDPOINTS.find((e) => url.includes(e.endpoint)).name;
+    const { token, city } = getParams();
     setLoader({ status: "loading", endpoint });
+    config.headers.Authorization = `Bearer ${token}`;
     config.params = {
       ...config.params,
-      ...getParams(),
+      city,
     };
     if (isMock) console.log(`🚀 endpoint: ${endpoint}, url: ${url}`);
     return config;

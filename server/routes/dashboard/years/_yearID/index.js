@@ -7,6 +7,7 @@ export default async function (fastify) {
     {
       schema: {
         querystring: fastify.getSchema("domain"),
+        headers: fastify.getSchema("token"),
         params: {
           type: "object",
           required: ["yearID"],

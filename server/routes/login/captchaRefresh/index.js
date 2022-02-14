@@ -1,12 +1,12 @@
 import fetch from "node-fetch";
 
 export default async function (fastify) {
-  const querystring = fastify.getSchema("domain");
   fastify.get(
     "",
     {
       schema: {
-        querystring,
+        querystring: fastify.getSchema("domain"),
+        headers: fastify.getSchema("token"),
         response: { 200: { type: "string" } },
         tags: ["login"],
       },

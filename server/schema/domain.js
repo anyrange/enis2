@@ -8,7 +8,6 @@ export default fp(async function plugin(fastify) {
     required: ["city"],
     properties: {
       city: fastify.getSchema("city"),
-      token: { type: "string" },
     },
   });
 });
