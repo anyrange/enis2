@@ -94,4 +94,9 @@ export default [
     label: "Шымкент ХБН",
     city: "Shymkent",
   },
+  {
+    value: "trk",
+    label: "Туркестан ХБН",
+    city: "Turkistan",
+  },
 ];
