@@ -1,5 +1,5 @@
 import { URLSearchParams } from "url";
-import currentQuarter from "../../../utils/currentQuarter.js";
+import currentQuarter from "#root/utils/currentQuarter.js";
 
 export default async function (fastify) {
   fastify.get(

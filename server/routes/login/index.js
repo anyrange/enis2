@@ -1,5 +1,10 @@
 import { URLSearchParams } from "url";
 import fetch from "node-fetch";
+import { encrypt, decrypt } from "#root/utils/crypto.js";
+
+const getDecryptedPassword = (password) => {
+  return password?.content ? decrypt(password) : password;
+};
 
 export default async function (fastify) {
   const querystring = fastify.getSchema("domain");
@@ -46,7 +51,9 @@ export default async function (fastify) {
       const { cookies: cookie, account } = req;
 
       const login = req.body.login || account?.login;
-      const password = req.body.password || account?.password;
+
+      const password =
+        req.body.password || getDecryptedPassword(account?.password);
 
       if (!login || !password)
         return reply
@@ -66,6 +73,7 @@ export default async function (fastify) {
           body: params,
         }
       );
+
       const body = await res.json();
 
       const newCookie = fastify.cookieParse(res);
@@ -76,7 +84,7 @@ export default async function (fastify) {
           cookies,
           account: {
             login,
-            password,
+            password: encrypt(password),
           },
         },
         null,
