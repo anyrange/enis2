@@ -35,7 +35,7 @@ const validate = ({ validationContext, validation }) => {
     case "body":
       return `Invalid body: ${message}`;
     default:
-      return "Bad request";
+      return "Перезайдите";
   }
 };
 
