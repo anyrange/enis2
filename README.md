@@ -1,6 +1,9 @@
 # enis2
 
-Unofficial NIS client, inspired by [enis](https://github.com/superhooman/enis)
+Unofficial NIS client, inspired by previous _enis_ apps:
+
+- [enis](https://github.com/superhooman/enis)
+- [eNIS](https://github.com/kekland/enis-app.v3) ([Google Play](https://play.google.com/store/apps/details?id=com.kekland.enis))
 
 [![Uptime Robot](https://img.shields.io/uptimerobot/status/m788722189-0972bdac9b2e03392769f154?label=heroku)](https://stats.uptimerobot.com/kXD0runRnw/788722189)
 [![Netlify](https://img.shields.io/netlify/23dfe53d-5fee-4df5-820d-45d6109b713a)](https://app.netlify.com/sites/enis2/deploys)
