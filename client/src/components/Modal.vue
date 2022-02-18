@@ -51,7 +51,7 @@
               <div class="absolute right-0 top-0">
                 <slot name="top-right"> </slot>
               </div>
-              <div class="p-2 max-h-xl overflow-y-auto">
+              <div class="p-2 max-h-md sm:max-h-xl overflow-y-auto">
                 <slot />
               </div>
             </div>

@@ -27,7 +27,12 @@
       class="flex flex-col space-y-3 mb-6 w-full sm:w-450px"
       :class="{ 'h-80vh': isEmptyContent }"
     >
-      <random-emoticon v-if="!loading && isEmptyContent" class="m-auto" />
+      <div
+        v-if="!loading && isEmptyContent"
+        class="m-auto h-full flex flex-col items-center justify-center"
+      >
+        <span class="text-5xl font-normal leading-7">{{ randomEmoticon }}</span>
+      </div>
       <template v-if="isGrades">
         <subject-grades v-for="item in grades" :key="item" :subject="item" />
       </template>
@@ -92,7 +97,7 @@ import {
   useTerms,
   useGrades,
 } from "@/store";
-import { findItem } from "@/utils";
+import useRandom from "@/composables/useRandom";
 
 const GREEK_NUMERALS = {
   1: "I",
@@ -106,6 +111,8 @@ const showSettingsModal = ref(false);
 const showYears = ref(true);
 const scrollPosition = ref(0);
 const scrollOffset = ref(40);
+
+const { randomEmoticon } = useRandom();
 
 const loaderStore = useLoader();
 const subjectStore = useSubject();

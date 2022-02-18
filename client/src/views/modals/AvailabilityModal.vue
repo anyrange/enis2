@@ -1,27 +1,36 @@
 <template>
   <modal :show="show" @close="emit('close')">
-    <div class="relative overflow-hidden -m-2">
-      <random-gif class="w-full h-auto opacity-25" />
-      <div
+    <figure class="relative overflow-hidden -m-2">
+      <base-img
+        class="w-full h-auto opacity-25"
+        :src="randomGIF.src"
+        :alt="randomGIF.name"
+        height="500"
+        width="500"
+      />
+      <figcaption
         class="absolute w-full h-auto absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center"
       >
-        <p class="text-lg">
+        <div class="text-lg">
           <a
             :href="`https://sms.${settingsStore.settings.school}.nis.edu.kz/`"
             target="_blank"
-            class="underline"
-            >Оригинальный клиент</a
+            class="underline underline-offset-3 decoration-1 decoration-wavy decoration-red-500"
           >
-          &nbsp;не работает
+            Оригинальный клиент (СУШ)
+          </a>
+          не работает
           <span role="img" aria-label="Disappointed Face">😞</span>
-        </p>
-      </div>
-    </div>
+        </div>
+        <p class="text-xs">ну умер и умер</p>
+      </figcaption>
+    </figure>
   </modal>
 </template>
 
 <script setup>
 import { useSettings } from "@/store";
+import useRandom from "@/composables/useRandom";
 
 defineProps({
   show: {
@@ -32,5 +41,6 @@ defineProps({
 
 const emit = defineEmits(["close"]);
 
+const { randomGIF } = useRandom();
 const settingsStore = useSettings();
 </script>

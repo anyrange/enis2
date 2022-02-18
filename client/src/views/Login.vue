@@ -43,20 +43,21 @@
               <transition name="fade">
                 <div
                   v-if="captcha"
-                  class="flex flex-col sm:flex-row justify-between space-2"
+                  class="flex flex-col sm:flex-row justify-between gap-2"
                 >
-                  <img
+                  <base-img
                     class="object-contain w-44 h-12 cursor-pointer select-none duration-150 hover:opacity-50"
                     alt="captcha"
                     :src="`data:image/png;base64,${captcha}`"
                     @click="authStore.updateCaptcha"
                   />
-
-                  <base-input
-                    v-model="form.captchaInput"
-                    type="text"
-                    label="Каптча"
-                  />
+                  <div>
+                    <base-input
+                      v-model="form.captchaInput"
+                      type="text"
+                      label="Каптча"
+                    />
+                  </div>
                 </div>
               </transition>
               <base-select
