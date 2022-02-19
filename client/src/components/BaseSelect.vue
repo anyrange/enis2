@@ -11,23 +11,7 @@
       <select
         :id="label"
         v-model="model"
-        class="
-          w-full
-          h-9
-          pl-3
-          pr-6
-          text-sm
-          appearance-none
-          rounded-sm
-          shadow-sm
-          text-left
-          border border-gray-200
-          dark:border-gray-800-spotify
-          default-focus
-          disabled:opacity-60
-          bg-gray-50
-          dark:bg-gray-700-spotify
-        "
+        class="w-full h-9 pl-3 pr-6 text-sm appearance-none rounded-sm shadow-sm text-left border border-gray-200 dark:border-gray-800-spotify default-focus disabled:opacity-60 bg-gray-50 dark:bg-gray-700-spotify"
         placeholder="Regular input"
         :class="[
           { 'animate-pulse': loading },
@@ -54,15 +38,7 @@
         </template>
       </select>
       <div
-        class="
-          absolute
-          inset-y-0
-          right-0
-          flex
-          items-center
-          px-2
-          pointer-events-none
-        "
+        class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none"
         :class="{ 'opacity-30': isDisabled }"
       >
         <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">

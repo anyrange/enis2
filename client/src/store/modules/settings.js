@@ -23,6 +23,7 @@ export default defineStore("settings", () => {
   });
 
   const clearSettings = () => {
+    // eslint-disable-next-line no-unused-vars
     Object.assign(settings, (({ theme, school, ...o }) => o)(initialState));
   };
 

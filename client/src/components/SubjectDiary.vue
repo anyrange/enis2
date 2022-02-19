@@ -1,14 +1,7 @@
 <template>
   <div
     tabindex="0"
-    class="
-      rounded
-      shadow
-      bg-white
-      dark:bg-gray-800-spotify
-      appearance-none
-      default-focus
-    "
+    class="rounded shadow bg-white dark:bg-gray-800-spotify appearance-none default-focus"
     :class="[
       [
         hoverable

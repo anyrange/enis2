@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-import { computed, reactive } from "vue";
+import { computed } from "vue";
 import { maska as vMaska } from "maska";
 import colors from "windicss/colors";
 

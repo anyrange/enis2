@@ -6,20 +6,7 @@
       class="appearance-none absolute h-6 w-6 rounded-sm default-focus"
     />
     <div
-      class="
-        dark:border-gray-600
-        border-2
-        rounded-sm
-        w-6
-        h-6
-        flex flex-shrink-0
-        justify-center
-        items-center
-        mr-2
-        transition-all
-        duration-100
-        focus-visible:border-blue-500
-      "
+      class="dark:border-gray-600 border-2 rounded-sm w-6 h-6 flex flex-shrink-0 justify-center items-center mr-2 transition-all duration-100 focus-visible:border-blue-500"
     >
       <svg
         class="fill-current hidden w-3 h-3 text-blue-600 pointer-events-none"
