@@ -16,7 +16,6 @@ import { storeToRefs } from "pinia";
 import { useLoader, useSettings, useHealth, useAuth } from "@/store";
 import useNavigator from "@/composables/useNavigator";
 import useDocument from "@/composables/useDocument";
-import AvailabilityModal from "@/views/modals/AvailabilityModal.vue";
 import Dashboard from "@/views/Dashboard.vue";
 import Login from "@/views/Login.vue";
 

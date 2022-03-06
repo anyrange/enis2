@@ -5,16 +5,12 @@
     aria-label="Toogle Theme"
     @click="settingsStore.toggleTheme"
   >
-    <component
-      :is="settingsStore.settings.theme === 'dark' ? SunIcon : MoonIcon"
-    />
+    <sun-icon v-if="settingsStore.settings.theme === 'dark'" />
+    <moon-icon v-else />
   </base-button>
 </template>
 
 <script setup>
-import BaseButton from "./BaseButton.vue";
-import SunIcon from "./icons/SunIcon.vue";
-import MoonIcon from "./icons/MoonIcon.vue";
 import { useSettings } from "@/store";
 
 const settingsStore = useSettings();

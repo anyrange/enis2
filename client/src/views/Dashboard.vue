@@ -84,8 +84,6 @@
 import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
 import { storeToRefs } from "pinia";
 import { notify } from "@/services/notify.js";
-import SettingsModal from "@/views/modals/SettingsModal.vue";
-import SubjectModal from "@/views/modals/SubjectModal.vue";
 import {
   useSettings,
   useAuth,
