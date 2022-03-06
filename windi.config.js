@@ -1,16 +1,11 @@
-import colors from "windicss/colors";
-
 export default {
   darkMode: "class",
   shortcuts: {
-    "default-focus": "outline-none focus:outline-none focus-visible:ring-2 ",
+    "default-focus": "outline-none focus:outline-none focus-visible:ring-2",
   },
   theme: {
     extend: {
       colors: {
-        ...colors,
-        "gray-1000-spotify": "#080707",
-        "gray-950-spotify": "#191414",
         "gray-900-spotify": "#121212",
         "gray-800-spotify": "#1d1d1d",
         "gray-700-spotify": "#282828",
