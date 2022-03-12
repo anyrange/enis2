@@ -1,14 +1,12 @@
 <template>
   <div
-    class="flex flex-col h-screen sm:from-transparent sm:to-transparent bg-gradient-to-r bg-conic-to-l from-sky-400 to-blue-500"
+    class="sm:from-transparent sm:to-transparent bg-gradient-to-r bg-conic-to-l from-sky-400 to-blue-500"
   >
-    <div
-      class="flex flex-col w-full mt-auto sm:m-auto w-full h-[90%] sm:h-auto w-full sm:w-96"
-    >
-      <div
-        class="h-full rounded-t-xl sm:rounded-md shadow-sm bg-white dark:bg-gray-800-spotify p-4"
-      >
-        <main class="grid gap-12 grid-cols-1 h-full">
+    <div class="flex h-screen">
+      <div class="sm:m-auto mt-auto w-full h-[90%] sm:h-auto sm:w-96">
+        <main
+          class="grid gap-12 grid-cols-1 h-full h-full rounded-t-xl sm:rounded-md shadow-sm bg-white dark:bg-gray-800-spotify p-4"
+        >
           <div class="grid gap-6 grid-cols-1 self-center">
             <header class="flex flex-col space-y-4 items-start">
               <app-icon class="w-16 h-16 flex-none" />

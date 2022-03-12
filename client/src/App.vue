@@ -1,13 +1,11 @@
 <template>
-  <div class="h-screen">
-    <loading-overlay :active="loaderStore.showLoader" />
-    <availability-modal
-      :show="showAvailabilityModal"
-      @close="showAvailabilityModal = false"
-    />
-    <component :is="authStore.authenticated ? Dashboard : Login" />
-    <notifications />
-  </div>
+  <loading-overlay :active="loaderStore.showLoader" />
+  <availability-modal
+    :show="showAvailabilityModal"
+    @close="showAvailabilityModal = false"
+  />
+  <component :is="authStore.authenticated ? Dashboard : Login" />
+  <notifications />
 </template>
 
 <script setup>
