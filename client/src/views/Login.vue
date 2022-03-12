@@ -158,7 +158,7 @@ watch(
 
 const validateForm = ({ login, password }) => {
   form.login.valid = login.length === 12;
-  form.password.valid = password.length >= 6;
+  form.password.valid = password.length > 0;
 };
 
 const submit = async () => {
