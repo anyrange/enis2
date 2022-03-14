@@ -19,6 +19,8 @@ app.register(import("fastify-cors"), {
   credentials: true,
 });
 
+app.register(import("fastify-compress"));
+
 app.register(import("fastify-jwt"), { secret: SECRET });
 
 if (process.env.NODE_ENV !== "production") {
