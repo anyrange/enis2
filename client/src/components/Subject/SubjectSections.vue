@@ -130,6 +130,7 @@ const percent = computed(() => {
   height: calc(50% - 1em);
   cursor: pointer;
   border-top: 3px solid var(--scroll-picker-border-color);
+  z-index: 10;
 }
 
 .vue-scroll-picker-layer-selection {
