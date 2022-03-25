@@ -1,18 +1,14 @@
 <template>
-  <div class="flex flex-col space-y-2">
-    <label
-      v-if="label.length"
-      :for="label"
-      class="text-base font-medium select-none"
-    >
-      {{ label }}
-    </label>
+  <label class="flex flex-col gap-2">
+    <template v-if="label !== false">
+      <span class="text-base font-medium">
+        {{ label }}
+      </span>
+    </template>
     <div class="relative inline-block w-full">
       <select
-        :id="label"
         v-model="model"
         class="w-full h-9 pl-3 pr-6 text-sm appearance-none rounded-sm shadow-sm text-left border border-gray-200 dark:border-gray-800-spotify default-focus disabled:opacity-60 bg-gray-50 dark:bg-gray-700-spotify"
-        placeholder="Regular input"
         :class="[
           { 'animate-pulse': loading },
           isDisabled ? 'cursor-default' : 'cursor-pointer',
@@ -46,11 +42,11 @@
             d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
             clip-rule="evenodd"
             fill-rule="evenodd"
-          ></path>
+          />
         </svg>
       </div>
     </div>
-  </div>
+  </label>
 </template>
 
 <script setup>
