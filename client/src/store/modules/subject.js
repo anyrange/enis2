@@ -1,7 +1,7 @@
 import { ref, reactive, computed } from "vue";
 import { defineStore } from "pinia";
 import { getSubject } from "@/api";
-import { getScore } from "@/utils";
+import { getPercent } from "@/utils";
 
 export default defineStore("subject", () => {
   const initialState = {
@@ -21,7 +21,7 @@ export default defineStore("subject", () => {
   const customSubject = computed(() => {
     return {
       ...subject.originalSubject,
-      Score: getScore(subject.customSections.SAU, subject.customSections.SAT),
+      Score: getPercent(subject.customSections.SAU, subject.customSections.SAT),
     };
   });
 

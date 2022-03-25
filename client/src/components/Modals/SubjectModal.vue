@@ -13,28 +13,21 @@
       </base-button>
     </template>
     <div class="flex flex-col space-y-2">
-      <subject-diary
-        :hoverable="false"
-        :subject="GM ? customSubject : subject.originalSubject"
-      />
-      <loading-dots v-if="loading" />
-      <template v-else-if="!subject.customSections.SAU.length">
+      <subject-diary :hoverable="false" :subject="subjectType" />
+      <loading-dots v-if="loaderStore.loading" />
+      <template v-else-if="!subjectStore.subject.customSections.SAU.length">
         <div class="p-2 text-center">
           Не удалось загрузить информацию о предмете.
         </div>
       </template>
       <template v-else>
-        <subject-sections
-          label="СОР"
-          :subject="
-            GM ? subject.customSections.SAU : subject.originalSections.SAU
-          "
+        <subject-diary-sections
+          type="SAU"
+          :sections="subjectStore.subject[sectionsType].SAU"
         />
-        <subject-sections
-          label="СОЧ"
-          :subject="
-            GM ? subject.customSections.SAT : subject.originalSections.SAT
-          "
+        <subject-diary-sections
+          type="SAT"
+          :sections="subjectStore.subject[sectionsType].SAT"
         />
       </template>
     </div>
@@ -42,6 +35,7 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useLoader, useSubject } from "@/store";
 
@@ -57,6 +51,14 @@ const emit = defineEmits(["close"]);
 const loaderStore = useLoader();
 const subjectStore = useSubject();
 
-const { loading } = storeToRefs(loaderStore);
-const { subject, customSubject, GM } = storeToRefs(subjectStore);
+const { GM } = storeToRefs(subjectStore);
+
+const sectionsType = computed(() => {
+  return GM.value ? "customSections" : "originalSections";
+});
+const subjectType = computed(() => {
+  return GM.value
+    ? subjectStore.customSubject
+    : subjectStore.subject.originalSubject;
+});
 </script>

@@ -2,32 +2,28 @@ export const isEmpty = (str) => {
   return !str || str.length === 0;
 };
 
-export const getFilteredSection = (section) => {
-  return section.filter((s) => s.Score !== -1);
+const getSum = (array, query) => {
+  return array.reduce((t, c) => t + c[query], 0);
 };
 
-export const getScores = (section) => {
-  return section.reduce((n, { Score }) => n + Score, 0);
+export const getSectionsScores = (sections) => {
+  const filteredSections = sections.filter((s) => s.Score !== -1);
+  return {
+    score: getSum(filteredSections, "Score"),
+    max: getSum(filteredSections, "MaxScore"),
+  };
 };
 
-export const getMaxScores = (section) => {
-  return section.reduce((n, { MaxScore }) => n + MaxScore, 0);
+export const formatPercent = (percent) => {
+  return Number(percent ? percent.toFixed(2) : 0).toString();
 };
 
-export const getPercent = (percent) => {
-  return percent ? percent.toFixed(2) : 0;
-};
-
-export const getScore = (SAU, SAT) => {
-  return getPercent(
-    (getScores(getFilteredSection(SAU)) /
-      getMaxScores(getFilteredSection(SAU)) /
-      2 +
-      getScores(getFilteredSection(SAT)) /
-        getMaxScores(getFilteredSection(SAT)) /
-        2) *
-      100
-  );
+export const getPercent = (SAU, SAT) => {
+  const { score: SAUscores, max: SAUmaxScores } = getSectionsScores(SAU);
+  const { score: SATscores, max: SATmaxScores } = getSectionsScores(SAT);
+  const SAUpart = SAUscores / (2 * SAUmaxScores);
+  const SATpart = SATscores / (2 * SATmaxScores);
+  return formatPercent((SAUpart + SATpart) * 100);
 };
 
 export const getPercentDecimals = (percent) => {
@@ -52,4 +48,8 @@ export const findIndex = (array, query) => {
   const index = idx === -1 ? null : idx;
   const exists = index !== null;
   return { index, exists };
+};
+
+export const between = (x, min, max) => {
+  return x >= min && x <= max;
 };

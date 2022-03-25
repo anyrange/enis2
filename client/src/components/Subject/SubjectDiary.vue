@@ -8,48 +8,46 @@
           ? 'cursor-pointer hover:bg-gray-200 hover:bg-opacity-10 dark:hover:bg-gray-700-spotify'
           : 'cursor-default select-text',
       ],
-      { 'opacity-50 pointer-events-none	': !subject?.Evaluations?.length },
+      { 'opacity-50 pointer-events-none	': !subject.Evaluations.length },
     ]"
     @click="emit('click')"
     @keyup.enter="emit('click')"
   >
-    <div v-if="subject" class="space-y-2 p-2">
-      <h3 class="flex text-base font-medium truncate">
+    <div class="space-y-2 p-2">
+      <span class="flex text-base font-medium truncate">
         {{ subject.Name }}
-      </h3>
+      </span>
       <div class="flex justify-between">
-        <p>
+        <div>
           <span class="item-title">
-            {{ scoreDecimals.before }}
+            {{ percentDecimals.before }}
           </span>
-          <span v-show="scoreDecimals.after" class="item-subtitle"
-            >.{{ scoreDecimals.after }}
+          <span class="item-subtitle">
+            {{ percentDecimals.after && "." + percentDecimals.after }}%
           </span>
-          <span class="item-subtitle">%</span>
-        </p>
-        <p>
+        </div>
+        <div>
           <span class="item-subtitle">оценка </span>
-          <span class="item-title">{{ subject.Mark }}</span>
-        </p>
+          <span class="item-title">
+            {{ subject.Mark !== 0 ? mark.name : subject.Mark }}
+          </span>
+        </div>
       </div>
     </div>
-    <div
-      :class="barClass"
-      class="rounded-b-md dark:bg-opacity-10 bg-opacity-20"
-    >
+    <div :class="mark.bgClass" class="rounded-b-md bg-opacity-20">
       <div
         class="h-1 rounded-bl-md"
         style="transition: width 0.3s ease-in-out, color 0.1s ease"
-        :style="barStyle"
-        :class="barClass"
+        :style="{ width: props.subject.Score + '%' }"
+        :class="mark.bgClass"
       />
     </div>
   </div>
 </template>
 
 <script setup>
-import { getPercentDecimals } from "@/utils";
 import { computed } from "vue";
+import { getPercentDecimals, between } from "@/utils";
 
 const props = defineProps({
   subject: {
@@ -65,19 +63,33 @@ const props = defineProps({
 
 const emit = defineEmits(["click"]);
 
-const scoreDecimals = computed(() => getPercentDecimals(props.subject.Score));
+const percentDecimals = computed(() => getPercentDecimals(props.subject.Score));
 
-const barClass = computed(() => {
-  const roundedScore = Math.round(props.subject.Score);
-  if (roundedScore >= 85) return "bg-q-positive";
-  if (roundedScore >= 65) return "bg-q-warning";
-  return "bg-q-negative";
-});
+const MARK_RANGES = {
+  5: {
+    range: [85, 100],
+    bgClass: "bg-q-positive",
+  },
+  4: {
+    range: [65, 84],
+    bgClass: "bg-q-warning",
+  },
+  3: {
+    range: [40, 64],
+    bgClass: "bg-q-negative",
+  },
+  2: {
+    range: [0, 39],
+    bgClass: "bg-black/30",
+  },
+};
 
-const barStyle = computed(() => {
-  return {
-    width: props.subject.Score + "%",
-  };
+const mark = computed(() => {
+  const roundedPercent = Math.round(props.subject.Score);
+  const [name, { bgClass }] = Object.entries(MARK_RANGES).find(
+    ([, { range }]) => between(roundedPercent, ...range)
+  );
+  return { name, bgClass };
 });
 </script>
 
