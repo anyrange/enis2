@@ -3,9 +3,14 @@
   NODE_VERSION = "16"
 
 [build]
+  publish = "client/dist"
   command = "npx pnpm install --store=node_modules/.pnpm-store && npx pnpm build"
 
 [[redirects]]
   from = "/*"
   to = "/"
   status = 200
+
+[template.environment]
+  NODE_VERSION = "Node.js version"
+  VITE_SERVER_URL = "Backend URL"
