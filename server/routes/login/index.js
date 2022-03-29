@@ -1,7 +1,7 @@
 import { URLSearchParams } from "url";
 import fetch from "node-fetch";
+import jwt from "jsonwebtoken";
 import { encrypt, decrypt } from "#root/utils/crypto.js";
-
 const getDecryptedPassword = (password) => {
   return password?.content ? decrypt(password) : password;
 };
@@ -78,8 +78,9 @@ export default async function (fastify) {
 
       const newCookie = fastify.cookieParse(res);
       const cookies = fastify.mergeCookies(cookie, newCookie);
+      const SECRET = process.env.SECRET || "secret";
 
-      fastify.jwt.sign(
+      jwt.sign(
         {
           cookies,
           account: {
@@ -87,7 +88,7 @@ export default async function (fastify) {
             password: encrypt(password),
           },
         },
-        null,
+        SECRET,
         (err, token) => {
           if (err) throw err;
 

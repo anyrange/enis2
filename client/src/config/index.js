@@ -5,6 +5,10 @@ export const isLocal =
 export const SERVER_URL =
   import.meta.env.VITE_SERVER_URL || "http://localhost:8887";
 
+const PROXY_URL = "http://localhost:3000/api";
+
+export const FUNCTIONS_URL = isDev ? PROXY_URL : "/.netlify/functions";
+
 export const DEFAULT_ERROR_MESSAGE = "Что-то пошло не так";
 
 export const ENDPOINTS = Object.freeze([
@@ -40,7 +44,7 @@ export const ENDPOINTS = Object.freeze([
   },
   {
     name: "DIARY",
-    endpoint: "dashboard/terms/",
+    endpoint: "get-diary",
     hideLoader: false,
   },
   {

@@ -11,8 +11,8 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = fastify({ trustProxy: true });
 
 const PORT = process.env.PORT || 8887;
-const SECRET = process.env.SECRET || "secret";
-const URL_WHITELIST = process.env.URL_WHITELIST || "http://localhost:3004";
+
+const URL_WHITELIST = process.env.URL_WHITELIST || "http://localhost:3000";
 
 app.register(import("fastify-cors"), {
   origin: URL_WHITELIST.split(","),
@@ -20,8 +20,6 @@ app.register(import("fastify-cors"), {
 });
 
 app.register(import("fastify-compress"));
-
-app.register(import("fastify-jwt"), { secret: SECRET });
 
 if (process.env.NODE_ENV !== "production") {
   app.register(import("fastify-swagger"), {

@@ -15,15 +15,17 @@ const objectToString = (cookieObject) => {
     .join("; ");
 };
 
-const plugin = fp(async function plugin(fastify) {
-  fastify.decorate("mergeCookies", (oldCookie, newCookie) => {
-    const mergedCookie = Object.assign(
-      stringToObject(oldCookie),
-      stringToObject(newCookie)
-    );
+export const mergeCookies = (oldCookie, newCookie) => {
+  const mergedCookie = Object.assign(
+    stringToObject(oldCookie),
+    stringToObject(newCookie)
+  );
 
-    return objectToString(mergedCookie);
-  });
+  return objectToString(mergedCookie);
+};
+
+const plugin = fp(async function plugin(fastify) {
+  fastify.decorate("mergeCookies", mergeCookies);
 });
 
 export default plugin;

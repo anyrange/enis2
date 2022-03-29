@@ -16,6 +16,16 @@ export default defineConfig({
       "#shared": resolve(_dirname, "./shared"),
     },
   },
+  server: {
+    open: true,
+    proxy: {
+      "/api": {
+        target: "http://localhost:8888/.netlify/functions",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ""),
+      },
+    },
+  },
   plugins: [
     vue(),
     Windi({

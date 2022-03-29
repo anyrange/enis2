@@ -1,10 +1,14 @@
 import axios from "axios";
-import { ENDPOINTS, SERVER_URL, DEFAULT_ERROR_MESSAGE } from "@/config";
+import {
+  ENDPOINTS,
+  SERVER_URL,
+  DEFAULT_ERROR_MESSAGE,
+  FUNCTIONS_URL,
+} from "@/config";
 import { useLoader, useAuth, useSettings } from "@/store";
 
 const api = axios.create({
   baseURL: SERVER_URL,
-  withCredentials: true,
 });
 
 const useStore = () => {
@@ -87,7 +91,10 @@ export const getTerms = (yearId) => {
 };
 
 export const getDiary = (termId) => {
-  return api.get(createEndpoint("DIARY", termId));
+  return api.get(createEndpoint("DIARY"), {
+    baseURL: FUNCTIONS_URL,
+    params: { termId },
+  });
 };
 
 export const getSubject = (journalId, evaluations) => {

@@ -14,3 +14,18 @@
 [template.environment]
   NODE_VERSION = "Node.js version"
   VITE_SERVER_URL = "Backend URL"
+
+[functions]
+  directory = "functions/"
+  node_bundler = "esbuild"
+
+[[redirects]]
+  force = true
+  from = '/api/*'
+  status = 200
+  to = '/.netlify/functions/:splat'
+
+[dev]
+  autoLaunch = false
+  command = "npm run start"
+  functionsPort = 8888
