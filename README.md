@@ -30,14 +30,8 @@ Available scripts
 pnpm run client
 pnpm run server
 
-# run client with mock adapter
-pnpm run client:mock
-
 # run client and server concurrently via
 pnpm run dev
-
-# with mock adapter
-pnpm run dev:mock
 
 # check code with eslint
 pnpm run lint

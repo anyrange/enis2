@@ -1,5 +1,4 @@
 export const isDev = import.meta.env.DEV;
-export const isMock = import.meta.env.MODE === "mock";
 export const isLocal =
   location.hostname === "localhost" || location.hostname === "127.0.0.1";
 
