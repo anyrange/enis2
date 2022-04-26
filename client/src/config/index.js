@@ -11,47 +11,47 @@ export const ENDPOINTS = Object.freeze([
   {
     name: "HEALTH_SMS",
     endpoint: "health/sms",
-    hideLoader: false,
+    loader: "overlay",
   },
   {
     name: "CITY",
     endpoint: "city",
-    hideLoader: true,
+    loader: "hide",
   },
   {
     name: "LOGIN",
     endpoint: "login",
-    hideLoader: false,
+    loader: "overlay",
   },
   {
     name: "REFRESH_CAPTCHA",
     endpoint: "login/captchaRefresh",
-    hideLoader: true,
+    loader: "overlay",
   },
   {
     name: "YEARS",
     endpoint: "dashboard/years",
-    hideLoader: false,
+    loader: "overlay",
   },
   {
     name: "TERMS",
-    endpoint: "dashboard/years/",
-    hideLoader: false,
+    endpoint: "dashboard/terms/",
+    loader: "overlay",
   },
   {
     name: "DIARY",
-    endpoint: "dashboard/terms/",
-    hideLoader: false,
+    endpoint: "dashboard/diary/",
+    loader: "optional",
   },
   {
     name: "SUBJECT",
     endpoint: "dashboard/subject",
-    hideLoader: true,
+    loader: "hide",
   },
   {
     name: "GRADES",
     endpoint: "dashboard/grades",
-    hideLoader: false,
+    loader: "optional",
   },
 ]);
 

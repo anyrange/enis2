@@ -53,3 +53,15 @@ export const findIndex = (array, query) => {
 export const between = (x, min, max) => {
   return x >= min && x <= max;
 };
+
+export const assign = (target, ...sources) => {
+  return Object.assign(
+    target,
+    ...sources.map((x) =>
+      Object.fromEntries(
+        // eslint-disable-next-line no-unused-vars
+        Object.entries(x).filter(([key, value]) => value !== undefined)
+      )
+    )
+  );
+};

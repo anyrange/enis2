@@ -1,5 +1,8 @@
 <template>
-  <loading-overlay :active="loaderStore.showLoader" />
+  <loading-overlay
+    :active="loaderStore.overlay.active"
+    :blocking="loaderStore.overlay.blocking"
+  />
   <availability-modal
     :show="showAvailabilityModal"
     @close="showAvailabilityModal = false"

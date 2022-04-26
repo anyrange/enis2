@@ -27,9 +27,9 @@ const getParams = () => {
 api.interceptors.request.use(
   (config) => {
     const url = config.url;
-    const endpoint = ENDPOINTS.find((e) => url.includes(e.endpoint)).name;
+    const { name } = ENDPOINTS.find((item) => url.includes(item.endpoint));
     const { token, city } = getParams();
-    setLoader({ status: "loading", endpoint });
+    setLoader({ status: "loading", endpoint: name });
     config.headers.Authorization = `Bearer ${token}`;
     config.params = {
       ...config.params,
@@ -45,7 +45,7 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
-    setLoader({ status: "pending", endpoint: null });
+    setLoader({ status: "pending" });
     return response.data;
   },
   (error) => {

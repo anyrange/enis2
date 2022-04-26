@@ -2,7 +2,11 @@
   <header class="w-full sticky inset-x-0 top-0 left-0">
     <tabs v-model="settings.year" class="tabs-bg">
       <div class="tabs-container">
-        <tab v-for="{ value, label } in years" :key="value" :name="label">
+        <tab
+          v-for="{ value, label } in yearsStore.years"
+          :key="value"
+          :name="label"
+        >
           {{ label }}
         </tab>
       </div>
@@ -13,7 +17,11 @@
       :class="{ 'is-hidden': !showYears }"
     >
       <div class="tabs-container">
-        <tab v-for="({ Id, Name }, index) in terms" :key="Id" :name="Name">
+        <tab
+          v-for="({ Id, Name }, index) in termsStore.terms"
+          :key="Id"
+          :name="Name"
+        >
           {{ GREEK_NUMERALS[index + 1] }}
         </tab>
         <tab name="grades">
@@ -28,17 +36,21 @@
       :class="{ 'h-80vh': isEmptyContent }"
     >
       <div
-        v-if="!loading && isEmptyContent"
+        v-if="!loaderStore.isLoading && isEmptyContent"
         class="m-auto h-full flex flex-col items-center justify-center"
       >
         <span class="text-5xl font-normal leading-7">{{ randomEmoticon }}</span>
       </div>
       <template v-if="isGrades">
-        <subject-grades v-for="item in grades" :key="item" :subject="item" />
+        <subject-grades
+          v-for="item in gradesStore.grades"
+          :key="item"
+          :subject="item"
+        />
       </template>
       <template v-else>
         <subject-diary
-          v-for="(item, index) in diary"
+          v-for="(item, index) in diaryStore.diary"
           :key="item.Name || index"
           :subject="item"
           @click="openSubjectModal(item)"
@@ -122,17 +134,11 @@ const gradesStore = useGrades();
 const { checkAvailability } = useHealth();
 const { login, logout } = useAuth();
 
-const { loading } = storeToRefs(loaderStore);
 const { settings } = storeToRefs(settingsStore);
-const { subject } = storeToRefs(subjectStore);
-const { years } = storeToRefs(yearsStore);
-const { terms } = storeToRefs(termsStore);
-const { diary } = storeToRefs(diaryStore);
-const { grades } = storeToRefs(gradesStore);
 
 const isGrades = computed(() => settings.value.tab === "grades");
 const isEmptyContent = computed(() =>
-  isGrades.value ? !grades.value.length : !diary.value.length
+  isGrades.value ? !gradesStore.grades.length : !diaryStore.diary.length
 );
 
 const handleScroll = () => {
@@ -214,8 +220,8 @@ const getData = async ({ force = false, includeTabs = false }) => {
 
 const openSubjectModal = async (selectedSubject) => {
   if (
-    selectedSubject.Name === subject.value.originalSubject.Name &&
-    showSubjectModal.value
+    showSubjectModal.value &&
+    selectedSubject.Name === subjectStore.subject.originalSubject.Name
   ) {
     return;
   }
@@ -225,7 +231,7 @@ const openSubjectModal = async (selectedSubject) => {
     await subjectStore.fetchSubject(selectedSubject);
   } catch (error) {
     await getData({ includeTabs: true, force: true });
-    const lastSubject = diary.value.find((s) => {
+    const lastSubject = diaryStore.diary.find((s) => {
       return s.Name === selectedSubject.Name;
     });
     await subjectStore.fetchSubject(lastSubject);
@@ -234,22 +240,23 @@ const openSubjectModal = async (selectedSubject) => {
 
 watch(
   [() => settings.value.year, () => settings.value.tab],
-  async ([nYear, nTab], [oYear, oTab]) => {
-    const changedYear = oYear && nYear && nYear !== oYear;
-    const changedTab = oTab && nTab && nTab !== oTab;
-    const firstLoad = !nYear && !oYear && !nTab && !oTab;
-    const secondLoad = nYear && nTab && !oYear && !oTab;
-    if (changedYear || firstLoad || secondLoad) {
-      await getData({ includeTabs: true });
+  async ([newY, newT], [oldY, oldT]) => {
+    const changedYear = oldY && newY && newY !== oldY;
+    const changedTab = oldT && newT && newT !== oldT;
+
+    if (changedYear) {
+      return getData({ includeTabs: true });
     }
     if (changedTab) {
-      await getData({ includeTabs: false });
+      return getData({ includeTabs: false });
     }
   },
   {
     immediate: true,
   }
 );
+
+getData({ includeTabs: true, force: true });
 </script>
 
 <style>

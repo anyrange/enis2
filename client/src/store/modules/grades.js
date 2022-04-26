@@ -1,5 +1,5 @@
 import { ref, computed } from "vue";
-import { defineStore, storeToRefs } from "pinia";
+import { defineStore } from "pinia";
 import { getGrades } from "@/api";
 import { findIndex, findItem } from "@/utils";
 import useSettingsStore from "./settings.js";
@@ -8,15 +8,20 @@ import useYearsStore from "./years.js";
 export default defineStore("grades", () => {
   const yearsStore = useYearsStore();
   const settingsStore = useSettingsStore();
-  const { settings } = storeToRefs(settingsStore);
 
   const gradesData = ref([]);
 
   const grades = computed(() => {
     const matchedGrades = findItem(gradesData.value, {
-      yearName: settings.value.year,
+      yearName: settingsStore.settings.year,
     });
     return matchedGrades ? matchedGrades.grades : [];
+  });
+
+  const currentGrade = computed(() => {
+    return findIndex(gradesData.value, {
+      yearName: settingsStore.settings.year,
+    });
   });
 
   const clearGrades = () => {
@@ -25,7 +30,7 @@ export default defineStore("grades", () => {
 
   const fetchGrades = async (force = false) => {
     const yearId = yearsStore.currentYearId;
-    const yearName = settings.value.year;
+    const yearName = settingsStore.settings.year;
 
     const { index, exists } = findIndex(gradesData.value, { yearName });
     const isActualYear = yearsStore.actualYearName === yearName;
@@ -51,6 +56,7 @@ export default defineStore("grades", () => {
   return {
     gradesData,
     grades,
+    currentGrade,
     fetchGrades,
     clearGrades,
   };

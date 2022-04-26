@@ -60,7 +60,10 @@
               </transition>
               <base-select
                 v-model="settings.school"
-                :loading="loading && loadingEndpoint === 'CITY'"
+                :loading="
+                  loaderStore.isLoading &&
+                  loaderStore.loader.endpoint === 'CITY'
+                "
                 :options="schools"
                 required
               >
@@ -122,7 +125,6 @@ const settingsStore = useSettings();
 const { checkAvailability } = useHealth();
 
 const { captcha } = storeToRefs(authStore);
-const { loading, loadingEndpoint } = storeToRefs(loaderStore);
 const { settings } = storeToRefs(settingsStore);
 
 settingsStore.predictSchool();

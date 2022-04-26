@@ -14,7 +14,7 @@
     </template>
     <div class="flex flex-col space-y-2">
       <subject-diary :hoverable="false" :subject="subjectType" />
-      <loading-dots v-if="loaderStore.loading" />
+      <loading-dots v-if="loaderStore.isLoading" />
       <template v-else-if="!subjectStore.subject.customSections.SAU.length">
         <div class="p-2 text-center">
           Не удалось загрузить информацию о предмете.

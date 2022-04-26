@@ -1,6 +1,11 @@
 <template>
-  <div class="loader" :class="{ loading: active }">
-    <div class="loader-element" />
+  <div
+    :class="[
+      { loading: active },
+      [blocking ? 'loader' : 'loader-non-blocking'],
+    ]"
+  >
+    <div class="spinner" />
   </div>
 </template>
 
@@ -11,32 +16,37 @@ defineProps({
     required: true,
     default: false,
   },
+  blocking: {
+    type: Boolean,
+    default: true,
+  },
 });
 </script>
 
-<style scoped>
-.loader {
-  position: fixed;
-  height: 100vh;
-  width: 100vw;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 101;
-  opacity: 0;
-  pointer-events: none;
+<style>
+.loader-layout {
   transition: opacity 0.2s ease-in-out;
+  @apply opacity-0 z-10 items-center justify-center flex;
+}
+.loader-non-blocking {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  @apply loader-layout absolute;
+}
+.loader {
+  @apply loader-layout fixed pointer-events-none left-0 top-0 h-screen w-screen;
   @apply dark:bg-gray-900-spotify bg-gray-50;
 }
 
-.loading.loader {
+.loading.loader,
+.loading.loader-non-blocking {
   opacity: 0.8;
   pointer-events: all;
 }
 
-.loader .loader-element {
+.loader .spinner,
+.loader-non-blocking .spinner {
   position: relative;
   height: 32px;
   width: 32px;
@@ -45,7 +55,8 @@ defineProps({
   animation: loading 0.8s cubic-bezier(0.6, 0.2, 0.1, 1) infinite;
 }
 
-.loader .loader-element::after {
+.loader .spinner::after,
+.loader-non-blocking .spinner::after {
   content: "";
   display: block;
   position: absolute;

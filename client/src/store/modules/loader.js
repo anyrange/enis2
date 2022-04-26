@@ -1,31 +1,46 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { ENDPOINTS } from "@/config";
+import { assign } from "@/utils";
+import useGrades from "./grades.js";
+import useDiary from "./diary.js";
 
 export default defineStore("loader", () => {
-  const loading = ref({
+  const gradesStore = useGrades();
+  const diaryStore = useDiary();
+
+  const existsContent = computed(() => {
+    return diaryStore.currentDiary.exists || gradesStore.currentGrade.exists;
+  });
+
+  const loader = ref({
     status: "pending",
     endpoint: null,
   });
 
-  const isLoading = computed(() => loading.value.status === "loading");
-  const currentEndpoint = computed(() => {
-    return ENDPOINTS.find(
-      (endpoint) => endpoint.name === loading.value.endpoint
-    );
-  });
-  const showLoader = computed(() => {
-    return isLoading.value && !currentEndpoint.value?.hideLoader;
-  });
-
   const setLoader = (value) => {
-    loading.value = value;
+    assign(loader.value, value);
   };
 
+  const isLoading = computed(() => loader.value.status === "loading");
+
+  const loadingEndpoint = computed(() => {
+    return ENDPOINTS.find(({ name }) => name === loader.value.endpoint);
+  });
+
+  const overlay = computed(() => {
+    return {
+      active: isLoading.value && loadingEndpoint.value.loader !== "hide",
+      blocking:
+        isLoading.value &&
+        (loadingEndpoint.value.loader === "overlay" || !existsContent.value),
+    };
+  });
+
   return {
-    loading: isLoading,
-    showLoader,
-    loadingEndpoint: computed(() => loading.value.endpoint),
+    loader,
+    isLoading,
     setLoader,
+    overlay,
   };
 });

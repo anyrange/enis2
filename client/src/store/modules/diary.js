@@ -1,5 +1,5 @@
 import { ref, computed } from "vue";
-import { defineStore, storeToRefs } from "pinia";
+import { defineStore } from "pinia";
 import { getDiary } from "@/api";
 import { findIndex, findItem } from "@/utils";
 import useSettingsStore from "./settings.js";
@@ -9,7 +9,6 @@ import useAuthStore from "./auth.js";
 
 export default defineStore("diary", () => {
   const settingsStore = useSettingsStore();
-  const { settings } = storeToRefs(settingsStore);
 
   const authStore = useAuthStore();
   const yearsStore = useYearsStore();
@@ -19,8 +18,15 @@ export default defineStore("diary", () => {
 
   const matchedDiary = computed(() => {
     return findItem(diaryData.value, {
-      yearName: settings.value.year,
-      termName: settings.value.tab,
+      yearName: settingsStore.settings.year,
+      termName: settingsStore.settings.tab,
+    });
+  });
+
+  const currentDiary = computed(() => {
+    return findIndex(diaryData.value, {
+      yearName: settingsStore.settings.year,
+      termName: settingsStore.settings.tab,
     });
   });
 
@@ -32,12 +38,12 @@ export default defineStore("diary", () => {
       score: (array) => array.sort((a, b) => b.Score - a.Score),
     };
 
-    const sortedDiary = sort[settings.value.sortBy](rawDiary);
+    const sortedDiary = sort[settingsStore.settings.sortBy](rawDiary);
 
     const filteredDiary = sortedDiary.filter((o) => o.Score !== 0);
     const allEmpty = !filteredDiary.length;
 
-    return settings.value.hideEmpty
+    return settingsStore.settings.hideEmpty
       ? allEmpty
         ? sortedDiary
         : filteredDiary
@@ -50,8 +56,9 @@ export default defineStore("diary", () => {
 
   const fetchDiary = async (force = false) => {
     const termId = termsStore.currentTermId;
-    const termName = settings.value.tab;
-    const yearName = settings.value.year;
+
+    const termName = settingsStore.settings.tab;
+    const yearName = settingsStore.settings.year;
 
     const { index, exists } = findIndex(diaryData.value, {
       termName,
@@ -84,6 +91,7 @@ export default defineStore("diary", () => {
   return {
     diaryData,
     diary,
+    currentDiary,
     fetchDiary,
     clearDiary,
   };
