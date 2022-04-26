@@ -1,12 +1,12 @@
 <template>
   <div
     tabindex="0"
-    class="rounded shadow bg-white dark:bg-gray-800-spotify appearance-none default-focus"
+    class="rounded shadow bg-white dark:bg-gray-800-spotify appearance-none"
     :class="[
       [
         hoverable
-          ? 'cursor-pointer hover:bg-gray-200 hover:bg-opacity-10 dark:hover:bg-gray-700-spotify'
-          : 'cursor-default select-text',
+          ? 'default-focus cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700-spotify'
+          : 'outline-none cursor-default select-text',
       ],
       { 'opacity-50 pointer-events-none	': !subject.Evaluations.length },
     ]"
