@@ -10,20 +10,6 @@ Fork this repository, clone it and run:
 pnpm i # install the dependencies
 ```
 
-## Scripts
-
-```bash
-pnpm run dev # run client and server concurrently
-
-pnpm run client # run only client
-
-pnpm run server # run only server
-
-pnpm run lint # check code with eslint
-
-pnpm run format # format code with prettier
-```
-
 ## Environment variables
 
 Rename [.env.example](/.env.example) to `.env` and set your variables.

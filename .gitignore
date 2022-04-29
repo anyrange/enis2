@@ -3,6 +3,7 @@
 *.lock
 node_modules
 dist
+build
 
 # local env files
 .env.local

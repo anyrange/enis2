@@ -1,12 +1,12 @@
 import crypto from "crypto";
+import { CRYPT_KEY } from "@/config";
 
 const algorithm = "aes-256-ctr";
-const secretKey = process.env.CRYPT_KEY || "gkqGAYNGOJIRa<3Uu+cdmheSRu/arm54";
 const iv = crypto.randomBytes(16);
 
 export const encrypt = (text) => {
   if (!text) return null;
-  const cipher = crypto.createCipheriv(algorithm, secretKey, iv);
+  const cipher = crypto.createCipheriv(algorithm, CRYPT_KEY, iv);
 
   const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
 
@@ -21,7 +21,7 @@ export const decrypt = (hash) => {
 
   const decipher = crypto.createDecipheriv(
     algorithm,
-    secretKey,
+    CRYPT_KEY,
     Buffer.from(hash.iv, "hex")
   );
 

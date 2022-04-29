@@ -1,4 +1,5 @@
 import fetch from "node-fetch";
+import { IPINFO_TOKEN } from "@/config";
 
 export default async function (fastify) {
   fastify.get(
@@ -18,7 +19,7 @@ export default async function (fastify) {
       },
     },
     async (req, reply) => {
-      const token = process.env.IPINFO_TOKEN;
+      const token = IPINFO_TOKEN;
 
       const requestIp = req.ips[req.ips.length - 1];
 

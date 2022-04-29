@@ -11,6 +11,12 @@ const _dirname = dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   root: "./client",
+  server: {
+    port: 3000,
+  },
+  preview: {
+    port: 8080,
+  },
   resolve: {
     alias: {
       "@": resolve(_dirname, "./client/src"),

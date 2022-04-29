@@ -1,6 +1,6 @@
 import { URLSearchParams } from "url";
 import fetch from "node-fetch";
-import { encrypt, decrypt } from "#root/utils/crypto.js";
+import { encrypt, decrypt } from "@/utils/crypto.js";
 
 const getDecryptedPassword = (password) => {
   return password?.content ? decrypt(password) : password;
