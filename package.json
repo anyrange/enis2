@@ -7,7 +7,7 @@
     "dev:server": "vite --config vite.config.server.js",
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
     "build:client": "vite build --config vite.config.client.js",
-    "build:server": "vite build --config vite.config.server.js --out-dir server/build && NODE_ENV=production esbuild server/build/index.js --platform=node --bundle --minify --target=node16.14.0 --allow-overwrite --outfile=server/dist/index.js && rm -rf server/build",
+    "build:server": "rm -rf server/dist && vite build --config vite.config.server.js --out-dir server/build && NODE_ENV=production esbuild server/build/index.js --platform=node --bundle --minify --target=node16.14.0 --allow-overwrite --outfile=server/dist/index.js && rm -rf server/build",
     "build": "npm run build:client && npm run build:server",
     "start": "concurrently \"vite preview --config vite.config.client.js\" \"node server/dist\"",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix .",
