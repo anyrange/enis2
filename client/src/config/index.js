@@ -3,7 +3,7 @@ export const isLocal =
   location.hostname === "localhost" || location.hostname === "127.0.0.1";
 
 export const SERVER_URL =
-  import.meta.env.VITE_SERVER_URL || "http://localhost:8887";
+  import.meta.env.VITE_SERVER_URL || "http://localhost:4000";
 
 export const DEFAULT_ERROR_MESSAGE = "Что-то пошло не так";
 

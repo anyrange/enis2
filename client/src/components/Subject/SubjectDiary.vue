@@ -1,11 +1,11 @@
 <template>
   <div
     tabindex="0"
-    class="rounded shadow bg-white dark:bg-gray-800-spotify appearance-none"
+    class="rounded shadow bg-white dark:bg-gray-800-spotify appearance-none transition-colors duration-100"
     :class="[
       [
         hoverable
-          ? 'default-focus cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700-spotify'
+          ? 'default-focus cursor-pointer subject-diary-hoverable'
           : 'outline-none cursor-default select-text',
       ],
       { 'opacity-50 pointer-events-none	': !subject.Evaluations.length },
@@ -94,6 +94,11 @@ const mark = computed(() => {
 </script>
 
 <style scoped>
+@media (hover: hover) {
+  .subject-diary-hoverable:hover {
+    @apply hover:bg-white/40 dark:hover:bg-gray-700-spotify/60;
+  }
+}
 .item-title {
   @apply text-lg font-medium;
 }

@@ -93,7 +93,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, watch, inject } from "vue";
 import { storeToRefs } from "pinia";
 import { notify } from "@/services/notify.js";
 import {
@@ -115,6 +115,8 @@ const GREEK_NUMERALS = {
   3: "III",
   4: "IV",
 };
+
+const wrapper = inject("wrapper");
 
 const showSubjectModal = ref(false);
 const showSettingsModal = ref(false);
@@ -142,16 +144,16 @@ const isEmptyContent = computed(() =>
 );
 
 const handleScroll = () => {
-  scrollPosition.value = window.pageYOffset;
+  scrollPosition.value = wrapper.value.scrollTop;
   showYears.value = scrollPosition.value <= scrollOffset.value;
 };
 
 onMounted(() => {
-  scrollPosition.value = window.pageYOffset;
-  window.addEventListener("scroll", handleScroll);
+  scrollPosition.value = wrapper.value.scrollTop;
+  wrapper.value.addEventListener("scroll", handleScroll);
 });
 onBeforeUnmount(() => {
-  window.removeEventListener("scroll", handleScroll);
+  wrapper.value.removeEventListener("scroll", handleScroll);
 });
 
 const showError = (message) => {

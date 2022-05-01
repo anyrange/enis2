@@ -63,8 +63,8 @@
 </template>
 
 <script setup>
-import { computed, onMounted, onBeforeUnmount } from "vue";
-import useDocument from "@/composables/useDocument";
+import { onMounted, onBeforeUnmount, inject, watch } from "vue";
+import { useScrollLock } from "@vueuse/core";
 
 const props = defineProps({
   show: {
@@ -75,11 +75,14 @@ const props = defineProps({
 
 const emit = defineEmits(["close"]);
 
-const { toggleClass } = useDocument();
+const wrapper = inject("wrapper");
+const isLocked = useScrollLock(wrapper);
 
-toggleClass(
-  computed(() => props.show),
-  "modal-opened"
+watch(
+  () => props.show,
+  (value) => {
+    isLocked.value = value;
+  }
 );
 
 const handleKeydown = (e) => {
@@ -106,7 +109,7 @@ onBeforeUnmount(() => {
   @apply w-6 h-6 text-gray-500 hover:text-gray-300 rounded-full duration-100 cursor-pointer absolute right-1 top-1;
 }
 .modal-window {
-  @apply bg-gray-100 dark:bg-gray-900-spotify rounded text-left;
+  @apply bg-white dark:bg-gray-900-spotify rounded text-left;
   @apply relative shadow-xl transition-transform align-middle;
   @apply sm:max-w-lg w-full overflow-hidden mr-0 sm:mr-2;
 }

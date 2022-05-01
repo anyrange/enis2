@@ -4,6 +4,7 @@ specifiers:
   '@swc/core': ^1.2.173
   '@vitejs/plugin-vue': ^1.10.2
   '@vue/eslint-config-prettier': ^7.0.0
+  '@vueuse/core': ^8.3.1
   axios: ^0.21.4
   concurrently: ^6.5.1
   dotenv: ^10.0.0
@@ -36,6 +37,7 @@ specifiers:
   workbox-window: ^6.5.3
 
 dependencies:
+  '@vueuse/core': 8.3.1_vue@3.2.32
   axios: 0.21.4
   dotenv: 10.0.0
   esbuild: 0.14.38
@@ -1655,6 +1657,42 @@ packages:
 
   /@vue/shared/3.2.32:
     resolution: {integrity: sha512-bjcixPErUsAnTQRQX4Z5IQnICYjIfNCyCl8p29v1M6kfVzvwOICPw+dz48nNuWlTOOx2RHhzHdazJibE8GSnsw==}
+    dev: false
+
+  /@vueuse/core/8.3.1_vue@3.2.32:
+    resolution: {integrity: sha512-WiXUgVyPG9elGx3G8UV8g+zqbEJ2hYacrPICogAxDdW6hnxxcUFdF7FtvDroJ/DxWmo2pg8XNNz07ybfnZyJbw==}
+    peerDependencies:
+      '@vue/composition-api': ^1.1.0
+      vue: ^2.6.0 || ^3.2.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      vue:
+        optional: true
+    dependencies:
+      '@vueuse/metadata': 8.3.1
+      '@vueuse/shared': 8.3.1_vue@3.2.32
+      vue: 3.2.32
+      vue-demi: 0.12.1_vue@3.2.32
+    dev: false
+
+  /@vueuse/metadata/8.3.1:
+    resolution: {integrity: sha512-1aZaFL44HzXXkfN6Q7KMDOXBFKTHDClHlOJBxtN8rTBXIIScoGOrJCpxWiQ4kuVg95MzG/pHrd3P4wd8poL9XQ==}
+    dev: false
+
+  /@vueuse/shared/8.3.1_vue@3.2.32:
+    resolution: {integrity: sha512-7HKLCcxp4dtONq6QSSoavblo9riYgqzw7jhqiC0/VUYMXKzqj1G/GznOzTmY8Wi8uKKT197JqjKQ1DKt2j/0+A==}
+    peerDependencies:
+      '@vue/composition-api': ^1.1.0
+      vue: ^2.6.0 || ^3.2.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      vue:
+        optional: true
+    dependencies:
+      vue: 3.2.32
+      vue-demi: 0.12.1_vue@3.2.32
     dev: false
 
   /@windicss/config/1.8.4:

@@ -7,8 +7,6 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow: overlay;
-  overscroll-behavior-y: none;
 }
 
 html {
@@ -33,18 +31,6 @@ html.custom-scrollbar ::-webkit-scrollbar-thumb {
 }
 html.dark.custom-scrollbar ::-webkit-scrollbar-thumb {
   @apply bg-gray-600-spotify rounded-lg;
-}
-
-html.modal-opened {
-  overflow: initial;
-}
-
-html.modal-opened body {
-  overflow: hidden;
-  touch-action: none;
-  -ms-touch-action: none;
-  position: relative;
-  height: 100%;
 }
 
 .fade-enter-active,

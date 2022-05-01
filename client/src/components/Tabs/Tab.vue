@@ -9,7 +9,7 @@
     ]"
     @click="activateTab(name)"
   >
-    <slot> </slot>
+    <slot />
   </button>
 </template>
 
@@ -56,13 +56,25 @@ const activateTab = (name) => {
 
 <style scoped>
 .tab {
-  @apply default-focus ring-inset h-12 w-12 flex flex-grow items-center justify-center text-base font-medium cursor-pointer select-none duration-200 outline-none;
+  @apply default-focus ring-inset h-12 w-12;
+  @apply flex flex-grow items-center justify-center text-base font-medium;
+  @apply cursor-pointer select-none duration-200 outline-none;
 }
 .active-tab {
-  @apply text-blue-500 font-semibold hover:bg-blue-500 hover:bg-opacity-10;
+  @apply text-blue-500 font-semibold;
+}
+@media (hover: hover) {
+  .active-tab:hover {
+    @apply hover:bg-blue-500/10;
+  }
 }
 .inactive-tab {
-  @apply text-gray-500 dark:text-gray-500-spotify hover:bg-gray-100 dark:hover:bg-gray-700-spotify;
+  @apply text-gray-500 dark:text-gray-500-spotify;
+}
+@media (hover: hover) {
+  .inactive-tab:hover {
+    @apply hover:bg-gray-100 dark:hover:bg-gray-700-spotify;
+  }
 }
 .disabled-tab {
   @apply opacity-40 pointer-events-none;
