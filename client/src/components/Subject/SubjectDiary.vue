@@ -29,7 +29,7 @@
         <div>
           <span class="item-subtitle">оценка </span>
           <span class="item-title">
-            {{ subject.Mark !== 0 ? mark.name : subject.Mark }}
+            {{ subject.Mark }}
           </span>
         </div>
       </div>
