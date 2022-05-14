@@ -26,7 +26,7 @@ defineProps({
 <style>
 .loader-layout {
   transition: opacity 0.2s ease-in-out;
-  @apply opacity-0 z-10 items-center justify-center flex;
+  @apply opacity-0 z-50 items-center justify-center flex;
 }
 .loader-non-blocking {
   left: 50%;
@@ -36,7 +36,7 @@ defineProps({
 }
 .loader {
   @apply loader-layout fixed pointer-events-none left-0 top-0 h-screen w-screen;
-  @apply dark:bg-gray-900-spotify bg-gray-50;
+  @apply dark:bg-secondary-darkest bg-gray-50;
 }
 
 .loading.loader,
@@ -64,7 +64,7 @@ defineProps({
   height: 6px;
   width: 6px;
   left: 13px;
-  @apply bg-gray-900-spotify dark:bg-gray-50;
+  @apply bg-secondary-darkest dark:bg-gray-50;
   border-radius: 3px;
 }
 @keyframes loading {

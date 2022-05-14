@@ -1,7 +1,7 @@
 <template>
   <div
     tabindex="0"
-    class="rounded shadow bg-white dark:bg-gray-800-spotify appearance-none transition-colors duration-100"
+    class="rounded shadow bg-white dark:bg-secondary-darker appearance-none"
     :class="[
       [
         hoverable
@@ -96,7 +96,7 @@ const mark = computed(() => {
 <style scoped>
 @media (hover: hover) {
   .subject-diary-hoverable:hover {
-    @apply hover:bg-white/40 dark:hover:bg-gray-700-spotify/60;
+    @apply hover:bg-white/40 dark:hover:bg-secondary-dark/60;
   }
 }
 .item-title {

@@ -1,9 +1,9 @@
 <template>
   <div
-    class="rounded p-2 dark:bg-gray-800-spotify bg-white shadow-md flex flex-col space-y-2"
+    class="rounded p-2 dark:bg-secondary-darker bg-white shadow-md flex flex-col space-y-2"
   >
     <div
-      class="flex space-x-1 items-baseline text-gray-450-spotify dark:text-gray-500-spotify justify-between"
+      class="flex space-x-1 items-baseline text-secondary dark:text-secondary-lighter justify-between"
     >
       <span class="font-medium">
         {{ LABEL_TYPES[type] }}

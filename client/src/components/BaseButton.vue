@@ -1,50 +1,31 @@
 <template>
   <component
     :is="tag"
-    v-wave="isDisabled ? false : ripple"
-    class="base-button default-focus"
     :type="type"
     :disabled="isDisabled"
-    :href="href"
+    :href="href || null"
     :role="tag === 'a' ? 'link' : 'button'"
     :target="target"
     :rel="rel"
     :class="[
-      { 'base-button-rounded': rounded },
-      { 'base-button-disabled': disabled },
-      { 'base-button-fullwidth': wFull },
-      { 'base-button-flat': flat },
+      [icon ? 'base-button-icon' : 'base-button-default'],
+      [color && `base-button-${color}`],
       [
         isDisabled
-          ? `base-button-${color} cursor-default`
-          : `base-button-${color} base-button-${color}--hover cursor-pointer`,
+          ? `cursor-default`
+          : `base-button-${color}--hover cursor-pointer`,
       ],
-      [icon ? 'base-button-icon' : 'base-button-default'],
+      { 'base-button-rounded': rounded },
+      { 'base-button-round': round },
+      { 'base-button-disabled': disabled },
+      { 'base-button-fullwidth': wFull },
     ]"
+    class="base-button default-focus"
     v-bind="$attrs"
+    v-wave="isDisabled ? false : ripple"
     @click.stop="emit('click', $event)"
   >
-    <svg
-      v-if="loading"
-      class="animate-spin h-5 w-5"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        class="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        stroke-width="4"
-      />
-      <path
-        class="opacity-75"
-        fill="currentColor"
-        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-      />
-    </svg>
+    <icon v-if="loading" class="animate-spin h-5 w-5" icon="gg:spinner" />
     <template v-else>
       <slot />
     </template>
@@ -58,9 +39,9 @@ const props = defineProps({
   color: {
     type: String,
     required: false,
-    default: "primary",
+    default: "standard",
     validator(value) {
-      return ["primary", "negative"].includes(value);
+      return ["standard", "primary", "negative"].includes(value);
     },
   },
   type: {
@@ -116,12 +97,12 @@ const props = defineProps({
     required: false,
     default: false,
   },
-  icon: {
+  round: {
     type: Boolean,
     required: false,
     default: false,
   },
-  flat: {
+  icon: {
     type: Boolean,
     required: false,
     default: false,
@@ -135,7 +116,7 @@ const isDisabled = computed(() => props.disabled || props.loading);
 
 <style scoped>
 .base-button {
-  @apply flex rounded-sm appearance-none shadow duration-200 transition-colors items-center justify-center uppercase text-center select-none text-sm font-medium visited:text-current;
+  @apply flex appearance-none shadow duration-200 transition-colors items-center justify-center uppercase text-center select-none text-sm font-medium visited:text-current;
 }
 .base-button-icon {
   @apply h-9 w-9 rounded-full;
@@ -150,13 +131,19 @@ const isDisabled = computed(() => props.disabled || props.loading);
   @apply w-full;
 }
 .base-button-rounded {
+  @apply rounded-sm;
+}
+.base-button-round {
   @apply rounded-full;
 }
-.base-button-flat {
-  @apply text-black !dark:text-white !bg-transparent !hover:bg-opacity-10 !hover:bg-black;
+.base-button-standard {
+  @apply text-black dark:text-white bg-white dark:bg-secondary-darker transition-none;
+}
+.base-button-standard--hover {
+  @apply hover:bg-opacity-50;
 }
 .base-button-primary {
-  @apply text-white bg-blue-500;
+  @apply text-white bg-primary;
 }
 .base-button-primary--hover {
   @apply hover:bg-blue-600;

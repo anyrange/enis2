@@ -58,22 +58,23 @@ const activateTab = (name) => {
 .tab {
   @apply default-focus ring-inset h-12 w-12;
   @apply flex flex-grow items-center justify-center text-base font-medium;
-  @apply cursor-pointer select-none duration-200 outline-none;
+  @apply cursor-pointer select-none outline-none duration-200;
 }
 .active-tab {
-  @apply text-blue-500 font-semibold;
+  @apply text-primary font-semibold;
+  box-shadow: 0px 2px 0px 0px #1976d2;
 }
 @media (hover: hover) {
   .active-tab:hover {
-    @apply hover:bg-blue-500/10;
+    @apply hover:bg-primary/10;
   }
 }
 .inactive-tab {
-  @apply text-gray-500 dark:text-gray-500-spotify;
+  @apply text-gray-500 dark:text-secondary-lighter;
 }
 @media (hover: hover) {
   .inactive-tab:hover {
-    @apply hover:bg-gray-100 dark:hover:bg-gray-700-spotify;
+    @apply hover:bg-gray-100 dark:hover:bg-secondary-dark;
   }
 }
 .disabled-tab {

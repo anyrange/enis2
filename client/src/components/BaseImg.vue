@@ -61,6 +61,6 @@ img::after {
   left: 0;
   width: 100%;
   height: 100%;
-  @apply dark:bg-gray-700-spotify bg-gray-200;
+  @apply dark:bg-secondary-dark bg-gray-200;
 }
 </style>

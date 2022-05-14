@@ -8,30 +8,12 @@
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
-      <div
-        v-show="show"
-        tabindex="-1"
-        class="fixed inset-0 bg-black bg-opacity-40"
-      >
+      <div v-show="show" tabindex="-1" class="fixed inset-0 bg-black/40 z-100">
         <div
           class="fixed inset-0 flex items-center justify-center"
           @click="close"
         >
-          <svg
-            class="close-icon"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-            @click="close"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            ></path>
-          </svg>
+          <icon icon="eva:close-fill" class="close-icon" />
           <transition
             enter-active-class="transition ease-out duration-200 transform"
             enter-from-class="opacity-0 translate-y-10 scale-95"
@@ -48,9 +30,6 @@
               aria-labelledby="modal-headline"
               @click.stop
             >
-              <div class="absolute right-0 top-0">
-                <slot name="top-right"> </slot>
-              </div>
               <div class="p-2 max-h-md sm:max-h-xl overflow-y-auto">
                 <slot />
               </div>
@@ -106,10 +85,10 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .close-icon {
-  @apply w-6 h-6 text-gray-500 hover:text-gray-300 rounded-full duration-100 cursor-pointer absolute right-1 top-1;
+  @apply w-7 h-7 text-gray-500 hover:text-gray-300 rounded-full duration-100 cursor-pointer absolute right-1 top-1;
 }
 .modal-window {
-  @apply bg-white dark:bg-gray-900-spotify rounded text-left;
+  @apply bg-white dark:bg-secondary-darkest rounded text-left;
   @apply relative shadow-xl transition-transform align-middle;
   @apply sm:max-w-lg w-full overflow-hidden mr-0 sm:mr-2;
 }

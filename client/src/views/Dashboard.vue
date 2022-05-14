@@ -1,22 +1,16 @@
 <template>
-  <header class="w-full sticky inset-x-0 top-0 left-0">
-    <tabs v-model="settings.year" class="tabs-bg">
-      <div class="tabs-container">
-        <tab
-          v-for="{ value, label } in yearsStore.years"
-          :key="value"
-          :name="label"
-        >
-          {{ label }}
-        </tab>
-      </div>
-    </tabs>
-    <tabs
-      v-model="settings.tab"
-      class="floating-nav tabs-bg"
-      :class="{ 'is-hidden': !showYears }"
-    >
-      <div class="tabs-container">
+  <header class="header-background">
+    <div class="dashboard-container px-4 py-3.5">
+      <h1 class="text-left text-xl font-medium dark:text-secondary-lighter">
+        enis2
+      </h1>
+    </div>
+  </header>
+  <nav
+    class="header-background w-full sticky top-0 shadow-sm border-b-2 dark:border-secondary-dark/50 z-10"
+  >
+    <tabs v-model="settings.tab">
+      <div class="dashboard-container">
         <tab
           v-for="({ Id, Name }, index) in termsStore.terms"
           :key="Id"
@@ -25,12 +19,30 @@
           {{ GREEK_NUMERALS[index + 1] }}
         </tab>
         <tab name="grades">
-          <grades-icon />
+          <icon icon="material-symbols:school-outline-rounded" />
         </tab>
       </div>
     </tabs>
-  </header>
-  <main class="flex justify-center p-3">
+  </nav>
+  <nav class="dashboard-container">
+    <carousel class="w-full mx-4 my-3.5" :items-to-show="3" v-model="yearIndex">
+      <slide v-for="(year, index) in yearsStore.years" :key="index">
+        <button
+          class="text-secondary-lighter font-medium default-focus appearance-none"
+          :class="{
+            '!text-primary': settings.year === year.label,
+          }"
+          @click="settings.year = year.label"
+        >
+          {{ year.label }}
+        </button>
+      </slide>
+      <template #addons="{ slidesCount }">
+        <navigation v-if="slidesCount > 3" />
+      </template>
+    </carousel>
+  </nav>
+  <main class="flex justify-center px-3">
     <section
       class="flex flex-col space-y-3 mb-6 w-full sm:w-450px"
       :class="{ 'h-80vh': isEmptyContent }"
@@ -65,32 +77,39 @@
     >
       <base-button
         v-if="!settings.rememberMe"
-        rounded
+        round
         color="negative"
         @click="logout()"
       >
         Выйти
       </base-button>
     </div>
-    <div
-      class="absolute bottom-4 right-4 rounded-full bg-gray-50 dark:bg-gray-900-spotify"
-    >
-      <base-button
-        flat
-        icon
-        aria-label="Open Settings"
-        @click="showSettingsModal = true"
-      >
-        <settings-icon />
+    <div class="dashboard-container justify-end">
+      <base-button icon @click="showSettingsModal = true" class="mr-2">
+        <icon icon="clarity:settings-solid" />
       </base-button>
     </div>
   </footer>
-  <subject-modal :show="showSubjectModal" @close="showSubjectModal = false" />
-  <settings-modal
-    :show="showSettingsModal"
-    @close="showSettingsModal = false"
-  />
+  <modal :show="showSubjectModal" @close="showSubjectModal = false">
+    <subject-modal />
+  </modal>
+  <modal :show="showSettingsModal" @close="showSettingsModal = false">
+    <settings-modal />
+  </modal>
 </template>
+
+<style>
+.carousel__prev,
+.carousel__next {
+  @apply bg-transparent text-secondary-lighter mx-1 default-focus;
+}
+.header-background {
+  @apply bg-white dark:bg-secondary-darker;
+}
+.dashboard-container {
+  @apply flex w-full xl:w-1/2 m-auto;
+}
+</style>
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch, inject } from "vue";
@@ -108,6 +127,8 @@ import {
   useGrades,
 } from "@/store";
 import useRandom from "@/composables/useRandom";
+import "vue3-carousel/dist/carousel.css";
+import { Carousel, Slide, Navigation } from "vue3-carousel";
 
 const GREEK_NUMERALS = {
   1: "I",
@@ -137,6 +158,10 @@ const { checkAvailability } = useHealth();
 const { login, logout } = useAuth();
 
 const { settings } = storeToRefs(settingsStore);
+
+const yearIndex = ref(
+  yearsStore.years.indexOf((item) => item.label === settings.year) - 1
+);
 
 const isGrades = computed(() => settings.value.tab === "grades");
 const isEmptyContent = computed(() =>
@@ -260,25 +285,3 @@ watch(
 
 getData({ includeTabs: true, force: true });
 </script>
-
-<style>
-.tabs-bg {
-  @apply bg-white dark:bg-gray-800-spotify;
-}
-.tabs-container {
-  @apply flex w-full xl:w-1/2 m-auto;
-}
-.floating-nav {
-  transform: translate3d(0, 0, 0);
-  @apply transition transition-transform duration-300;
-}
-.floating-nav.is-hidden {
-  transform: translate3d(0, -100%, 0);
-}
-.settings-label {
-  @apply sm:text-base text-sm text-gray-700 dark:text-gray-500-spotify;
-}
-.settings-link {
-  @apply sm:text-base text-sm text-gray-700 dark:text-gray-500-spotify hover:underline;
-}
-</style>

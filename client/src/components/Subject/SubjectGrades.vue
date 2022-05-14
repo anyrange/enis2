@@ -88,7 +88,7 @@ const formatScore = (score) => {
 
 <style scoped>
 .item {
-  @apply flex flex-col space-y-6 w-full justify-center rounded shadow-sm bg-white dark:bg-gray-800-spotify;
+  @apply flex flex-col space-y-6 w-full justify-center rounded shadow-sm bg-white dark:bg-secondary-darker;
 }
 .item-top {
   @apply flex items-start justify-between p-3;
@@ -106,13 +106,13 @@ const formatScore = (score) => {
   @apply text-sm;
 }
 .item-bottom {
-  @apply flex w-full justify-between p-3 border-t border-gray-200 dark:border-gray-600-spotify;
+  @apply flex w-full justify-between p-3 border-t border-gray-200 dark:border-secondary;
 }
 .item-bottom-box {
   @apply flex flex-col items-center justify-center;
 }
 .item-bottom-box-label {
-  @apply text-sm font-normal text-gray-400 dark:text-gray-500-spotify;
+  @apply text-sm font-normal text-gray-400 dark:text-secondary-lighter;
 }
 .item-bottom-box-mark {
   @apply text-lg font-medium;

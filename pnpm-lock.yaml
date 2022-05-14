@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@iconify/vue': ^3.2.1
   '@swc/core': ^1.2.173
   '@vitejs/plugin-vue': ^1.10.2
   '@vue/eslint-config-prettier': ^7.0.0
@@ -33,6 +34,7 @@ specifiers:
   vue: ^3.2.32
   vue-eslint-parser: ^8.3.0
   vue-scroll-picker: ^1.1.1
+  vue3-carousel: ^0.1.40
   windicss: ^3.5.1
   workbox-window: ^6.5.3
 
@@ -55,8 +57,10 @@ dependencies:
   v-wave: 1.4.0_vue@3.2.32
   vue: 3.2.32
   vue-scroll-picker: 1.1.1
+  vue3-carousel: 0.1.40_vue@3.2.32
 
 devDependencies:
+  '@iconify/vue': 3.2.1_vue@3.2.32
   '@swc/core': 1.2.173
   '@vitejs/plugin-vue': 1.10.2_vite@2.9.2
   '@vue/eslint-config-prettier': 7.0.0_eslint@8.13.0+prettier@2.6.2
@@ -1265,6 +1269,14 @@ packages:
 
   /@humanwhocodes/object-schema/1.2.1:
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
+    dev: true
+
+  /@iconify/vue/3.2.1_vue@3.2.32:
+    resolution: {integrity: sha512-c4R6ZgFo1JrJ8aPMMgOPgfU7lBswihMGR+yWe/P4ZukC3kTkeT4+lkt9Pc/itVFMkwva/S/7u9YofmYv57fnNQ==}
+    peerDependencies:
+      vue: 3.x
+    dependencies:
+      vue: 3.2.32
     dev: true
 
   /@jridgewell/resolve-uri/3.0.5:
@@ -4886,6 +4898,14 @@ packages:
       '@vue/runtime-dom': 3.2.32
       '@vue/server-renderer': 3.2.32_vue@3.2.32
       '@vue/shared': 3.2.32
+    dev: false
+
+  /vue3-carousel/0.1.40_vue@3.2.32:
+    resolution: {integrity: sha512-rPIfBxFhsY6W6qKNGsjgzPJdngt07ov06/Ql1lKsTr8gBx73gUxCIIQo/7M3QCx3KU94CDGBbLugF5YGdEPefg==}
+    peerDependencies:
+      vue: ^3.2.0
+    dependencies:
+      vue: 3.2.32
     dev: false
 
   /webidl-conversions/3.0.1:

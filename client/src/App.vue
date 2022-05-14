@@ -8,10 +8,9 @@
       :active="loaderStore.overlay.active"
       :blocking="loaderStore.overlay.blocking"
     />
-    <availability-modal
-      :show="showAvailabilityModal"
-      @close="showAvailabilityModal = false"
-    />
+    <modal :show="showAvailabilityModal" @close="showAvailabilityModal = false">
+      <availability-modal />
+    </modal>
     <component :is="authStore.authenticated ? Dashboard : Login" />
     <notifications />
   </div>

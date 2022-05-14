@@ -2,16 +2,31 @@
   <base-button
     flat
     icon
-    aria-label="Toogle Theme"
+    :aria-label="component.label"
     @click="settingsStore.toggleTheme"
   >
-    <sun-icon v-if="settingsStore.settings.theme === 'dark'" />
-    <moon-icon v-else />
+    <icon :icon="component.icon" />
   </base-button>
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { useSettings } from "@/store";
 
 const settingsStore = useSettings();
+
+const isDark = {
+  true: {
+    icon: "akar-icons:sun-fill",
+    label: "Turn of night mode",
+  },
+  false: {
+    icon: "akar-icons:moon-fill",
+    label: "Turn on night mode",
+  },
+};
+
+const component = computed(
+  () => isDark[settingsStore.settings.theme === "dark"]
+);
 </script>
