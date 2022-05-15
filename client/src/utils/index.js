@@ -1,7 +1,3 @@
-export const isEmpty = (str) => {
-  return !str || str.length === 0;
-};
-
 const getSum = (array, query) => {
   return array.reduce((t, c) => t + c[query], 0);
 };

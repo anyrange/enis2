@@ -1,7 +1,7 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
+import { useStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { login as _login, refreshCaptcha } from "@/api";
-import { isEmpty } from "@/utils";
 import { notify } from "@/services/notify.js";
 import useYearsStore from "./years.js";
 import useTermsStore from "./terms.js";
@@ -18,11 +18,10 @@ export default defineStore("auth", () => {
   const { clearSettings } = useSettingsStore();
   const { clearSubject } = useSubjectStore();
 
-  const token = ref(null);
-  const captcha = ref(null);
+  const token = useStorage("token", "");
+  const authenticated = useStorage("authenticated", false);
 
-  const authenticated = ref(false);
-  const hasToken = computed(() => !isEmpty(token.value));
+  const captcha = ref(null);
 
   const clearStore = () => {
     clearYears();
@@ -69,7 +68,6 @@ export default defineStore("auth", () => {
     token,
     captcha,
     authenticated,
-    hasToken,
     login,
     logout,
     updateCaptcha,

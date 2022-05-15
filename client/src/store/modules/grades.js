@@ -1,4 +1,5 @@
-import { ref, computed } from "vue";
+import { computed } from "vue";
+import { useStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { getGrades } from "@/api";
 import { findIndex, findItem } from "@/utils";
@@ -9,7 +10,7 @@ export default defineStore("grades", () => {
   const yearsStore = useYearsStore();
   const settingsStore = useSettingsStore();
 
-  const gradesData = ref([]);
+  const gradesData = useStorage("gradesData", []);
 
   const grades = computed(() => {
     const matchedGrades = findItem(gradesData.value, {

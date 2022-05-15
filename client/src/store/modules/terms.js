@@ -1,4 +1,5 @@
-import { ref, computed } from "vue";
+import { computed } from "vue";
+import { useStorage } from "@vueuse/core";
 import { defineStore, storeToRefs } from "pinia";
 import { getTerms } from "@/api";
 import { findIndex, findItem } from "@/utils";
@@ -10,8 +11,8 @@ export default defineStore("terms", () => {
   const settingsStore = useSettingsStore();
   const { settings } = storeToRefs(settingsStore);
 
-  const termsData = ref([]);
-  const actual = ref(null);
+  const termsData = useStorage("termsData", []);
+  const actual = useStorage("actualTermName", null);
 
   const matchedTerm = computed(() => {
     return findItem(termsData.value, { yearName: settings.value.year });

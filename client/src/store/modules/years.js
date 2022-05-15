@@ -1,4 +1,5 @@
-import { ref, computed } from "vue";
+import { computed } from "vue";
+import { useStorage } from "@vueuse/core";
 import { defineStore, storeToRefs } from "pinia";
 import { getYears } from "@/api";
 import { findItem } from "@/utils";
@@ -8,8 +9,8 @@ export default defineStore("years", () => {
   const settingsStore = useSettingsStore();
   const { settings } = storeToRefs(settingsStore);
 
-  const years = ref([]);
-  const actual = ref(null);
+  const years = useStorage("yearsData", []);
+  const actual = useStorage("actualYearName", null);
 
   const currentYearId = computed(() => {
     const matchedYear = findItem(years.value, { label: settings.value.year });
@@ -33,21 +34,27 @@ export default defineStore("years", () => {
     try {
       const data = await getYears();
 
-      const actualYear = data.find((year) => year.isActual);
-
-      actual.value = shorterYearName(actualYear.Name);
       settings.value.year = settings.value.year || actual.value;
 
-      const actualYearIndex = data.findIndex((year) => year.isActual);
-
-      years.value = data
-        .slice(actualYearIndex, actualYearIndex + 3)
-        .map(({ Id: value, Name: label, isActual }) => ({
+      const reversedYears = data.reverse(); // 2022, 2021 => 2021, 2022
+      const formattedYears = reversedYears.map(
+        ({ Id: value, Name: label, isActual }) => ({
           value,
           label: shorterYearName(label),
           isActual,
-        }))
-        .reverse();
+        })
+      );
+      const firstYearIndex = formattedYears.findIndex((year) => {
+        /*
+          (hardcoded) 
+          The first year that started to work with the new data format
+          It is impossible to see marks for previous years
+        */
+        return year.label === "2019-2020";
+      });
+      const actualYearIndex = formattedYears.findIndex((year) => year.isActual);
+      years.value = formattedYears.slice(firstYearIndex, actualYearIndex + 2);
+      actual.value = data.find((year) => year.isActual).label;
     } catch (error) {
       return Promise.reject(error);
     }

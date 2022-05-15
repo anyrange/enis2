@@ -1,4 +1,5 @@
-import { reactive, computed } from "vue";
+import { computed } from "vue";
+import { useStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { getCity } from "@/api";
 import schools from "#shared/schools.js";
@@ -13,25 +14,28 @@ export default defineStore("settings", () => {
     sortBy: "score",
     hideEmpty: false,
   };
-  const settings = reactive({ ...initialState });
+  const settings = useStorage("settings", { ...initialState });
 
   const darkTheme = computed({
-    get: () => settings.theme === "dark",
+    get: () => settings.value.theme === "dark",
     set: (value) => {
-      settings.theme = value ? "dark" : "light";
+      settings.value.theme = value ? "dark" : "light";
     },
   });
 
   const clearSettings = () => {
-    // eslint-disable-next-line no-unused-vars
-    Object.assign(settings, (({ theme, school, ...o }) => o)(initialState));
+    Object.assign(
+      settings.value,
+      // eslint-disable-next-line no-unused-vars
+      (({ theme, school, ...o }) => o)(initialState)
+    );
   };
 
   const toggleTheme = () => {
-    settings.theme = settings.theme === "light" ? "dark" : "light";
+    settings.value.theme = settings.value.theme === "light" ? "dark" : "light";
   };
   const predictSchool = async () => {
-    if (settings.school) return;
+    if (settings.value.school) return;
     try {
       const { city, region } = await getCity();
       const predictedSchool = schools.find((item) => {
@@ -42,7 +46,7 @@ export default defineStore("settings", () => {
         );
       });
       if (city && predictedSchool) {
-        settings.school = predictedSchool.value;
+        settings.value.school = predictedSchool.value;
       }
     } catch (error) {
       return Promise.reject(error);

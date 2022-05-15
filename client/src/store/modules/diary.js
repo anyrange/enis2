@@ -1,4 +1,5 @@
-import { ref, computed } from "vue";
+import { computed } from "vue";
+import { useStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { getDiary } from "@/api";
 import { findIndex, findItem } from "@/utils";
@@ -14,7 +15,7 @@ export default defineStore("diary", () => {
   const yearsStore = useYearsStore();
   const termsStore = useTermsStore();
 
-  const diaryData = ref([]);
+  const diaryData = useStorage("diaryData", []);
 
   const matchedDiary = computed(() => {
     return findItem(diaryData.value, {
