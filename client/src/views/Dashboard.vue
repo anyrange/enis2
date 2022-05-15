@@ -24,7 +24,8 @@
       </div>
     </tabs>
   </nav>
-  <nav class="dashboard-container">
+
+  <nav class="dashboard-container" v-if="yearsStore.years && settings.year">
     <carousel
       class="w-full mx-4 my-3.5 z-20"
       :items-to-show="3"
