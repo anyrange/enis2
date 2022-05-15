@@ -26,7 +26,7 @@ defineProps({
 <style>
 .loader-layout {
   transition: opacity 0.2s ease-in-out;
-  @apply opacity-0 z-50 items-center justify-center flex;
+  @apply opacity-0 z-99 items-center justify-center flex;
 }
 .loader-non-blocking {
   left: 50%;

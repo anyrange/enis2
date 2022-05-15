@@ -7,7 +7,7 @@
     </div>
   </header>
   <nav
-    class="header-background w-full sticky top-0 shadow-sm border-b-2 dark:border-secondary-dark/50 z-10"
+    class="header-background w-full sticky top-0 shadow-sm z-30 border-b-2 dark:border-secondary-dark/50"
   >
     <tabs v-model="settings.tab">
       <div class="dashboard-container">
@@ -25,7 +25,11 @@
     </tabs>
   </nav>
   <nav class="dashboard-container">
-    <carousel class="w-full mx-4 my-3.5" :items-to-show="3" v-model="yearIndex">
+    <carousel
+      class="w-full mx-4 my-3.5 z-20"
+      :items-to-show="3"
+      v-model="yearIndex"
+    >
       <slide v-for="(year, index) in yearsStore.years" :key="index">
         <button
           class="text-secondary-lighter font-medium default-focus appearance-none"
@@ -114,6 +118,8 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch, inject } from "vue";
 import { storeToRefs } from "pinia";
+import "vue3-carousel/dist/carousel.css";
+import { Carousel, Slide, Navigation } from "vue3-carousel";
 import { notify } from "@/services/notify.js";
 import {
   useSettings,
@@ -127,8 +133,6 @@ import {
   useGrades,
 } from "@/store";
 import useRandom from "@/composables/useRandom";
-import "vue3-carousel/dist/carousel.css";
-import { Carousel, Slide, Navigation } from "vue3-carousel";
 
 const GREEK_NUMERALS = {
   1: "I",
