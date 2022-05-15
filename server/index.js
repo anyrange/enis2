@@ -8,13 +8,7 @@ app.register(import("fastify-cors"), {
   credentials: true,
 });
 
-app.register(import("./autoload"));
-
-app.register(import("fastify-compress"));
-
-app.register(import("fastify-jwt"), { secret: SECRET });
-
-if (PROD) {
+if (!PROD) {
   app.register(import("fastify-swagger"), {
     routePrefix: "/docs",
     swagger: {
@@ -30,11 +24,18 @@ if (PROD) {
     },
     exposeRoute: true,
   });
+  console.log(`Docs on: http://localhost:${PORT}/docs`);
+}
 
+app.register(import("@fastify/compress"));
+app.register(import("./autoload"));
+
+app.register(import("fastify-jwt"), { secret: SECRET });
+
+if (PROD) {
   app.listen(PORT, "0.0.0.0", (err) => {
     if (err) return console.log(err);
     console.info(`App is alive on port ${PORT}`);
-    !PROD && console.log(`Docs on: http://localhost:${PORT}/docs`);
   });
 }
 

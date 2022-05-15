@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@fastify/compress': 5.0.0
   '@iconify/vue': ^3.2.1
   '@swc/core': ^1.2.173
   '@vitejs/plugin-vue': ^1.10.2
@@ -13,7 +14,6 @@ specifiers:
   eslint: ^8.13.0
   eslint-plugin-vue: ^8.6.0
   fastify: ^3.28.0
-  fastify-compress: ^4.0.1
   fastify-cors: ^6.0.3
   fastify-jwt: ^4.1.3
   fastify-plugin: ^3.0.1
@@ -39,12 +39,12 @@ specifiers:
   workbox-window: ^6.5.3
 
 dependencies:
+  '@fastify/compress': 5.0.0
   '@vueuse/core': 8.3.1_vue@3.2.32
   axios: 0.21.4
   dotenv: 10.0.0
   esbuild: 0.14.38
   fastify: 3.28.0
-  fastify-compress: 4.0.1
   fastify-cors: 6.0.3
   fastify-jwt: 4.1.3
   fastify-plugin: 3.0.1
@@ -1254,6 +1254,24 @@ packages:
     resolution: {integrity: sha512-gvCOUNpXsWrIQ3A4aXCLIdblL0tDq42BG/2Xw7oxbil9h11uow10ztS2GuFazNBfjbrsZ5nl+nPl5jDSjj5TSg==}
     dependencies:
       ajv: 6.12.6
+    dev: false
+
+  /@fastify/compress/5.0.0:
+    resolution: {integrity: sha512-A0acEHP55+h7XDeWFFbSwZUYya7IK/E7IP9h+/iQxYBQeLY+AKF9Ya00ddMTAd/BpJuQvqUgGjefFXgzza3e8Q==}
+    engines: {node: '>=10.16'}
+    dependencies:
+      encoding-negotiator: 2.0.1
+      fastify-plugin: 3.0.1
+      into-stream: 6.0.0
+      is-deflate: 1.0.0
+      is-gzip: 2.0.0
+      is-zip: 1.0.0
+      mime-db: 1.52.0
+      minipass: 3.1.6
+      peek-stream: 1.1.3
+      pump: 3.0.0
+      pumpify: 2.0.1
+      string-to-stream: 3.0.1
     dev: false
 
   /@humanwhocodes/config-array/0.9.3:
@@ -2783,25 +2801,6 @@ packages:
       reusify: 1.0.4
     dev: false
 
-  /fastify-compress/4.0.1:
-    resolution: {integrity: sha512-3ABDmLS3CVZpP9VyhpPsYy1ID771i92ftZ320Qq68lGLQ+kUqHIAWeTcik+KM8UycY8Ad+baECBHZpXDHvG0Eg==}
-    engines: {node: '>=10.16'}
-    dependencies:
-      encoding-negotiator: 2.0.1
-      fastify-plugin: 3.0.1
-      into-stream: 6.0.0
-      is-deflate: 1.0.0
-      is-gzip: 2.0.0
-      is-stream: 2.0.1
-      is-zip: 1.0.0
-      mime-db: 1.52.0
-      minipass: 3.1.6
-      peek-stream: 1.1.3
-      pump: 3.0.0
-      pumpify: 2.0.1
-      string-to-stream: 3.0.1
-    dev: false
-
   /fastify-cors/6.0.3:
     resolution: {integrity: sha512-fMbXubKKyBHHCfSBtsCi3+7VyVRdhJQmGes5gM+eGKkRErCdm0NaYO0ozd31BQBL1ycoTIjbqOZhJo4RTF/Vlg==}
     dependencies:
@@ -3384,6 +3383,7 @@ packages:
   /is-stream/2.0.1:
     resolution: {integrity: sha512-hFoiJiTl63nn+kstHGBtewWSKnQLpyb155KHheA1l39uvtO9nWIop1p3udqPcUd/xbF1VLMO4n7OI6p7RbngDg==}
     engines: {node: '>=8'}
+    dev: true
 
   /is-string/1.0.7:
     resolution: {integrity: sha512-tE2UXzivje6ofPW7l23cjDOMa09gb7xlAqG6jG5ej6uPV32TlWP3NKPigtaGeHNu9fohccRYvIiZMfOOnOYUtg==}
