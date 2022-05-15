@@ -119,6 +119,7 @@
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch, inject } from "vue";
 import { storeToRefs } from "pinia";
+import { useStorage } from "@vueuse/core";
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Navigation } from "vue3-carousel";
 import { notify } from "@/services/notify.js";
@@ -164,9 +165,10 @@ const { login, logout } = useAuth();
 
 const { settings } = storeToRefs(settingsStore);
 
-const yearIndex = ref(
-  yearsStore.years.indexOf((item) => item.label === settings.year) - 1
+const actualYearIndex = yearsStore.years.indexOf(
+  (item) => item.label === yearsStore.actualYearName
 );
+const yearIndex = useStorage("actualYearIndex", actualYearIndex - 2);
 
 const isGrades = computed(() => settings.value.tab === "grades");
 const isEmptyContent = computed(() =>
