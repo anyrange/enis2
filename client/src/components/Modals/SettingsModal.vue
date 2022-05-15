@@ -28,6 +28,7 @@
       <base-button
         v-if="settings.rememberMe"
         color="negative"
+        rounded
         @click="logout()"
       >
         Выйти
