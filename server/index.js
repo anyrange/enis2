@@ -3,7 +3,7 @@ import { PROD, PORT, URL_WHITELIST, SECRET } from "./config";
 
 const app = fastify({ trustProxy: true });
 
-app.register(import("fastify-cors"), {
+app.register(import("@fastify/cors"), {
   origin: URL_WHITELIST.split(","),
   credentials: true,
 });
@@ -30,7 +30,7 @@ if (!PROD) {
 app.register(import("@fastify/compress"));
 app.register(import("./autoload"));
 
-app.register(import("fastify-jwt"), { secret: SECRET });
+app.register(import("@fastify/jwt"), { secret: SECRET });
 
 if (PROD) {
   app.listen(PORT, "0.0.0.0", (err) => {
