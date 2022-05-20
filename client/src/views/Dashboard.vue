@@ -238,7 +238,7 @@ const getData = async ({ force = false, includeTabs = false }) => {
     };
     if (settings.value.rememberMe) {
       try {
-        await login();
+        await login({});
         await fetchData({ force: true, includeTabs: true });
         return;
       } catch {
