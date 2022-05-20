@@ -48,6 +48,7 @@
 <script setup>
 import { computed } from "vue";
 import { getPercentDecimals, between } from "@/utils";
+import { useSettings } from "@/store";
 
 const props = defineProps({
   subject: {
@@ -65,28 +66,31 @@ const emit = defineEmits(["click"]);
 
 const percentDecimals = computed(() => getPercentDecimals(props.subject.Score));
 
-const MARK_RANGES = {
-  5: {
-    range: [85, 100],
-    bgClass: "bg-q-positive",
-  },
-  4: {
-    range: [65, 84],
-    bgClass: "bg-q-warning",
-  },
-  3: {
-    range: [40, 64],
-    bgClass: "bg-q-negative",
-  },
-  2: {
-    range: [0, 39],
-    bgClass: "bg-black/30",
-  },
-};
+const settingsStore = useSettings();
+const markRanges = computed(() => {
+  return {
+    5: {
+      range: [settingsStore.ranges[3], settingsStore.ranges[4]],
+      bgClass: "bg-q-positive",
+    },
+    4: {
+      range: [settingsStore.ranges[2], settingsStore.ranges[3] - 1],
+      bgClass: "bg-q-warning",
+    },
+    3: {
+      range: [settingsStore.ranges[1], settingsStore.ranges[2] - 1],
+      bgClass: "bg-q-negative",
+    },
+    2: {
+      range: [settingsStore.ranges[0], settingsStore.ranges[1] - 1],
+      bgClass: "bg-black/30",
+    },
+  };
+});
 
 const mark = computed(() => {
   const roundedPercent = Math.round(props.subject.Score);
-  const [name, { bgClass }] = Object.entries(MARK_RANGES).find(
+  const [name, { bgClass }] = Object.entries(markRanges.value).find(
     ([, { range }]) => between(roundedPercent, ...range)
   );
   return { name, bgClass };

@@ -2,6 +2,7 @@ import { computed } from "vue";
 import { useStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
 import { getCity } from "@/api";
+import { DEFAULT_RANGES } from "@/config";
 import schools from "#shared/schools.js";
 
 export default defineStore("settings", () => {
@@ -15,6 +16,7 @@ export default defineStore("settings", () => {
     hideEmpty: false,
   };
   const settings = useStorage("settings", { ...initialState });
+  const ranges = useStorage("customRanges", [...DEFAULT_RANGES]);
 
   const darkTheme = computed({
     get: () => settings.value.theme === "dark",
@@ -59,5 +61,6 @@ export default defineStore("settings", () => {
     predictSchool,
     settings,
     darkTheme,
+    ranges,
   };
 });

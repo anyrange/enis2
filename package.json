@@ -33,6 +33,7 @@
     "v-wave": "^1.4.0",
     "vue": "^3.2.33",
     "vue-scroll-picker": "^1.1.1",
+    "vue-slider-component": "^4.0.0-beta.4",
     "vue3-carousel": "^0.1.40"
   },
   "devDependencies": {
