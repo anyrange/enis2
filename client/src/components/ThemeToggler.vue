@@ -11,9 +11,9 @@
 
 <script setup>
 import { computed } from "vue";
-import { useSettings } from "@/store";
+import useSettingsStore from "@/stores/settings";
 
-const settingsStore = useSettings();
+const settingsStore = useSettingsStore();
 
 const isDark = {
   true: {

@@ -26,9 +26,9 @@
 </template>
 
 <script setup>
-import { useSettings } from "@/store";
+import useSettingsStore from "@/stores/settings";
 import useRandom from "@/composables/useRandom";
 
 const { randomGIF } = useRandom();
-const settingsStore = useSettings();
+const settingsStore = useSettingsStore();
 </script>

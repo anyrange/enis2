@@ -74,7 +74,8 @@
 import { ref, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia";
 import { DA_LINK, GH_LINK, TG_LINK } from "@/config";
-import { useAuth, useSettings } from "@/store";
+import useSettingsStore from "@/stores/settings";
+import useAuthStore from "@/stores/auth";
 
 const AsyncSlider = defineAsyncComponent(() =>
   import("./SettingsModalSlider.vue")
@@ -91,8 +92,8 @@ const SORT_OPTIONS = [
   },
 ];
 
-const settingsStore = useSettings();
-const { logout } = useAuth();
+const settingsStore = useSettingsStore();
+const { logout } = useAuthStore();
 
 const showAdvanced = ref(false);
 

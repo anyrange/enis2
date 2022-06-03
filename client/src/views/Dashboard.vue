@@ -13,7 +13,7 @@
       <div class="dashboard-container">
         <tab
           v-for="({ Id, Name }, index) in termsStore.terms"
-          :key="Id"
+          :key="`${index}-${Id}`"
           :name="Name"
         >
           {{ GREEK_NUMERALS[index + 1] }}
@@ -24,7 +24,6 @@
       </div>
     </tabs>
   </nav>
-
   <nav class="dashboard-container" v-if="yearsStore.years && settings.year">
     <carousel
       class="w-full mx-4 my-3.5 z-20"
@@ -122,17 +121,15 @@ import { storeToRefs } from "pinia";
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Navigation } from "vue3-carousel";
 import { notify } from "@/services/notify.js";
-import {
-  useSettings,
-  useAuth,
-  useYears,
-  useHealth,
-  useLoader,
-  useSubject,
-  useDiary,
-  useTerms,
-  useGrades,
-} from "@/store";
+import useLoaderStore from "@/stores/loader";
+import useSubjectStore from "@/stores/subject";
+import useSettingsStore from "@/stores/settings";
+import useYearsStore from "@/stores/years";
+import useAuthStore from "@/stores/auth";
+import useHealthStore from "@/stores/health";
+import useDiaryStore from "@/stores/diary";
+import useTermsStore from "@/stores/terms";
+import useGradesStore from "@/stores/grades";
 import useRandom from "@/composables/useRandom";
 
 const GREEK_NUMERALS = {
@@ -152,15 +149,15 @@ const scrollOffset = ref(40);
 
 const { randomEmoticon } = useRandom();
 
-const loaderStore = useLoader();
-const subjectStore = useSubject();
-const settingsStore = useSettings();
-const yearsStore = useYears();
-const termsStore = useTerms();
-const diaryStore = useDiary();
-const gradesStore = useGrades();
-const { checkAvailability } = useHealth();
-const { login, logout } = useAuth();
+const loaderStore = useLoaderStore();
+const subjectStore = useSubjectStore();
+const settingsStore = useSettingsStore();
+const yearsStore = useYearsStore();
+const termsStore = useTermsStore();
+const diaryStore = useDiaryStore();
+const gradesStore = useGradesStore();
+const { checkAvailability } = useHealthStore();
+const { login, logout } = useAuthStore();
 
 const { settings } = storeToRefs(settingsStore);
 

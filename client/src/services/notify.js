@@ -1,6 +1,5 @@
 import { nanoid } from "nanoid";
-import { createNanoEvents } from "nanoevents";
-const emitter = createNanoEvents();
+import { emitter } from "./bus";
 
 /**
  * @param {('info'|'success'|'warning'|'danger')} type
@@ -34,4 +33,4 @@ const notify = {
   },
 };
 
-export { notify, emitter };
+export { notify };

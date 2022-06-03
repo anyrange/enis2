@@ -48,7 +48,7 @@
 <script setup>
 import { computed } from "vue";
 import { getPercentDecimals, between } from "@/utils";
-import { useSettings } from "@/store";
+import useSettingsStore from "@/stores/settings";
 
 const props = defineProps({
   subject: {
@@ -66,7 +66,7 @@ const emit = defineEmits(["click"]);
 
 const percentDecimals = computed(() => getPercentDecimals(props.subject.Score));
 
-const settingsStore = useSettings();
+const settingsStore = useSettingsStore();
 const markRanges = computed(() => {
   return {
     5: {

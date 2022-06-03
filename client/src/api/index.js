@@ -1,65 +1,79 @@
 import axios from "axios";
-import { ENDPOINTS, SERVER_URL, DEFAULT_ERROR_MESSAGE } from "@/config";
-import { useLoader, useAuth, useSettings } from "@/store";
+import { nanoid } from "nanoid";
+import useLoaderStore from "@/stores/loader";
+import useAuthStore from "@/stores/auth";
+import useSettingsStore from "@/stores/settings";
+import { ENDPOINTS, DEFAULT_ERROR_MESSAGE, isMock } from "@/config";
 
-const api = axios.create({
-  baseURL: SERVER_URL,
-  withCredentials: true,
-});
+const api = axios.create({});
 
-const useStore = () => {
-  const auth = useAuth();
-  const loader = useLoader();
-  const settings = useSettings();
-  return { loader, auth, settings };
-};
-
-const setLoader = ({ status, endpoint }) => {
-  const { loader } = useStore();
-  loader.setLoader({ status, endpoint });
-};
-
-const getParams = () => {
-  const { auth, settings } = useStore();
-  return { city: settings.settings.school, token: auth.token };
+const findEndpoint = (url) => {
+  return Object.keys(ENDPOINTS).find((key) => {
+    const value = ENDPOINTS[key].endpoint;
+    return url.includes(isMock ? value.mock : value.real);
+  });
 };
 
 api.interceptors.request.use(
   (config) => {
-    const url = config.url;
-    const { name } = ENDPOINTS.find((item) => url.includes(item.endpoint));
-    const { token, city } = getParams();
-    setLoader({ status: "loading", endpoint: name });
+    const authStore = useAuthStore();
+    const loaderStore = useLoaderStore();
+    const settingsStore = useSettingsStore();
+
+    const { school: city } = settingsStore.settings;
+    const { token } = authStore;
+
+    const endpoint = findEndpoint(config.url);
+    const id = nanoid();
+
     config.headers.Authorization = `Bearer ${token}`;
-    config.params = {
-      ...config.params,
-      city,
-    };
+    config.params = { ...config.params, city };
+    config.id = id;
+
+    loaderStore.loadingQueue.push({ key: endpoint, id });
+
     return config;
   },
   (error) => {
-    setLoader({ status: "error", endpoint: null });
+    console.log(`API Call error: ${error}`);
     return Promise.reject(error);
   }
 );
 
 api.interceptors.response.use(
   (response) => {
-    setLoader({ status: "pending" });
+    const id = response.config.id;
+
+    const loaderStore = useLoaderStore();
+    loaderStore.loadingQueue = loaderStore.loadingQueue.filter((item) => {
+      return item.id !== id;
+    });
+
     return response.data;
   },
   (error) => {
-    setLoader({ status: "error", endpoint: null });
-    error.response.data = error.response.data || {};
-    error.response.data.message =
-      error.response.data.message || DEFAULT_ERROR_MESSAGE;
+    error.response.data.message ??
+      (error.response.data.message = DEFAULT_ERROR_MESSAGE);
+
+    const id = error.response.config.id;
+    const endpoint = findEndpoint(error.response.config.url);
+
+    const loaderStore = useLoaderStore();
+    loaderStore.loadingQueue = loaderStore.loadingQueue.filter((item) => {
+      return item.id !== id;
+    });
+    loaderStore.errors.push({
+      key: endpoint,
+      message: error.response.data.message,
+    });
+
     return Promise.reject(error);
   }
 );
 
-const createEndpoint = (name, id = "") => {
-  const url = ENDPOINTS.find((e) => e.name === name).endpoint;
-  return url + id;
+const createEndpoint = (name) => {
+  const item = ENDPOINTS[name].endpoint;
+  return isMock ? item.mock : item.real;
 };
 
 export const checkHealth = () => {
@@ -83,11 +97,11 @@ export const getYears = () => {
 };
 
 export const getTerms = (yearId) => {
-  return api.get(createEndpoint("TERMS", yearId));
+  return api.get(createEndpoint("TERMS") + yearId);
 };
 
 export const getDiary = (termId) => {
-  return api.get(createEndpoint("DIARY", termId));
+  return api.get(createEndpoint("DIARY") + termId);
 };
 
 export const getSubject = (journalId, evaluations) => {

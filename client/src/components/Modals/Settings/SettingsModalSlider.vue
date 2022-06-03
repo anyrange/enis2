@@ -77,7 +77,7 @@ import { storeToRefs } from "pinia";
 import VueSlider from "vue-slider-component";
 import "vue-slider-component/theme/default.css";
 import { DEFAULT_RANGES } from "@/config";
-import { useSettings } from "@/store";
+import useSettingsStore from "@/stores/settings";
 
 const process = (val) =>
   ref([
@@ -94,7 +94,7 @@ const COLORS = [
   "bg-q-positive",
 ];
 
-const settingsStore = useSettings();
+const settingsStore = useSettingsStore();
 const { ranges } = storeToRefs(settingsStore);
 
 const resetRanges = () => {

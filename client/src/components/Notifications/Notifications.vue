@@ -17,7 +17,7 @@
 
 <script setup>
 import { ref } from "vue";
-import { emitter } from "@/services/notify.js";
+import { emitter } from "@/services/bus.js";
 
 const notifications = ref([]);
 

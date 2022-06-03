@@ -108,20 +108,23 @@
 </template>
 
 <script setup>
-import { useForm } from "slimeform";
 import { storeToRefs } from "pinia";
+import { useForm } from "slimeform";
 import { GH_LINK, TG_LINK } from "@/config";
-import schools from "#shared/schools.js";
-import useRandom from "@/composables/useRandom";
-import { useAuth, useLoader, useSettings, useHealth } from "@/store";
 import { isRequired } from "@/utils";
+import useLoaderStore from "@/stores/loader";
+import useSettingsStore from "@/stores/settings";
+import useHealthStore from "@/stores/health";
+import useAuthStore from "@/stores/auth";
+import useRandom from "@/composables/useRandom";
+import schools from "#shared/schools.js";
 
 const { randomEmoji } = useRandom();
 
-const authStore = useAuth();
-const loaderStore = useLoader();
-const settingsStore = useSettings();
-const { checkAvailability } = useHealth();
+const authStore = useAuthStore();
+const loaderStore = useLoaderStore();
+const settingsStore = useSettingsStore();
+const { checkAvailability } = useHealthStore();
 
 const { captcha } = storeToRefs(authStore);
 const { settings } = storeToRefs(settingsStore);

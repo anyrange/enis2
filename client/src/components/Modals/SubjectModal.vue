@@ -17,13 +17,13 @@
       </div>
     </template>
     <template v-else>
-      <subject-diary-sections
+      <subject-diary-section
         type="SAU"
-        :sections="subjectStore.subject[sectionsType].SAU"
+        :data="subjectStore.subject[sectionsType].SAU"
       />
-      <subject-diary-sections
+      <subject-diary-section
         type="SAT"
-        :sections="subjectStore.subject[sectionsType].SAT"
+        :data="subjectStore.subject[sectionsType].SAT"
       />
     </template>
   </div>
@@ -32,10 +32,11 @@
 <script setup>
 import { computed } from "vue";
 import { storeToRefs } from "pinia";
-import { useLoader, useSubject } from "@/store";
+import useLoaderStore from "@/stores/loader";
+import useSubjectStore from "@/stores/subject";
 
-const loaderStore = useLoader();
-const subjectStore = useSubject();
+const loaderStore = useLoaderStore();
+const subjectStore = useSubjectStore();
 
 const { GM } = storeToRefs(subjectStore);
 

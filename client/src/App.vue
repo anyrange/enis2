@@ -17,11 +17,13 @@
 </template>
 
 <script setup>
-import { computed, ref, provide } from "vue";
+import { computed, watch, ref, provide } from "vue";
 import { storeToRefs } from "pinia";
-import { useLoader, useSettings, useHealth, useAuth } from "@/store";
+import useLoaderStore from "@/stores/loader";
+import useSettingsStore from "@/stores/settings";
+import useHealthStore from "@/stores/health";
+import useAuthStore from "@/stores/auth";
 import useNavigator from "@/composables/useNavigator";
-import useDocument from "@/composables/useDocument";
 import Dashboard from "@/views/Dashboard.vue";
 import Login from "@/views/Login.vue";
 
@@ -30,22 +32,27 @@ const wrapper = ref();
 provide("wrapper", wrapper);
 
 const { isMobile, isSafari } = useNavigator();
-const { toggleClass } = useDocument();
 
-const authStore = useAuth();
-const loaderStore = useLoader();
-const settingsStore = useSettings();
-const healthStore = useHealth();
+const authStore = useAuthStore();
+const loaderStore = useLoaderStore();
+const settingsStore = useSettingsStore();
+const healthStore = useHealthStore();
 
 const { showAvailabilityModal } = storeToRefs(healthStore);
 
-toggleClass(
-  computed(() => settingsStore.settings.theme === "dark"),
-  "dark"
-);
+const isDarkTheme = computed(() => settingsStore.settings.theme === "dark");
+const isDesktop = computed(() => !isMobile.value && !isSafari.value);
 
-toggleClass(
-  computed(() => !isMobile.value && !isSafari.value),
-  "custom-scrollbar"
+watch(
+  [isDarkTheme, isDesktop],
+  ([newT, newD]) => {
+    const root = document.documentElement.classList;
+    const toggle = (value, className) =>
+      value ? root.add(className) : root.remove(className);
+
+    toggle(newT, "dark");
+    toggle(newD, "custom-scrollbar");
+  },
+  { immediate: true }
 );
 </script>

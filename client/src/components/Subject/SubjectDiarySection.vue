@@ -13,7 +13,7 @@
       </span>
     </div>
     <div
-      v-for="(section, idx) in sections"
+      v-for="(section, idx) in data"
       :key="section.Name"
       class="flex flex-row justify-between items-start space-x-2"
     >
@@ -56,11 +56,11 @@
 
 <script setup>
 import { computed } from "vue";
-import { useSubject } from "@/store";
 import { getSectionsScores, formatPercent } from "@/utils";
+import useSubjectStore from "@/stores/subject";
 
 const props = defineProps({
-  sections: {
+  data: {
     type: Object,
     required: true,
   },
@@ -75,16 +75,16 @@ const LABEL_TYPES = {
   SAT: "СОЧ",
 };
 
-const subjectStore = useSubject();
+const subjectStore = useSubjectStore();
 
 const createArray = ({ length }) => Array.from({ length }, (_, i) => i);
 
 const sectionsScore = computed(() => {
-  const { score } = getSectionsScores(props.sections);
+  const { score } = getSectionsScores(props.data);
   return score;
 });
 const sectionsMaxScore = computed(() => {
-  const { max } = getSectionsScores(props.sections);
+  const { max } = getSectionsScores(props.data);
   return max;
 });
 const sectionsPercent = computed(() => {
