@@ -9,7 +9,7 @@ app.register(import("@fastify/cors"), {
 });
 
 if (!PROD) {
-  app.register(import("fastify-swagger"), {
+  app.register(import("@fastify/swagger"), {
     routePrefix: "/docs",
     swagger: {
       info: {
