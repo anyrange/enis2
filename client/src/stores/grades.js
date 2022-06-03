@@ -34,9 +34,8 @@ export default defineStore("grades", () => {
     const yearName = settingsStore.settings.year;
 
     const { index, exists } = findIndex(gradesData.value, { yearName });
-    const isActualYear = yearsStore.actualYearName === yearName;
 
-    if (exists && !force && !isActualYear) return;
+    if (exists && !force) return;
 
     try {
       const data = await getGrades(yearId);

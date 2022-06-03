@@ -117,6 +117,7 @@
 
 <script setup>
 import { ref, computed, onMounted, onBeforeUnmount, watch, inject } from "vue";
+import { watchOnce } from "@vueuse/core";
 import { storeToRefs } from "pinia";
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Navigation } from "vue3-carousel";
@@ -283,6 +284,16 @@ watch(
   },
   {
     immediate: true,
+  }
+);
+
+// force-fetch if initial tab is 'grades' was changed to 'diary' or vice versa
+watchOnce(
+  () => settings.value.tab,
+  (newTab, oldTab) => {
+    if (newTab === "grades" || oldTab === "grades") {
+      return getData({ includeTabs: true, force: true });
+    }
   }
 );
 

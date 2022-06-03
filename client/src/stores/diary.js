@@ -4,7 +4,6 @@ import { defineStore } from "pinia";
 import { getDiary } from "@/api";
 import { findIndex, findItem } from "@/utils";
 import useSettingsStore from "./settings.js";
-import useYearsStore from "./years.js";
 import useTermsStore from "./terms.js";
 import useAuthStore from "./auth.js";
 
@@ -12,7 +11,6 @@ export default defineStore("diary", () => {
   const settingsStore = useSettingsStore();
 
   const authStore = useAuthStore();
-  const yearsStore = useYearsStore();
   const termsStore = useTermsStore();
 
   const diaryData = useStorage("diaryData", []);
@@ -66,10 +64,7 @@ export default defineStore("diary", () => {
       yearName,
     });
 
-    const isActualTerm = termsStore.actualTermName === termName;
-    const isActualYear = yearsStore.actualYearName === yearName;
-
-    if (exists && !force && !(isActualTerm && isActualYear)) return;
+    if (exists && !force) return;
 
     try {
       const { data, token } = await getDiary(termId);

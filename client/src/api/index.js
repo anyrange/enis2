@@ -5,7 +5,9 @@ import useAuthStore from "@/stores/auth";
 import useSettingsStore from "@/stores/settings";
 import { ENDPOINTS, DEFAULT_ERROR_MESSAGE, isMock } from "@/config";
 
-const api = axios.create({});
+const api = axios.create({
+  timeout: 1000 * 30, // 30 seconds
+});
 
 const findEndpoint = (url) => {
   return Object.keys(ENDPOINTS).find((key) => {
