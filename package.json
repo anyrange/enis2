@@ -30,6 +30,7 @@
     "nanoid": "^3.3.4",
     "node-fetch": "^2.6.7",
     "pinia": "^2.0.14",
+    "slimeform": "^0.4.0",
     "v-wave": "^1.5.0",
     "vue": "^3.2.36",
     "vue-scroll-picker": "^1.1.1",

@@ -19,24 +19,24 @@
             </header>
             <form
               class="grid gap-4 grid-cols-1 !m-0"
-              @submit.prevent="submit()"
+              @submit.prevent="onSubmit(submit)"
             >
               <base-input
-                v-model="form.login.value"
+                v-model="form.login"
                 type="number"
                 autocomplete="username"
                 autofocus
                 label="Ваш ИИН"
                 mask="############"
-                :valid="form.login.valid"
+                :valid="!status.login.isError"
               />
               <base-input
-                v-model="form.password.value"
+                v-model="form.password"
                 type="password"
                 autocomplete="current-password"
                 autofocus
                 label="Ваш пароль"
-                :valid="form.password.valid"
+                :valid="!status.password.isError"
               />
               <transition name="fade">
                 <div
@@ -62,7 +62,7 @@
                 v-model="settings.school"
                 :loading="
                   loaderStore.isLoading &&
-                  loaderStore.loader.endpoint === 'CITY'
+                  loaderStore.loadingEndpoint === 'CITY'
                 "
                 :options="schools"
                 required
@@ -108,12 +108,13 @@
 </template>
 
 <script setup>
-import { reactive, computed, watch, ref } from "vue";
+import { useForm } from "slimeform";
 import { storeToRefs } from "pinia";
 import { GH_LINK, TG_LINK } from "@/config";
 import schools from "#shared/schools.js";
 import useRandom from "@/composables/useRandom";
 import { useAuth, useLoader, useSettings, useHealth } from "@/store";
+import { isRequired } from "@/utils";
 
 const { randomEmoji } = useRandom();
 
@@ -127,53 +128,23 @@ const { settings } = storeToRefs(settingsStore);
 
 settingsStore.predictSchool();
 
-const validationStarted = ref(false);
-const form = reactive({
-  login: {
-    value: "",
-    valid: true,
+const { form, status, onSubmit } = useForm({
+  form: () => ({
+    login: "",
+    password: "",
+    captchaInput: "",
+  }),
+  rule: {
+    login: [isRequired],
+    password: [isRequired],
   },
-  password: {
-    value: "",
-    valid: true,
-  },
-  captchaInput: "",
 });
 
-const formValidated = computed(() => form.login.valid && form.password.valid);
-
-watch(
-  form,
-  ({ login, password }) => {
-    if (!validationStarted.value) return;
-    validateForm({
-      login: login.value,
-      password: password.value,
-    });
-  },
-  {
-    deep: true,
-  }
-);
-
-const validateForm = ({ login, password }) => {
-  form.login.valid = login.length === 12;
-  form.password.valid = password.length > 0;
-};
-
 const submit = async () => {
-  const account = {
-    login: form.login.value,
-    password: form.password.value,
-  };
-  validationStarted.value = true;
-  validateForm(account);
-  if (!formValidated.value || !settings.value.school) {
-    return;
-  }
   try {
     await authStore.login({
-      ...account,
+      login: form.login,
+      password: form.password,
       captchaInput: form.captchaInput,
     });
   } catch (error) {

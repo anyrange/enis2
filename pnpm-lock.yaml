@@ -25,6 +25,7 @@ specifiers:
   nodemon: ^2.0.16
   pinia: ^2.0.14
   prettier: ^2.6.2
+  slimeform: ^0.4.0
   unplugin-vue-components: ^0.17.21
   v-wave: ^1.5.0
   vite: ^2.9.9
@@ -55,6 +56,7 @@ dependencies:
   nanoid: 3.3.4
   node-fetch: 2.6.7
   pinia: 2.0.14_vue@3.2.36
+  slimeform: 0.4.0_vue@3.2.36
   v-wave: 1.5.0_vue@3.2.36
   vue: 3.2.36
   vue-scroll-picker: 1.1.1
@@ -4380,6 +4382,17 @@ packages:
   /signal-exit/3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
     dev: true
+
+  /slimeform/0.4.0_vue@3.2.36:
+    resolution: {integrity: sha512-LLPaUA2w5dai88UHN6gO0TC4Q8losyWpPrjS9xJREAFPsdKW9r1MBpm67PF6NvVHNTbAOAoVHOE7aBYSUzQQ3Q==}
+    peerDependencies:
+      vue: '>=3'
+    dependencies:
+      '@vueuse/shared': 8.5.0_vue@3.2.36
+      vue: 3.2.36
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+    dev: false
 
   /sonic-boom/1.4.1:
     resolution: {integrity: sha512-LRHh/A8tpW7ru89lrlkU4AszXt1dbwSjVWguGrmlxE7tawVmDBlI1PILMkXAxJTwqhgsEeTHzj36D5CmHgQmNg==}
