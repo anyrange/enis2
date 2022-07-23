@@ -74,7 +74,6 @@ export const ENDPOINTS = {
   },
 };
 
-export const DA_LINK = "https://www.donationalerts.com/r/anyrange";
 export const TG_LINK = "https://t.me/joinchat/ToHSvx2gVOBkMzBi";
 export const GH_LINK = "https://github.com/anyrange/enis2";
 

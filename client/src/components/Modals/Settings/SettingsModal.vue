@@ -53,12 +53,21 @@
         Выйти
       </base-button>
     </div>
-    <div class="flex flex-col space-y-2">
+    <div class="flex flex-col">
       <span class="text-lg">Links</span>
       <div class="flex items-center space-x-3">
-        <a class="settings-link" :href="GH_LINK" target="_blank"> repo </a>
-        <a class="settings-link" :href="TG_LINK" target="_blank"> chat </a>
-        <a class="settings-link" :href="DA_LINK" target="_blank"> donate </a>
+        <a class="settings-link underline" :href="GH_LINK" target="_blank">
+          repo
+        </a>
+        <a class="settings-link underline" :href="TG_LINK" target="_blank">
+          chat
+        </a>
+      </div>
+      <div class="flex flex-col mt-2">
+        <span class="text-lg"> Donate with Kaspi </span>
+        <div class="flex items-center gap-1">
+          <p>+7 708 153 26 34 <span class="p-1 text-sm">Александр Т.</span></p>
+        </div>
       </div>
     </div>
   </div>
@@ -73,7 +82,7 @@
 <script setup>
 import { ref, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia";
-import { DA_LINK, GH_LINK, TG_LINK } from "@/config";
+import { GH_LINK, TG_LINK } from "@/config";
 import useSettingsStore from "@/stores/settings";
 import useAuthStore from "@/stores/auth";
 
