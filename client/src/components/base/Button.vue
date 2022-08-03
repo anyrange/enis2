@@ -25,7 +25,7 @@
     v-wave="isDisabled ? false : ripple"
     @click.stop="emit('click', $event)"
   >
-    <icon v-if="loading" class="animate-spin h-5 w-5" icon="gg:spinner" />
+    <Icon v-if="loading" class="animate-spin h-5 w-5" icon="gg:spinner" />
     <template v-else>
       <slot />
     </template>
@@ -34,6 +34,7 @@
 
 <script setup>
 import { computed } from "vue";
+import Icon from "./Icon.vue";
 
 const props = defineProps({
   color: {

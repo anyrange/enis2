@@ -1,9 +1,9 @@
 import axios from "axios";
 import { nanoid } from "nanoid";
-import useLoaderStore from "@/stores/loader";
-import useAuthStore from "@/stores/auth";
-import useSettingsStore from "@/stores/settings";
-import { ENDPOINTS, DEFAULT_ERROR_MESSAGE, isMock } from "@/config";
+import { ENDPOINTS, DEFAULT_ERROR_MESSAGE, isMock } from "../config";
+import useLoaderStore from "../stores/loader";
+import useAuthStore from "../stores/auth";
+import useSettingsStore from "../stores/settings";
 
 const api = axios.create({
   timeout: 1000 * 30, // 30 seconds

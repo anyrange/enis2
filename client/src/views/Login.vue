@@ -9,7 +9,7 @@
         >
           <div class="grid gap-6 grid-cols-1 self-center">
             <header class="flex flex-col space-y-4 items-start">
-              <app-logo class="w-16 h-16 flex-none" />
+              <Logo class="w-16 h-16 flex-none" />
               <div>
                 <h1 class="text-3xl font-semibold">enis</h1>
                 <h2 class="text-base font-light">
@@ -21,7 +21,7 @@
               class="grid gap-4 grid-cols-1 !m-0"
               @submit.prevent="onSubmit(submit)"
             >
-              <base-input
+              <Input
                 v-model="form.login"
                 type="number"
                 autocomplete="username"
@@ -30,7 +30,7 @@
                 mask="############"
                 :valid="!status.login.isError"
               />
-              <base-input
+              <Input
                 v-model="form.password"
                 type="password"
                 autocomplete="current-password"
@@ -43,14 +43,14 @@
                   v-if="captcha"
                   class="flex flex-col sm:flex-row justify-between gap-2"
                 >
-                  <base-img
+                  <Image
                     class="object-contain w-44 h-12 cursor-pointer select-none duration-150 hover:opacity-50"
                     alt="captcha"
                     :src="`data:image/png;base64,${captcha}`"
                     @click="authStore.updateCaptcha"
                   />
                   <div>
-                    <base-input
+                    <Input
                       v-model="form.captchaInput"
                       type="text"
                       label="Каптча"
@@ -58,7 +58,7 @@
                   </div>
                 </div>
               </transition>
-              <base-select
+              <Select
                 v-model="settings.school"
                 :loading="
                   loaderStore.isLoading &&
@@ -69,36 +69,26 @@
               >
                 <template #default>Выберите школу</template>
                 <template #loading>Поиск школы...</template>
-              </base-select>
-              <base-checkbox
+              </Select>
+              <Checkbox
                 label="Запомнить меня"
                 id="rememberMe"
                 v-model="settings.rememberMe"
               />
-              <base-button type="submit" rounded w-full color="primary">
+              <Button type="submit" rounded w-full color="primary">
                 Войти
-              </base-button>
+              </Button>
             </form>
           </div>
           <footer class="self-end">
             <div class="flex justify-between items-center">
-              <theme-toggler />
-              <base-button
-                icon
-                tag="a"
-                :href="TG_LINK"
-                aria-label="Telegram Link"
-              >
-                <icon icon="akar-icons:telegram-fill" />
-              </base-button>
-              <base-button
-                icon
-                tag="a"
-                :href="GH_LINK"
-                aria-label="Github Link"
-              >
-                <icon icon="akar-icons:github-fill" />
-              </base-button>
+              <ThemeToggler />
+              <Button icon tag="a" :href="TG_LINK" aria-label="Telegram Link">
+                <Icon icon="akar-icons:telegram-fill" />
+              </Button>
+              <Button icon tag="a" :href="GH_LINK" aria-label="Github Link">
+                <Icon icon="akar-icons:github-fill" />
+              </Button>
             </div>
           </footer>
         </main>
@@ -110,16 +100,26 @@
 <script setup>
 import { storeToRefs } from "pinia";
 import { useForm } from "slimeform";
-import { GH_LINK, TG_LINK } from "@/config";
-import { isRequired } from "@/utils";
-import useLoaderStore from "@/stores/loader";
-import useSettingsStore from "@/stores/settings";
-import useHealthStore from "@/stores/health";
-import useAuthStore from "@/stores/auth";
-import useRandom from "@/composables/useRandom";
+import { GH_LINK, TG_LINK } from "../config";
+import { isRequired, getRandomItem } from "../utils";
+import useLoaderStore from "../stores/loader";
+import useSettingsStore from "../stores/settings";
+import useHealthStore from "../stores/health";
+import useAuthStore from "../stores/auth";
+import Button from "../components/base/Button.vue";
+import Input from "../components/base/Input.vue";
+import Image from "../components/base/Image.vue";
+import Icon from "../components/base/Icon.vue";
+import Select from "../components/base/Select.vue";
+import Checkbox from "../components/base/Checkbox.vue";
+import ThemeToggler from "../components/layout/ThemeToggler.vue";
+import Logo from "../components/base/app/Logo.vue";
 import schools from "#shared/schools.js";
 
-const { randomEmoji } = useRandom();
+const emojis =
+  "🤔🤐🙃🤤🧐👴😭💩🍕⚡🆗🤙🗿🎪👻🎃🌍👌👊💪👺🙈🙉🙊🐰🐔🐍😡🔥🤡🌈💛💙💜💚💓";
+
+const randomEmoji = getRandomItem([...emojis]);
 
 const authStore = useAuthStore();
 const loaderStore = useLoaderStore();

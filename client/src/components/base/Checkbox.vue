@@ -8,7 +8,7 @@
     <div
       class="dark:border-gray-600 border-2 rounded-sm w-6 h-6 flex flex-shrink-0 justify-center items-center mr-2 transition-all duration-100 focus-visible:border-primary"
     >
-      <icon
+      <Icon
         icon="bi:check"
         class="hidden w-3 h-3 text-blue-600 pointer-events-none fill-current"
       />
@@ -19,6 +19,7 @@
 
 <script setup>
 import { computed } from "vue";
+import Icon from "./Icon.vue";
 
 const props = defineProps({
   modelValue: {

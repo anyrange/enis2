@@ -13,7 +13,7 @@
           class="fixed inset-0 flex items-center justify-center"
           @click="close"
         >
-          <icon icon="eva:close-fill" class="close-icon" />
+          <Icon icon="eva:close-fill" class="close-icon" />
           <transition
             enter-active-class="transition ease-out duration-200 transform"
             enter-from-class="opacity-0 translate-y-10 scale-95"
@@ -44,6 +44,7 @@
 <script setup>
 import { onMounted, onBeforeUnmount, inject, watch } from "vue";
 import { useScrollLock } from "@vueuse/core";
+import Icon from "./Icon.vue";
 
 const props = defineProps({
   show: {

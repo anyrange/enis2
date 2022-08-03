@@ -4,34 +4,35 @@
     class="w-screen h-screen m-auto overflow-scroll"
     style="overflow: overlay"
   >
-    <loading-overlay
+    <LoadingOverlay
       :active="loaderStore.overlay.active"
       :blocking="loaderStore.overlay.blocking"
     />
-    <modal :show="showAvailabilityModal" @close="showAvailabilityModal = false">
-      <availability-modal />
-    </modal>
+    <Modal :show="showAvailabilityModal" @close="showAvailabilityModal = false">
+      <AvailabilityContainer />
+    </Modal>
     <component :is="authStore.authenticated ? Dashboard : Login" />
-    <notifications />
+    <Notifications />
   </div>
 </template>
 
 <script setup>
-import { computed, watch, ref, provide } from "vue";
+import { computed, watch, ref, provide, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia";
-import useLoaderStore from "@/stores/loader";
-import useSettingsStore from "@/stores/settings";
-import useHealthStore from "@/stores/health";
-import useAuthStore from "@/stores/auth";
-import useNavigator from "@/composables/useNavigator";
-import Dashboard from "@/views/Dashboard.vue";
-import Login from "@/views/Login.vue";
+import useLoaderStore from "./stores/loader";
+import useSettingsStore from "./stores/settings";
+import useHealthStore from "./stores/health";
+import useAuthStore from "./stores/auth";
+import LoadingOverlay from "./components/base/loaders/LoadingOverlay.vue";
+import Modal from "./components/base/Modal.vue";
+import AvailabilityContainer from "./components/layout/modal-containers/AvailabilityContainer.vue";
+import Notifications from "./components/base/notifications/Notifications.vue";
+const Dashboard = defineAsyncComponent(() => import("./views/Dashboard.vue"));
+const Login = defineAsyncComponent(() => import("./views/Login.vue"));
 
 const wrapper = ref();
 
 provide("wrapper", wrapper);
-
-const { isMobile, isSafari } = useNavigator();
 
 const authStore = useAuthStore();
 const loaderStore = useLoaderStore();
@@ -41,17 +42,16 @@ const healthStore = useHealthStore();
 const { showAvailabilityModal } = storeToRefs(healthStore);
 
 const isDarkTheme = computed(() => settingsStore.settings.theme === "dark");
-const isDesktop = computed(() => !isMobile.value && !isSafari.value);
 
 watch(
-  [isDarkTheme, isDesktop],
-  ([newT, newD]) => {
+  isDarkTheme,
+  (theme) => {
     const root = document.documentElement.classList;
-    const toggle = (value, className) =>
+
+    const toggleClass = (value, className) =>
       value ? root.add(className) : root.remove(className);
 
-    toggle(newT, "dark");
-    toggle(newD, "custom-scrollbar");
+    toggleClass(theme, "dark");
   },
   { immediate: true }
 );

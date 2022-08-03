@@ -1,7 +1,7 @@
 import { ref, reactive, computed } from "vue";
 import { defineStore } from "pinia";
-import { getSubject } from "@/api";
-import { getPercent } from "@/utils";
+import { getSubject } from "../api";
+import { getPercent } from "../utils";
 
 export default defineStore("subject", () => {
   const initialState = {

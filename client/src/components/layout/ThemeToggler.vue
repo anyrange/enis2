@@ -1,17 +1,19 @@
 <template>
-  <base-button
+  <Button
     flat
     icon
     :aria-label="component.label"
     @click="settingsStore.toggleTheme"
   >
-    <icon :icon="component.icon" />
-  </base-button>
+    <Icon :icon="component.icon" />
+  </Button>
 </template>
 
 <script setup>
 import { computed } from "vue";
-import useSettingsStore from "@/stores/settings";
+import useSettingsStore from "../../stores/settings";
+import Button from "../base/Button.vue";
+import Icon from "../base/Icon.vue";
 
 const settingsStore = useSettingsStore();
 

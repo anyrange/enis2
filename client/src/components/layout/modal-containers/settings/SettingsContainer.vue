@@ -5,7 +5,7 @@
       <div class="flex justify-between items-center">
         <span> Темная тема </span>
         <div>
-          <base-switch id="darkTheme" v-model="darkTheme" />
+          <Switch id="darkTheme" v-model="darkTheme" />
         </div>
       </div>
     </div>
@@ -14,13 +14,13 @@
       <div class="flex justify-between items-center">
         <span> Скрыть пустые </span>
         <div>
-          <base-switch id="hideEmpty" v-model="settings.hideEmpty" />
+          <Switch id="hideEmpty" v-model="settings.hideEmpty" />
         </div>
       </div>
       <div class="flex justify-between items-center">
         <span> Сортировать </span>
         <div>
-          <base-select v-model="settings.sortBy" :options="SORT_OPTIONS" />
+          <Select v-model="settings.sortBy" :options="SORT_OPTIONS" />
         </div>
       </div>
     </div>
@@ -40,18 +40,18 @@
         />
       </span>
       <suspense v-if="showAdvanced">
-        <async-slider />
+        <SettingsContainerSlider />
       </suspense>
     </div>
     <div>
-      <base-button
+      <Button
         v-if="settings.rememberMe"
         color="negative"
         rounded
         @click="logout()"
       >
         Выйти
-      </base-button>
+      </Button>
     </div>
     <div class="flex flex-col space-y-2">
       <span class="text-lg">Links</span>
@@ -73,12 +73,16 @@
 <script setup>
 import { ref, defineAsyncComponent } from "vue";
 import { storeToRefs } from "pinia";
-import { DA_LINK, GH_LINK, TG_LINK } from "@/config";
-import useSettingsStore from "@/stores/settings";
-import useAuthStore from "@/stores/auth";
+import { DA_LINK, GH_LINK, TG_LINK } from "../../../../config";
+import useSettingsStore from "../../../../stores/settings";
+import useAuthStore from "../../../../stores/auth";
+import Icon from "../../../base/Icon.vue";
+import Switch from "../../../base/Switch.vue";
+import Button from "../../../base/Button.vue";
+import Select from "../../../base/Select.vue";
 
-const AsyncSlider = defineAsyncComponent(() =>
-  import("./SettingsModalSlider.vue")
+const SettingsContainerSlider = defineAsyncComponent(() =>
+  import("./SettingsContainerSlider.vue")
 );
 
 const SORT_OPTIONS = [

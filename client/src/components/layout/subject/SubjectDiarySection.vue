@@ -22,7 +22,7 @@
         <div class="w-full flex items-start justify-evenly text-center">
           <div class="w-4.7">
             <template v-if="subjectStore.GM">
-              <scroll-picker
+              <ScrollPicker
                 v-model="section.Score"
                 :options="createArray({ length: section.MaxScore + 1 })"
               />
@@ -56,8 +56,9 @@
 
 <script setup>
 import { computed } from "vue";
-import { getSectionsScores, formatPercent } from "@/utils";
-import useSubjectStore from "@/stores/subject";
+import { getSectionsScores, formatPercent } from "../../../utils";
+import ScrollPicker from "../ScrollPicker.vue";
+import useSubjectStore from "../../../stores/subject";
 
 const props = defineProps({
   data: {

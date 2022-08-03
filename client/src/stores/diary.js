@@ -1,8 +1,8 @@
 import { computed } from "vue";
 import { useStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
-import { getDiary } from "@/api";
-import { findIndex, findItem } from "@/utils";
+import { getDiary } from "../api";
+import { findIndex, findItem } from "../utils";
 import useSettingsStore from "./settings.js";
 import useTermsStore from "./terms.js";
 import useAuthStore from "./auth.js";

@@ -1,8 +1,8 @@
 import { computed } from "vue";
 import { useStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
-import { getCity } from "@/api";
-import { DEFAULT_RANGES } from "@/config";
+import { getCity } from "../api";
+import { DEFAULT_RANGES } from "../config";
 import schools from "#shared/schools.js";
 
 export default defineStore("settings", () => {

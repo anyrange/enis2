@@ -5,7 +5,7 @@
       enter-active-class="transition ease-out duration-150 transform opacity-0 scale-75"
       leave-active-class="transition ease-in duration-150 transform opacity-0 scale-75"
     >
-      <notification
+      <Notification
         v-for="notification in notifications"
         :key="notification.id"
         :notification="notification"
@@ -17,7 +17,8 @@
 
 <script setup>
 import { ref } from "vue";
-import { emitter } from "@/services/bus.js";
+import { emitter } from "../../../services/bus.js";
+import Notification from "./Notification.vue";
 
 const notifications = ref([]);
 

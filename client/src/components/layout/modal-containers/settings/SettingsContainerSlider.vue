@@ -71,13 +71,16 @@
 }
 </style>
 
+<style>
+@import "vue-slider-component/theme/default.css";
+</style>
+
 <script setup>
 import { ref } from "vue";
 import { storeToRefs } from "pinia";
 import VueSlider from "vue-slider-component";
-import "vue-slider-component/theme/default.css";
-import { DEFAULT_RANGES } from "@/config";
-import useSettingsStore from "@/stores/settings";
+import { DEFAULT_RANGES } from "../../../../config";
+import useSettingsStore from "../../../../stores/settings";
 
 const process = (val) =>
   ref([

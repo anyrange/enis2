@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import { ENDPOINTS } from "@/config";
+import { ENDPOINTS } from "../config";
 import useGrades from "./grades.js";
 import useDiary from "./diary.js";
 

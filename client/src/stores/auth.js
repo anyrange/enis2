@@ -1,8 +1,8 @@
 import { ref } from "vue";
 import { useStorage } from "@vueuse/core";
 import { defineStore } from "pinia";
-import { login as _login, refreshCaptcha } from "@/api";
-import { notify } from "@/services/notify.js";
+import { login as _login, refreshCaptcha } from "../api";
+import { notify } from "../services/notify.js";
 import useYearsStore from "./years.js";
 import useTermsStore from "./terms.js";
 import useDiaryStore from "./diary.js";

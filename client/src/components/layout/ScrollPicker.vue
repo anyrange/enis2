@@ -1,5 +1,5 @@
 <template>
-  <vue-scroll-picker v-model="model" :options="options" />
+  <VueScrollPicker v-model="model" :options="options" />
 </template>
 
 <script setup>

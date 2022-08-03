@@ -1,36 +1,31 @@
 body {
-  @apply text-black dark:text-white antialiased;
-  @apply bg-gray-100 dark:bg-secondary-darkest;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  @apply text-black dark:text-white antialiased;
+  @apply bg-gray-100 dark:bg-secondary-darkest;
 }
 
-html {
+:root {
   --autofill-background: #eff6ff;
   --autofill-color: #000000;
   --scroll-picker-border-color: white;
   --scroll-picker-item-color: #333;
 }
 
-html.dark {
+html.dark,
+:root {
   --autofill-background: #282828;
   --autofill-color: #ffffff;
   --scroll-picker-border-color: #1d1d1d;
   --scroll-picker-item-color: #ababab;
 }
 
-html.custom-scrollbar ::-webkit-scrollbar {
-  @apply w-1.5;
-}
-html.custom-scrollbar ::-webkit-scrollbar-thumb {
-  @apply bg-gray-400/60 rounded-lg;
-}
-html.dark.custom-scrollbar ::-webkit-scrollbar-thumb {
-  @apply bg-secondary rounded-lg;
+html.dark {
+  color-scheme: dark;
 }
 
 .fade-enter-active,
@@ -40,8 +35,4 @@ html.dark.custom-scrollbar ::-webkit-scrollbar-thumb {
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
-}
-
-a {
-  @apply default-focus rounded;
 }

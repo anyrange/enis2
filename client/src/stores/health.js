@@ -1,6 +1,6 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
-import { checkHealth } from "@/api";
+import { checkHealth } from "../api";
 
 export default defineStore("health", () => {
   const showAvailabilityModal = ref(false);

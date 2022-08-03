@@ -4,7 +4,7 @@ import { registerSW } from "virtual:pwa-register";
 import VWave from "v-wave";
 import App from "./App.vue";
 import "virtual:windi.css";
-import "./assets/styles.css";
+import "./assets/globals.css";
 
 registerSW({ immediate: true });
 

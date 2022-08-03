@@ -47,8 +47,8 @@
 
 <script setup>
 import { computed } from "vue";
-import { getPercentDecimals, between } from "@/utils";
-import useSettingsStore from "@/stores/settings";
+import { getPercentDecimals, between } from "../../../utils";
+import useSettingsStore from "../../../stores/settings";
 
 const props = defineProps({
   subject: {
