@@ -17,6 +17,10 @@ Similar apps:
 
 As it is described [here](https://github.com/superhooman/enis-proxy), NIS doesn't have a public API, so we had to do a custom server that works as an interlayer to bypass the CORS policy since the approach with a proxy server doesn't seem to work anymore. That's why it leads to additional delays and privacy concerns.
 
+## TODO
+
+- [ ] Rewrite with TypeScript
+
 ## Contributing
 
 Contributions are welcome. Just submit a pull request or open an issue. [Contributing Guide](/.github/contributing.md).
