@@ -1,6 +1,5 @@
 .DS_Store
 
-*.lock
 node_modules
 dist
 build
@@ -18,7 +17,6 @@ pnpm-debug.log*
 
 # Editor directories and files
 .idea
-.vscode
 *.suo
 *.ntvs*
 *.njsproj
