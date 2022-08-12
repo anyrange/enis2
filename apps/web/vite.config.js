@@ -1,11 +1,7 @@
-import { dirname, resolve } from "path"
-import { fileURLToPath } from "url"
 import { defineConfig } from "vite"
 import { VitePWA } from "vite-plugin-pwa"
-import Vue from "@vitejs/plugin-vue"
-import Windi from "vite-plugin-windicss"
-
-const _dirname = dirname(fileURLToPath(import.meta.url))
+import vue from "@vitejs/plugin-vue"
+import windi from "vite-plugin-windicss"
 
 export default defineConfig({
   server: {
@@ -14,14 +10,9 @@ export default defineConfig({
   preview: {
     port: 8080,
   },
-  resolve: {
-    alias: {
-      "#shared": resolve(_dirname, "./shared"),
-    },
-  },
   plugins: [
-    Vue(),
-    Windi(),
+    vue(),
+    windi(),
     VitePWA({
       includeAssets: ["favicon.ico", "robots.txt", "apple-touch-icon.png"],
       registerType: "autoUpdate",
