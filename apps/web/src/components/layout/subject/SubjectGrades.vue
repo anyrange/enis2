@@ -70,20 +70,20 @@ defineProps({
     type: Object,
     required: true,
   },
-});
+})
 
 const formatScore = (score) => {
   switch (score) {
     case "true":
-      return "Зачёт";
+      return "Зачёт"
     case "false":
-      return "Незачёт";
+      return "Незачёт"
     case "none":
-      return "-";
+      return "-"
     default:
-      return score;
+      return score
   }
-};
+}
 </script>
 
 <style scoped>

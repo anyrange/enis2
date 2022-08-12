@@ -1,5 +1,5 @@
-import fetch from "node-fetch";
-import { IPINFO_TOKEN } from "../../config/index.js";
+import fetch from "node-fetch"
+import { IPINFO_TOKEN } from "../../config/index.js"
 
 export default async function (fastify) {
   fastify.get(
@@ -19,15 +19,15 @@ export default async function (fastify) {
       },
     },
     async (req, reply) => {
-      const token = IPINFO_TOKEN;
+      const token = IPINFO_TOKEN
 
-      const requestIp = req.ips[req.ips.length - 1];
+      const requestIp = req.ips[req.ips.length - 1]
 
       const res = await fetch(
         `https://ipinfo.io/${requestIp}/json?token=${token}`
-      ).then((res) => res.json());
+      ).then((res) => res.json())
 
-      await reply.send({ city: res.city || "", region: res.region || "" });
+      await reply.send({ city: res.city || "", region: res.region || "" })
     }
-  );
+  )
 }

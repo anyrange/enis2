@@ -1,5 +1,5 @@
-import { URLSearchParams } from "url";
-import currentQuarter from "../../../../utils/currentQuarter.js";
+import { URLSearchParams } from "url"
+import currentQuarter from "../../../../utils/currentQuarter.js"
 
 export default async function (fastify) {
   fastify.get(
@@ -32,20 +32,20 @@ export default async function (fastify) {
       },
     },
     async (req, reply) => {
-      const cookie = req.cookies;
+      const cookie = req.cookies
 
-      const params = new URLSearchParams();
-      params.append("schoolYearId", req.params.yearID);
+      const params = new URLSearchParams()
+      params.append("schoolYearId", req.params.yearID)
 
       const periods = await fastify.api({
         method: "POST",
         url: `https://sms.${req.query.city}.nis.edu.kz/Ref/GetPeriods`,
         body: params,
         cookie,
-      });
+      })
 
-      periods.data[currentQuarter() - 1].isActual = true;
-      await reply.send(periods.data);
+      periods.data[currentQuarter() - 1].isActual = true
+      await reply.send(periods.data)
     }
-  );
+  )
 }

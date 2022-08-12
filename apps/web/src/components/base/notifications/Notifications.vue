@@ -16,32 +16,32 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { emitter } from "../../../services/bus.js";
-import Notification from "./Notification.vue";
+import { ref } from "vue"
+import { emitter } from "../../../services/bus.js"
+import Notification from "./Notification.vue"
 
-const notifications = ref([]);
+const notifications = ref([])
 
 const addNotification = (notification) => {
-  notifications.value = [...notifications.value, notification];
+  notifications.value = [...notifications.value, notification]
   if (notification.progress && notification.delay > 0) {
     setTimeout(() => {
-      removeNotification(notification.id);
-    }, notification.delay);
+      removeNotification(notification.id)
+    }, notification.delay)
   }
-};
+}
 
 const removeNotification = (id) => {
-  notifications.value = notifications.value.filter((item) => item.id !== id);
-};
+  notifications.value = notifications.value.filter((item) => item.id !== id)
+}
 
 emitter.on("newNotification", (notification) => {
-  addNotification(notification);
-});
+  addNotification(notification)
+})
 emitter.on("dismissNotification", (id) => {
-  removeNotification(id);
-});
+  removeNotification(id)
+})
 emitter.on("clearNotifications", () => {
-  notifications.value = [];
-});
+  notifications.value = []
+})
 </script>

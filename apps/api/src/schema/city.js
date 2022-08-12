@@ -1,7 +1,7 @@
-import fp from "fastify-plugin";
-import schools from "nis-schools";
+import fp from "fastify-plugin"
+import schools from "nis-schools"
 
-const cityValues = schools.map((school) => school.value);
+const cityValues = schools.map((school) => school.value)
 
 export default fp(async function plugin(fastify) {
   fastify.addSchema({
@@ -10,5 +10,5 @@ export default fp(async function plugin(fastify) {
     type: "string",
     enum: cityValues,
     default: "pvl",
-  });
-});
+  })
+})

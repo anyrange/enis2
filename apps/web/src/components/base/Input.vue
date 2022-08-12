@@ -15,9 +15,9 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { maska as vMaska } from "maska";
-import colors from "windicss/colors";
+import { computed } from "vue"
+import { maska as vMaska } from "maska"
+import colors from "windicss/colors"
 
 const props = defineProps({
   modelValue: {
@@ -38,16 +38,16 @@ const props = defineProps({
     required: false,
     default: true,
   },
-});
+})
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue"])
 
 const defaultColor = computed(() =>
   props.valid ? colors.gray["500"] : colors.red["500"]
-);
+)
 const activeColor = computed(() =>
   props.valid ? colors.blue["500"] : colors.red["500"]
-);
+)
 </script>
 
 <style scoped>

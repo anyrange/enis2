@@ -18,8 +18,8 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import Icon from "./Icon.vue";
+import { computed } from "vue"
+import Icon from "./Icon.vue"
 
 const props = defineProps({
   modelValue: {
@@ -34,16 +34,16 @@ const props = defineProps({
     type: String,
     required: true,
   },
-});
+})
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue"])
 
 const model = computed({
   get: () => props.modelValue,
   set: (value) => {
-    emit("update:modelValue", value);
+    emit("update:modelValue", value)
   },
-});
+})
 </script>
 
 <style scoped>

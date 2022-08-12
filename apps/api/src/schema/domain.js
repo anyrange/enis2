@@ -1,4 +1,4 @@
-import fp from "fastify-plugin";
+import fp from "fastify-plugin"
 
 export default fp(async function plugin(fastify) {
   fastify.addSchema({
@@ -9,5 +9,5 @@ export default fp(async function plugin(fastify) {
     properties: {
       city: fastify.getSchema("city"),
     },
-  });
-});
+  })
+})

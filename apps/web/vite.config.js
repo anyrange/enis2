@@ -1,11 +1,11 @@
-import { dirname, resolve } from "path";
-import { fileURLToPath } from "url";
-import { defineConfig } from "vite";
-import { VitePWA } from "vite-plugin-pwa";
-import Vue from "@vitejs/plugin-vue";
-import Windi from "vite-plugin-windicss";
+import { dirname, resolve } from "path"
+import { fileURLToPath } from "url"
+import { defineConfig } from "vite"
+import { VitePWA } from "vite-plugin-pwa"
+import Vue from "@vitejs/plugin-vue"
+import Windi from "vite-plugin-windicss"
 
-const _dirname = dirname(fileURLToPath(import.meta.url));
+const _dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   server: {
@@ -48,4 +48,4 @@ export default defineConfig({
       },
     }),
   ],
-});
+})

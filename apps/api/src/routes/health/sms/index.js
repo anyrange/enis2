@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+import fetch from "node-fetch"
 
 export default async function (fastify) {
   fastify.get(
@@ -11,13 +11,13 @@ export default async function (fastify) {
     },
     async (req, reply) => {
       try {
-        const res = await fetch(`https://sms.${req.query.city}.nis.edu.kz/`);
-        if (!res.ok) throw new Error();
+        const res = await fetch(`https://sms.${req.query.city}.nis.edu.kz/`)
+        if (!res.ok) throw new Error()
 
-        await reply.send({ alive: true });
+        await reply.send({ alive: true })
       } catch {
-        await reply.send({ alive: false });
+        await reply.send({ alive: false })
       }
     }
-  );
+  )
 }

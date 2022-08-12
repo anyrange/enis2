@@ -1,5 +1,5 @@
-import { nanoid } from "nanoid";
-import { emitter } from "./bus";
+import { nanoid } from "nanoid"
+import { emitter } from "./bus"
 
 /**
  * @param {('info'|'success'|'warning'|'danger')} type
@@ -23,14 +23,14 @@ const notify = {
       progress,
       closable,
       actions,
-    });
+    })
   },
   dismiss: (id) => {
-    emitter.emit("dismissNotification", id);
+    emitter.emit("dismissNotification", id)
   },
   clear: () => {
-    emitter.emit("clearNotifications");
+    emitter.emit("clearNotifications")
   },
-};
+}
 
-export { notify };
+export { notify }

@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+import fetch from "node-fetch"
 
 export default async function (fastify) {
   fastify.get(
@@ -12,19 +12,19 @@ export default async function (fastify) {
       },
     },
     async (req, reply) => {
-      const cookie = req.cookies;
+      const cookie = req.cookies
 
       const response = await fetch(
         `https://sms.${req.query.city}.nis.edu.kz/root/Account/RefreshCaptcha`,
         { headers: { cookie } }
-      ).then((res) => res.json());
+      ).then((res) => res.json())
 
       if (!response.data || !response.data.base64img)
         return reply
           .code(400)
-          .send({ message: response.message || "Что-то пошло не так" });
+          .send({ message: response.message || "Что-то пошло не так" })
 
-      reply.code(200).send(response.data.base64img);
+      reply.code(200).send(response.data.base64img)
     }
-  );
+  )
 }

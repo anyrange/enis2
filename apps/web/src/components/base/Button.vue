@@ -33,8 +33,8 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import Icon from "./Icon.vue";
+import { computed } from "vue"
+import Icon from "./Icon.vue"
 
 const props = defineProps({
   color: {
@@ -42,7 +42,7 @@ const props = defineProps({
     required: false,
     default: "standard",
     validator(value) {
-      return ["standard", "primary", "negative"].includes(value);
+      return ["standard", "primary", "negative"].includes(value)
     },
   },
   type: {
@@ -60,7 +60,7 @@ const props = defineProps({
     required: false,
     default: "button",
     validator(value) {
-      return ["button", "a"].includes(value);
+      return ["button", "a"].includes(value)
     },
   },
   href: {
@@ -108,11 +108,11 @@ const props = defineProps({
     required: false,
     default: false,
   },
-});
+})
 
-const emit = defineEmits(["click"]);
+const emit = defineEmits(["click"])
 
-const isDisabled = computed(() => props.disabled || props.loading);
+const isDisabled = computed(() => props.disabled || props.loading)
 </script>
 
 <style scoped>

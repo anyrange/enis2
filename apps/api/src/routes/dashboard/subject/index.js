@@ -1,4 +1,4 @@
-import { URLSearchParams } from "url";
+import { URLSearchParams } from "url"
 
 export default async function (fastify) {
   fastify.get(
@@ -41,30 +41,30 @@ export default async function (fastify) {
       },
     },
     async (req, reply) => {
-      const evaluations = req.query["evaluations[]"];
+      const evaluations = req.query["evaluations[]"]
 
       const createSubjectPromise = async (evalId) => {
-        const params = new URLSearchParams();
-        params.append("journalId", req.query.journalId);
-        params.append("evalId", evalId);
+        const params = new URLSearchParams()
+        params.append("journalId", req.query.journalId)
+        params.append("evalId", evalId)
 
-        const cookie = req.cookies;
+        const cookie = req.cookies
         const response = await fastify.api({
           url: `https://sms.${req.query.city}.nis.edu.kz/Jce/Diary/GetResultByEvalution`,
           method: "POST",
           body: params,
           cookie,
-        });
-        response.data.forEach((item) => (item.SectionId = item.Id));
-        return response.data;
-      };
+        })
+        response.data.forEach((item) => (item.SectionId = item.Id))
+        return response.data
+      }
 
       const subject = await Promise.all([
         createSubjectPromise(evaluations[0]),
         createSubjectPromise(evaluations[1]),
-      ]);
+      ])
 
-      await reply.send(subject);
+      await reply.send(subject)
     }
-  );
+  )
 }

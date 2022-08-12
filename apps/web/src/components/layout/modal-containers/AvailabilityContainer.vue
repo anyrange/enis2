@@ -26,11 +26,11 @@
 </template>
 
 <script setup>
-import { getRandomItem } from "../../../utils";
-import useSettingsStore from "../../../stores/settings";
-import Image from "../../base/Image.vue";
+import { getRandomItem } from "../../../utils"
+import useSettingsStore from "../../../stores/settings"
+import Image from "../../base/Image.vue"
 
-const settingsStore = useSettingsStore();
+const settingsStore = useSettingsStore()
 
 const gifs = [
   "https://media1.tenor.com/images/e1dc54fe9be616aeca12b3203daafbef/tenor.gif?itemid=19478273",
@@ -44,5 +44,5 @@ const gifs = [
   "https://c.tenor.com/ZX95mDnlodwAAAAd/the-rock-sus-eye.gif",
   "https://c.tenor.com/74QM2zVnaiMAAAAd/papich-%D0%BF%D0%B0%D0%BF%D0%B8%D1%87.gif",
   "https://c.tenor.com/JYYenmChz9MAAAAd/papich.gif",
-];
+]
 </script>

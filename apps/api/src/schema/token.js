@@ -1,4 +1,4 @@
-import fp from "fastify-plugin";
+import fp from "fastify-plugin"
 
 export default fp(async function plugin(fastify) {
   fastify.addSchema({
@@ -7,5 +7,5 @@ export default fp(async function plugin(fastify) {
     type: "object",
     required: ["authorization"],
     properties: { authorization: { type: "string" } },
-  });
-});
+  })
+})

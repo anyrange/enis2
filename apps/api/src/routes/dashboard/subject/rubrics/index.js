@@ -1,4 +1,4 @@
-import { URLSearchParams } from "url";
+import { URLSearchParams } from "url"
 
 export default async function (fastify) {
   fastify.get(
@@ -36,32 +36,32 @@ export default async function (fastify) {
       },
     },
     async (req, reply) => {
-      const params = new URLSearchParams();
-      params.append("sectionId", req.query.sectionId);
-      params.append("rubricId", req.query.rubricId);
+      const params = new URLSearchParams()
+      params.append("sectionId", req.query.sectionId)
+      params.append("rubricId", req.query.rubricId)
 
-      const cookie = req.cookies;
+      const cookie = req.cookies
 
       const response = await fastify.api({
         url: `https://sms.${req.query.city}.nis.edu.kz/Jce/Diary/GetRubricResults`,
         method: "POST",
         body: params,
         cookie,
-      });
+      })
 
-      const resultTypes = ["HighResult", "MediumResult", "LowResult"];
+      const resultTypes = ["HighResult", "MediumResult", "LowResult"]
 
       response.data.forEach((criterion) => {
-        criterion.resultId = resultTypes.findIndex((type) => criterion[type]);
-        criterion.criterion = criterion.Criterion;
+        criterion.resultId = resultTypes.findIndex((type) => criterion[type])
+        criterion.criterion = criterion.Criterion
         criterion.descriptors = [
           criterion.HighDescriptor,
           criterion.MediumDescriptor,
           criterion.LowDescriptor,
-        ];
-      });
+        ]
+      })
 
-      await reply.send(response.data);
+      await reply.send(response.data)
     }
-  );
+  )
 }

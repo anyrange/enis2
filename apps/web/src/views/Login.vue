@@ -98,37 +98,37 @@
 </template>
 
 <script setup>
-import { storeToRefs } from "pinia";
-import { useForm } from "slimeform";
-import { GH_LINK, TG_LINK, schools } from "../config";
-import { isRequired, getRandomItem } from "../utils";
-import useLoaderStore from "../stores/loader";
-import useSettingsStore from "../stores/settings";
-import useHealthStore from "../stores/health";
-import useAuthStore from "../stores/auth";
-import Button from "../components/base/Button.vue";
-import Input from "../components/base/Input.vue";
-import Image from "../components/base/Image.vue";
-import Icon from "../components/base/Icon.vue";
-import Select from "../components/base/Select.vue";
-import Checkbox from "../components/base/Checkbox.vue";
-import ThemeToggler from "../components/layout/ThemeToggler.vue";
-import Logo from "../components/base/app/Logo.vue";
+import { storeToRefs } from "pinia"
+import { useForm } from "slimeform"
+import { GH_LINK, TG_LINK, schools } from "../config"
+import { isRequired, getRandomItem } from "../utils"
+import useLoaderStore from "../stores/loader"
+import useSettingsStore from "../stores/settings"
+import useHealthStore from "../stores/health"
+import useAuthStore from "../stores/auth"
+import Button from "../components/base/Button.vue"
+import Input from "../components/base/Input.vue"
+import Image from "../components/base/Image.vue"
+import Icon from "../components/base/Icon.vue"
+import Select from "../components/base/Select.vue"
+import Checkbox from "../components/base/Checkbox.vue"
+import ThemeToggler from "../components/layout/ThemeToggler.vue"
+import Logo from "../components/base/app/Logo.vue"
 
 const emojis =
-  "🤔🤐🙃🤤🧐👴😭💩🍕⚡🆗🤙🗿🎪👻🎃🌍👌👊💪👺🙈🙉🙊🐰🐔🐍😡🔥🤡🌈💛💙💜💚💓";
+  "🤔🤐🙃🤤🧐👴😭💩🍕⚡🆗🤙🗿🎪👻🎃🌍👌👊💪👺🙈🙉🙊🐰🐔🐍😡🔥🤡🌈💛💙💜💚💓"
 
-const randomEmoji = getRandomItem([...emojis]);
+const randomEmoji = getRandomItem([...emojis])
 
-const authStore = useAuthStore();
-const loaderStore = useLoaderStore();
-const settingsStore = useSettingsStore();
-const { checkAvailability } = useHealthStore();
+const authStore = useAuthStore()
+const loaderStore = useLoaderStore()
+const settingsStore = useSettingsStore()
+const { checkAvailability } = useHealthStore()
 
-const { captcha } = storeToRefs(authStore);
-const { settings } = storeToRefs(settingsStore);
+const { captcha } = storeToRefs(authStore)
+const { settings } = storeToRefs(settingsStore)
 
-settingsStore.predictSchool();
+settingsStore.predictSchool()
 
 const { form, status, onSubmit } = useForm({
   form: () => ({
@@ -140,7 +140,7 @@ const { form, status, onSubmit } = useForm({
     login: [isRequired],
     password: [isRequired],
   },
-});
+})
 
 const submit = async () => {
   try {
@@ -148,13 +148,13 @@ const submit = async () => {
       login: form.login,
       password: form.password,
       captchaInput: form.captchaInput,
-    });
+    })
   } catch (error) {
     if (error.response?.data?.data?.base64img) {
-      captcha.value = error.response.data.data.base64img;
-      form.captchaInput = "";
+      captcha.value = error.response.data.data.base64img
+      form.captchaInput = ""
     }
-    await checkAvailability();
+    await checkAvailability()
   }
-};
+}
 </script>

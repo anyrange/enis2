@@ -120,30 +120,30 @@
 </style>
 
 <script setup>
-import { ref, computed, watch } from "vue";
-import { Carousel, Slide, Navigation } from "vue3-carousel";
-import { watchOnce } from "@vueuse/core";
-import { storeToRefs } from "pinia";
-import { notify } from "../services/notify.js";
-import { getRandomItem } from "../utils";
-import useLoaderStore from "../stores/loader";
-import useSubjectStore from "../stores/subject";
-import useSettingsStore from "../stores/settings";
-import useYearsStore from "../stores/years";
-import useAuthStore from "../stores/auth";
-import useHealthStore from "../stores/health";
-import useDiaryStore from "../stores/diary";
-import useTermsStore from "../stores/terms";
-import useGradesStore from "../stores/grades";
-import Button from "../components/base/Button.vue";
-import Icon from "../components/base/Icon.vue";
-import Modal from "../components/base/Modal.vue";
-import Tabs from "../components/base/tabs/Tabs.vue";
-import Tab from "../components/base/tabs/Tab.vue";
-import SubjectDiary from "../components/layout/subject/SubjectDiary.vue";
-import SubjectGrades from "../components/layout/subject/SubjectGrades.vue";
-import SubjectContainer from "../components/layout/modal-containers/SubjectContainer.vue";
-import SettingsContainer from "../components/layout/modal-containers/settings/SettingsContainer.vue";
+import { ref, computed, watch } from "vue"
+import { Carousel, Slide, Navigation } from "vue3-carousel"
+import { watchOnce } from "@vueuse/core"
+import { storeToRefs } from "pinia"
+import { notify } from "../services/notify.js"
+import { getRandomItem } from "../utils"
+import useLoaderStore from "../stores/loader"
+import useSubjectStore from "../stores/subject"
+import useSettingsStore from "../stores/settings"
+import useYearsStore from "../stores/years"
+import useAuthStore from "../stores/auth"
+import useHealthStore from "../stores/health"
+import useDiaryStore from "../stores/diary"
+import useTermsStore from "../stores/terms"
+import useGradesStore from "../stores/grades"
+import Button from "../components/base/Button.vue"
+import Icon from "../components/base/Icon.vue"
+import Modal from "../components/base/Modal.vue"
+import Tabs from "../components/base/tabs/Tabs.vue"
+import Tab from "../components/base/tabs/Tab.vue"
+import SubjectDiary from "../components/layout/subject/SubjectDiary.vue"
+import SubjectGrades from "../components/layout/subject/SubjectGrades.vue"
+import SubjectContainer from "../components/layout/modal-containers/SubjectContainer.vue"
+import SettingsContainer from "../components/layout/modal-containers/settings/SettingsContainer.vue"
 
 const emoticons = [
   "¯\\_(ツ)_/¯",
@@ -157,151 +157,151 @@ const emoticons = [
   "(˚Δ˚)b",
   "\\(o_o)/",
   "(·.·)",
-];
+]
 
 const GREEK_NUMERALS = {
   1: "I",
   2: "II",
   3: "III",
   4: "IV",
-};
+}
 
-const showSubjectModal = ref(false);
-const showSettingsModal = ref(false);
+const showSubjectModal = ref(false)
+const showSettingsModal = ref(false)
 
-const loaderStore = useLoaderStore();
-const subjectStore = useSubjectStore();
-const settingsStore = useSettingsStore();
-const yearsStore = useYearsStore();
-const termsStore = useTermsStore();
-const diaryStore = useDiaryStore();
-const gradesStore = useGradesStore();
-const { checkAvailability } = useHealthStore();
-const { login, logout } = useAuthStore();
+const loaderStore = useLoaderStore()
+const subjectStore = useSubjectStore()
+const settingsStore = useSettingsStore()
+const yearsStore = useYearsStore()
+const termsStore = useTermsStore()
+const diaryStore = useDiaryStore()
+const gradesStore = useGradesStore()
+const { checkAvailability } = useHealthStore()
+const { login, logout } = useAuthStore()
 
-const { settings } = storeToRefs(settingsStore);
+const { settings } = storeToRefs(settingsStore)
 
 const actualYearIndex = yearsStore.years.indexOf(
   (item) => item.label === yearsStore.actualYearName
-);
-const yearIndex = ref(actualYearIndex - 2);
+)
+const yearIndex = ref(actualYearIndex - 2)
 
-const isGrades = computed(() => settings.value.tab === "grades");
+const isGrades = computed(() => settings.value.tab === "grades")
 const isEmptyContent = computed(() =>
   isGrades.value ? !gradesStore.grades.length : !diaryStore.diary.length
-);
+)
 
 const showError = (message) => {
   notify.show({
     type: "danger",
     message,
-  });
-};
+  })
+}
 
 const endSession = (message = "Сессия завершена") => {
-  logout();
-  showError(message);
-};
+  logout()
+  showError(message)
+}
 
 const fetchTabs = async (force) => {
   try {
-    await yearsStore.fetchYears(force);
-    await termsStore.fetchTerms(force);
+    await yearsStore.fetchYears(force)
+    await termsStore.fetchTerms(force)
   } catch (error) {
-    return Promise.reject(error);
+    return Promise.reject(error)
   }
-};
+}
 
 const fetchContent = async (force) => {
   try {
     isGrades.value
       ? await gradesStore.fetchGrades(force)
-      : await diaryStore.fetchDiary(force);
+      : await diaryStore.fetchDiary(force)
   } catch (error) {
-    return Promise.reject(error);
+    return Promise.reject(error)
   }
-};
+}
 
 const fetchData = async ({ force = false, includeTabs = false }) => {
   try {
-    includeTabs && (await fetchTabs(force));
-    await fetchContent(force);
+    includeTabs && (await fetchTabs(force))
+    await fetchContent(force)
   } catch (error) {
-    return Promise.reject(error);
+    return Promise.reject(error)
   }
-};
+}
 
 const getData = async ({ force = false, includeTabs = false }) => {
   try {
-    await fetchData({ force, includeTabs });
+    await fetchData({ force, includeTabs })
   } catch (error) {
-    const isUnauthorized = error.response.status === 401;
-    const message = error.response.data.message;
+    const isUnauthorized = error.response.status === 401
+    const message = error.response.data.message
     const handleError = () => {
-      isUnauthorized ? endSession() : showError(message);
-    };
+      isUnauthorized ? endSession() : showError(message)
+    }
     if (settings.value.rememberMe) {
       try {
-        await login({});
-        await fetchData({ force: true, includeTabs: true });
-        return;
+        await login({})
+        await fetchData({ force: true, includeTabs: true })
+        return
       } catch {
-        handleError();
+        handleError()
       }
     } else {
-      handleError();
+      handleError()
     }
-    await checkAvailability();
+    await checkAvailability()
   }
-};
+}
 
 const openSubjectModal = async (selectedSubject) => {
   if (
     showSubjectModal.value &&
     selectedSubject.Name === subjectStore.subject.originalSubject.Name
   ) {
-    return;
+    return
   }
-  subjectStore.clearSubject();
-  showSubjectModal.value = true;
+  subjectStore.clearSubject()
+  showSubjectModal.value = true
   try {
-    await subjectStore.fetchSubject(selectedSubject);
+    await subjectStore.fetchSubject(selectedSubject)
   } catch (error) {
-    await getData({ includeTabs: true, force: true });
+    await getData({ includeTabs: true, force: true })
     const lastSubject = diaryStore.diary.find((s) => {
-      return s.Name === selectedSubject.Name;
-    });
-    await subjectStore.fetchSubject(lastSubject);
+      return s.Name === selectedSubject.Name
+    })
+    await subjectStore.fetchSubject(lastSubject)
   }
-};
+}
 
 watch(
   [() => settings.value.year, () => settings.value.tab],
   async ([newY, newT], [oldY, oldT]) => {
-    const changedYear = oldY && newY && newY !== oldY;
-    const changedTab = oldT && newT && newT !== oldT;
+    const changedYear = oldY && newY && newY !== oldY
+    const changedTab = oldT && newT && newT !== oldT
 
     if (changedYear) {
-      return getData({ includeTabs: true });
+      return getData({ includeTabs: true })
     }
     if (changedTab) {
-      return getData({ includeTabs: false });
+      return getData({ includeTabs: false })
     }
   },
   {
     immediate: true,
   }
-);
+)
 
 // force-fetch if initial tab is 'grades' was changed to 'diary' or vice versa
 watchOnce(
   () => settings.value.tab,
   (newTab, oldTab) => {
     if (newTab === "grades" || oldTab === "grades") {
-      return getData({ includeTabs: true, force: true });
+      return getData({ includeTabs: true, force: true })
     }
   }
-);
+)
 
-getData({ includeTabs: true, force: true });
+getData({ includeTabs: true, force: true })
 </script>

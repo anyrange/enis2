@@ -1,13 +1,13 @@
-import schools from "nis-schools";
+import schools from "nis-schools"
 
-const isDev = import.meta.env.DEV;
-const isMock = isDev && false;
+const isDev = import.meta.env.DEV
+const isMock = isDev && false
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:4000";
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:4000"
 
-const DEFAULT_ERROR_MESSAGE = "Что-то пошло не так";
+const DEFAULT_ERROR_MESSAGE = "Что-то пошло не так"
 
-const createUrl = (endpoint) => `${SERVER_URL}/${endpoint}`;
+const createUrl = (endpoint) => `${SERVER_URL}/${endpoint}`
 
 const ENDPOINTS = {
   HEALTH_SMS: {
@@ -73,13 +73,13 @@ const ENDPOINTS = {
     },
     overlay: "optional",
   },
-};
+}
 
-const DA_LINK = "https://www.donationalerts.com/r/wsehl";
-const TG_LINK = "https://t.me/joinchat/ToHSvx2gVOBkMzBi";
-const GH_LINK = "https://github.com/anyrange/enis2";
+const DA_LINK = "https://www.donationalerts.com/r/wsehl"
+const TG_LINK = "https://t.me/joinchat/ToHSvx2gVOBkMzBi"
+const GH_LINK = "https://github.com/anyrange/enis2"
 
-const DEFAULT_RANGES = [0, 40, 65, 85, 100];
+const DEFAULT_RANGES = [0, 40, 65, 85, 100]
 
 export {
   isDev,
@@ -92,4 +92,4 @@ export {
   TG_LINK,
   GH_LINK,
   DEFAULT_RANGES,
-};
+}

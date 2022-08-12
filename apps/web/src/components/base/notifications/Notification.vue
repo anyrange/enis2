@@ -30,73 +30,73 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from "vue";
-import Icon from "../Icon.vue";
+import { computed, onMounted, ref } from "vue"
+import Icon from "../Icon.vue"
 
 const props = defineProps({
   notification: {
     type: Object,
     required: true,
   },
-});
+})
 
-const emit = defineEmits(["close-notification"]);
+const emit = defineEmits(["close-notification"])
 
-const interval = ref(null);
-const timeLeft = ref(0);
-const speed = ref(100);
+const interval = ref(null)
+const timeLeft = ref(0)
+const speed = ref(100)
 
 const notifyClass = computed(() => {
-  const type = props.notification.type;
+  const type = props.notification.type
   return {
     "notify-success": type === "success",
     "notify-warning": type === "warning",
     "notify-danger": type === "danger",
     "notify-info": type === "info",
-  };
-});
+  }
+})
 
 const timeLeftPercent = computed(() => {
   return Math.round(
     (((timeLeft.value * 100) / props.notification.delay) * 100) / 100
-  );
-});
+  )
+})
 
 const progressStyle = computed(() => {
   return {
     width: timeLeftPercent.value + "%",
     transition: "width 0.1s linear",
-  };
-});
+  }
+})
 
 onMounted(() => {
-  const { delay, progress } = props.notification;
+  const { delay, progress } = props.notification
   if (delay && progress) {
-    timeLeft.value = delay - 100;
-    interval.value = setInterval(() => updateTime(), speed.value);
+    timeLeft.value = delay - 100
+    interval.value = setInterval(() => updateTime(), speed.value)
   }
-});
+})
 
 const closeNotification = (notification) => {
-  emit("close-notification", notification);
-  destroy();
-};
+  emit("close-notification", notification)
+  destroy()
+}
 
 const updateTime = () => {
-  timeLeft.value -= speed.value;
+  timeLeft.value -= speed.value
   if (timeLeft.value === 0) {
-    destroy();
+    destroy()
   }
-};
+}
 
 const handleAction = (action) => {
-  action();
-  closeNotification();
-};
+  action()
+  closeNotification()
+}
 
 const destroy = () => {
-  clearInterval(interval.value);
-};
+  clearInterval(interval.value)
+}
 </script>
 
 <style scoped>

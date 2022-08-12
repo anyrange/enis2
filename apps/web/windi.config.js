@@ -1,4 +1,4 @@
-import colors from "windicss/colors";
+import colors from "windicss/colors"
 
 export default {
   darkMode: "class",
@@ -30,4 +30,4 @@ export default {
       },
     },
   },
-};
+}

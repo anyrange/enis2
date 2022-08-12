@@ -1,5 +1,5 @@
-import { createNanoEvents } from "nanoevents";
+import { createNanoEvents } from "nanoevents"
 
-const emitter = createNanoEvents();
+const emitter = createNanoEvents()
 
-export { emitter };
+export { emitter }

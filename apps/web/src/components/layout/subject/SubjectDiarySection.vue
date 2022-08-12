@@ -55,10 +55,10 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { getSectionsScores, formatPercent } from "../../../utils";
-import ScrollPicker from "../ScrollPicker.vue";
-import useSubjectStore from "../../../stores/subject";
+import { computed } from "vue"
+import { getSectionsScores, formatPercent } from "../../../utils"
+import ScrollPicker from "../ScrollPicker.vue"
+import useSubjectStore from "../../../stores/subject"
 
 const props = defineProps({
   data: {
@@ -69,26 +69,26 @@ const props = defineProps({
     type: String,
     required: true,
   },
-});
+})
 
 const LABEL_TYPES = {
   SAU: "СОР",
   SAT: "СОЧ",
-};
+}
 
-const subjectStore = useSubjectStore();
+const subjectStore = useSubjectStore()
 
-const createArray = ({ length }) => Array.from({ length }, (_, i) => i);
+const createArray = ({ length }) => Array.from({ length }, (_, i) => i)
 
 const sectionsScore = computed(() => {
-  const { score } = getSectionsScores(props.data);
-  return score;
-});
+  const { score } = getSectionsScores(props.data)
+  return score
+})
 const sectionsMaxScore = computed(() => {
-  const { max } = getSectionsScores(props.data);
-  return max;
-});
+  const { max } = getSectionsScores(props.data)
+  return max
+})
 const sectionsPercent = computed(() => {
-  return formatPercent((sectionsScore.value / sectionsMaxScore.value) * 100);
-});
+  return formatPercent((sectionsScore.value / sectionsMaxScore.value) * 100)
+})
 </script>

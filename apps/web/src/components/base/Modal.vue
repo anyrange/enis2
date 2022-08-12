@@ -42,46 +42,46 @@
 </template>
 
 <script setup>
-import { onMounted, onBeforeUnmount, inject, watch } from "vue";
-import { useScrollLock } from "@vueuse/core";
-import Icon from "./Icon.vue";
+import { onMounted, onBeforeUnmount, inject, watch } from "vue"
+import { useScrollLock } from "@vueuse/core"
+import Icon from "./Icon.vue"
 
 const props = defineProps({
   show: {
     type: Boolean,
     required: true,
   },
-});
+})
 
-const emit = defineEmits(["close"]);
+const emit = defineEmits(["close"])
 
-const wrapper = inject("wrapper");
-const isLocked = useScrollLock(wrapper);
+const wrapper = inject("wrapper")
+const isLocked = useScrollLock(wrapper)
 
 watch(
   () => props.show,
   (value) => {
-    isLocked.value = value;
+    isLocked.value = value
   }
-);
+)
 
 const handleKeydown = (e) => {
   if (props.show && e.key === "Escape") {
-    close();
+    close()
   }
-};
+}
 
 const close = () => {
-  emit("close");
-};
+  emit("close")
+}
 
 onMounted(() => {
-  document.addEventListener("keydown", handleKeydown);
-});
+  document.addEventListener("keydown", handleKeydown)
+})
 
 onBeforeUnmount(() => {
-  document.removeEventListener("keydown", handleKeydown);
-});
+  document.removeEventListener("keydown", handleKeydown)
+})
 </script>
 
 <style scoped>

@@ -3,8 +3,8 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { VueScrollPicker } from "vue-scroll-picker";
+import { computed } from "vue"
+import { VueScrollPicker } from "vue-scroll-picker"
 
 const props = defineProps({
   modelValue: {
@@ -15,17 +15,17 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-});
-const emit = defineEmits(["update:modelValue"]);
+})
+const emit = defineEmits(["update:modelValue"])
 
 const model = computed({
   get() {
-    return props.modelValue;
+    return props.modelValue
   },
   set(newValue) {
-    emit("update:modelValue", newValue);
+    emit("update:modelValue", newValue)
   },
-});
+})
 </script>
 
 <style>

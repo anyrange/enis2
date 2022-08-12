@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { inject, computed } from "vue";
+import { inject, computed } from "vue"
 
 const props = defineProps({
   name: {
@@ -34,24 +34,24 @@ const props = defineProps({
     type: Boolean,
     required: false,
   },
-});
+})
 
-const emit = defineEmits(["selected"]);
+const emit = defineEmits(["selected"])
 
-const state = inject("state");
-const selectTab = inject("selectTab");
+const state = inject("state")
+const selectTab = inject("selectTab")
 
-const active = computed(() => state.active());
-const isDisabled = computed(() => props.disabled || props.loading);
-const isActive = computed(() => props.name === active.value);
+const active = computed(() => state.active())
+const isDisabled = computed(() => props.disabled || props.loading)
+const isActive = computed(() => props.name === active.value)
 
 const activateTab = (name) => {
   if (isDisabled.value) {
-    return;
+    return
   }
-  selectTab(name);
-  emit("selected", name);
-};
+  selectTab(name)
+  emit("selected", name)
+}
 </script>
 
 <style scoped>

@@ -1,14 +1,14 @@
-import { createApp } from "vue";
-import { createPinia } from "pinia";
-import { registerSW } from "virtual:pwa-register";
-import VWave from "v-wave";
-import App from "./App.vue";
-import "virtual:windi.css";
-import "./assets/globals.css";
+import { createApp } from "vue"
+import { createPinia } from "pinia"
+import { registerSW } from "virtual:pwa-register"
+import VWave from "v-wave"
+import App from "./App.vue"
+import "virtual:windi.css"
+import "./assets/globals.css"
 
-registerSW({ immediate: true });
+registerSW({ immediate: true })
 
-const app = createApp(App);
-const pinia = createPinia();
+const app = createApp(App)
+const pinia = createPinia()
 
-app.use(VWave).use(pinia).mount("#app");
+app.use(VWave).use(pinia).mount("#app")

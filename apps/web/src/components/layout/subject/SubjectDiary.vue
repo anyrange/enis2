@@ -46,9 +46,9 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { getPercentDecimals, between } from "../../../utils";
-import useSettingsStore from "../../../stores/settings";
+import { computed } from "vue"
+import { getPercentDecimals, between } from "../../../utils"
+import useSettingsStore from "../../../stores/settings"
 
 const props = defineProps({
   subject: {
@@ -60,13 +60,13 @@ const props = defineProps({
     required: false,
     default: true,
   },
-});
+})
 
-const emit = defineEmits(["click"]);
+const emit = defineEmits(["click"])
 
-const percentDecimals = computed(() => getPercentDecimals(props.subject.Score));
+const percentDecimals = computed(() => getPercentDecimals(props.subject.Score))
 
-const settingsStore = useSettingsStore();
+const settingsStore = useSettingsStore()
 const markRanges = computed(() => {
   return {
     5: {
@@ -85,16 +85,16 @@ const markRanges = computed(() => {
       range: [settingsStore.ranges[0], settingsStore.ranges[1] - 1],
       bgClass: "bg-black/30",
     },
-  };
-});
+  }
+})
 
 const mark = computed(() => {
-  const roundedPercent = Math.round(props.subject.Score);
+  const roundedPercent = Math.round(props.subject.Score)
   const [name, { bgClass }] = Object.entries(markRanges.value).find(
     ([, { range }]) => between(roundedPercent, ...range)
-  );
-  return { name, bgClass };
-});
+  )
+  return { name, bgClass }
+})
 </script>
 
 <style scoped>

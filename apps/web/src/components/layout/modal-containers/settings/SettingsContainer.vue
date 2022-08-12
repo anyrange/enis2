@@ -71,19 +71,19 @@
 </style>
 
 <script setup>
-import { ref, defineAsyncComponent } from "vue";
-import { storeToRefs } from "pinia";
-import { DA_LINK, GH_LINK, TG_LINK } from "../../../../config";
-import useSettingsStore from "../../../../stores/settings";
-import useAuthStore from "../../../../stores/auth";
-import Icon from "../../../base/Icon.vue";
-import Switch from "../../../base/Switch.vue";
-import Button from "../../../base/Button.vue";
-import Select from "../../../base/Select.vue";
+import { ref, defineAsyncComponent } from "vue"
+import { storeToRefs } from "pinia"
+import { DA_LINK, GH_LINK, TG_LINK } from "../../../../config"
+import useSettingsStore from "../../../../stores/settings"
+import useAuthStore from "../../../../stores/auth"
+import Icon from "../../../base/Icon.vue"
+import Switch from "../../../base/Switch.vue"
+import Button from "../../../base/Button.vue"
+import Select from "../../../base/Select.vue"
 
 const SettingsContainerSlider = defineAsyncComponent(() =>
   import("./SettingsContainerSlider.vue")
-);
+)
 
 const SORT_OPTIONS = [
   {
@@ -94,12 +94,12 @@ const SORT_OPTIONS = [
     value: "name",
     label: "По алфавиту",
   },
-];
+]
 
-const settingsStore = useSettingsStore();
-const { logout } = useAuthStore();
+const settingsStore = useSettingsStore()
+const { logout } = useAuthStore()
 
-const showAdvanced = ref(false);
+const showAdvanced = ref(false)
 
-const { settings, darkTheme } = storeToRefs(settingsStore);
+const { settings, darkTheme } = storeToRefs(settingsStore)
 </script>

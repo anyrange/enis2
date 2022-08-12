@@ -30,26 +30,26 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import { storeToRefs } from "pinia";
-import useLoaderStore from "../../../stores/loader";
-import useSubjectStore from "../../../stores/subject";
-import Button from "../../base/Button.vue";
-import LoadingDots from "../../base/loaders/LoadingDots.vue";
-import SubjectDiary from "../subject/SubjectDiary.vue";
-import SubjectDiarySection from "../subject/SubjectDiarySection.vue";
+import { computed } from "vue"
+import { storeToRefs } from "pinia"
+import useLoaderStore from "../../../stores/loader"
+import useSubjectStore from "../../../stores/subject"
+import Button from "../../base/Button.vue"
+import LoadingDots from "../../base/loaders/LoadingDots.vue"
+import SubjectDiary from "../subject/SubjectDiary.vue"
+import SubjectDiarySection from "../subject/SubjectDiarySection.vue"
 
-const loaderStore = useLoaderStore();
-const subjectStore = useSubjectStore();
+const loaderStore = useLoaderStore()
+const subjectStore = useSubjectStore()
 
-const { GM } = storeToRefs(subjectStore);
+const { GM } = storeToRefs(subjectStore)
 
 const sectionsType = computed(() => {
-  return GM.value ? "customSections" : "originalSections";
-});
+  return GM.value ? "customSections" : "originalSections"
+})
 const subjectType = computed(() => {
   return GM.value
     ? subjectStore.customSubject
-    : subjectStore.subject.originalSubject;
-});
+    : subjectStore.subject.originalSubject
+})
 </script>

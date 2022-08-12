@@ -76,11 +76,11 @@
 </style>
 
 <script setup>
-import { ref } from "vue";
-import { storeToRefs } from "pinia";
-import VueSlider from "vue-slider-component";
-import { DEFAULT_RANGES } from "../../../../config";
-import useSettingsStore from "../../../../stores/settings";
+import { ref } from "vue"
+import { storeToRefs } from "pinia"
+import VueSlider from "vue-slider-component"
+import { DEFAULT_RANGES } from "../../../../config"
+import useSettingsStore from "../../../../stores/settings"
 
 const process = (val) =>
   ref([
@@ -88,19 +88,19 @@ const process = (val) =>
     [val[1], val[2]],
     [val[2], val[3]],
     [val[3], val[4]],
-  ]);
+  ])
 
 const COLORS = [
   "dark:bg-black/80 bg-black/30",
   "bg-q-negative",
   "bg-q-warning",
   "bg-q-positive",
-];
+]
 
-const settingsStore = useSettingsStore();
-const { ranges } = storeToRefs(settingsStore);
+const settingsStore = useSettingsStore()
+const { ranges } = storeToRefs(settingsStore)
 
 const resetRanges = () => {
-  ranges.value = [...DEFAULT_RANGES];
-};
+  ranges.value = [...DEFAULT_RANGES]
+}
 </script>

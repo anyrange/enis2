@@ -44,8 +44,8 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
-import Icon from "./Icon.vue";
+import { computed } from "vue"
+import Icon from "./Icon.vue"
 
 const props = defineProps({
   modelValue: {
@@ -71,16 +71,16 @@ const props = defineProps({
     required: false,
     default: false,
   },
-});
+})
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue"])
 
-const isDisabled = computed(() => props.disabled || props.loading);
+const isDisabled = computed(() => props.disabled || props.loading)
 
 const model = computed({
   get: () => (props.loading ? "loading" : props.modelValue || "none"),
   set: (value) => {
-    emit("update:modelValue", value);
+    emit("update:modelValue", value)
   },
-});
+})
 </script>

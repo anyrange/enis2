@@ -20,7 +20,7 @@ defineProps({
     type: Boolean,
     default: true,
   },
-});
+})
 </script>
 
 <style>

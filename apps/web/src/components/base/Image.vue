@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch } from "vue"
 
 const props = defineProps({
   src: {
@@ -23,30 +23,30 @@ const props = defineProps({
     type: String,
     required: true,
   },
-});
+})
 
-const loaded = ref(false);
-const imageUrl = ref("");
+const loaded = ref(false)
+const imageUrl = ref("")
 
 const checkImage = (url) => {
   return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.src = url;
-    img.onload = () => resolve(url);
-    img.onerror = () => reject("Failed to load image");
-  });
-};
+    const img = new Image()
+    img.src = url
+    img.onload = () => resolve(url)
+    img.onerror = () => reject("Failed to load image")
+  })
+}
 
 const handleImage = async () => {
   try {
-    imageUrl.value = await checkImage(props.src);
-    loaded.value = true;
+    imageUrl.value = await checkImage(props.src)
+    loaded.value = true
   } catch (err) {
-    loaded.value = false;
+    loaded.value = false
   }
-};
+}
 
-watch(() => props.src, handleImage, { immediate: true });
+watch(() => props.src, handleImage, { immediate: true })
 </script>
 
 <style>
