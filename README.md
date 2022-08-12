@@ -17,13 +17,38 @@ Similar apps:
 
 As it is described [here](https://github.com/superhooman/enis-proxy), NIS doesn't have a public API, so we had to do a custom server that works as an interlayer to bypass the CORS policy since the approach with a proxy server doesn't seem to work anymore. That's why it leads to additional delays and privacy concerns.
 
-## TODO
-
-- [ ] Rewrite with TypeScript
-
 ## Contributing
 
-Contributions are welcome. Just submit a pull request or open an issue. [Contributing Guide](/.github/contributing.md).
+### Development Setup
+
+This project requires [Node.js](https://nodejs.org/en/download/current/) 16+ and [pnpm](https://pnpm.io/)
+
+Fork this repository, clone it and run:
+
+```bash
+pnpm i
+npx simple-git-hooks
+```
+
+Available scripts
+
+```bash
+pnpm dev # run project in development mode
+pnpm build # build client
+pnpm start # start in production mode
+pnpm format # format code with prettier
+pnpm lint # check code with eslint
+```
+
+### Environment variables
+
+Rename [.env.example](/.env.example) to `.env` and set your variables.
+
+## API documentation
+
+Starting the server will let you investigate the API via Swagger by getting detailed information about endpoints, and their request/response schemas at [http://localhost:8887/docs](http://localhost:8887/docs)
+
+![Swagger](https://i.imgur.com/pPxuhW9.png)
 
 ## License
 
