@@ -46,7 +46,7 @@ Rename [.env.example](/.env.example) to `.env` and set your variables.
 
 ## API documentation
 
-Starting the server will let you investigate the API via Swagger by getting detailed information about endpoints, and their request/response schemas at [http://localhost:8887/docs](http://localhost:4000/docs)
+Starting the server will let you investigate the API via Swagger by getting detailed information about endpoints, and their request/response schemas at [http://localhost:4000/docs](http://localhost:4000/docs)
 
 ![Swagger](https://i.imgur.com/pPxuhW9.png)
 
