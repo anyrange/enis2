@@ -86,7 +86,7 @@
               <Button icon tag="a" :href="TG_LINK" aria-label="Telegram Link">
                 <Icon icon="akar-icons:telegram-fill" />
               </Button>
-              <Button icon tag="a" :href="GH_LINK" aria-label="Github Link">
+              <Button icon tag="a" :href="GH_LINK" aria-label="GitHub Link">
                 <Icon icon="akar-icons:github-fill" />
               </Button>
             </div>
