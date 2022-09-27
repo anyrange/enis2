@@ -1,5 +1,7 @@
 import fetch from "node-fetch"
 
+const SECOND = 1000
+
 export default async function (fastify) {
   fastify.get(
     "",
@@ -10,13 +12,21 @@ export default async function (fastify) {
       },
     },
     async (req, reply) => {
-      try {
-        const res = await fetch(`https://sms.${req.query.city}.nis.edu.kz/`)
-        if (!res.ok) throw new Error()
+      const controller = new AbortController()
 
-        await reply.send({ alive: true })
+      const timeoutId = setTimeout(() => controller.abort(), 15 * SECOND)
+
+      try {
+        const res = await fetch(`https://sms.${req.query.city}.nis.edu.kz/`, {
+          redirect: "manual",
+          signal: controller.signal,
+        })
+
+        clearTimeout(timeoutId)
+
+        return reply.send({ alive: res.status < 400 })
       } catch {
-        await reply.send({ alive: false })
+        return reply.send({ alive: false })
       }
     }
   )
