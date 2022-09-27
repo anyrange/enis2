@@ -1,6 +1,7 @@
 import { URLSearchParams } from "url"
 import fetch from "node-fetch"
 import { encrypt, decrypt } from "../../utils/crypto.js"
+import { promisify } from "util"
 
 const getDecryptedPassword = (password) => {
   return password?.content ? decrypt(password) : password
@@ -79,7 +80,9 @@ export default async function (fastify) {
       const newCookie = fastify.cookieParse(res)
       const cookies = fastify.mergeCookies(cookie, newCookie)
 
-      fastify.jwt.sign(
+      const promiseJWT = promisify(fastify.jwt.sign)
+
+      body.token = await promiseJWT(
         {
           cookies,
           account: {
@@ -87,18 +90,13 @@ export default async function (fastify) {
             password: encrypt(password),
           },
         },
-        null,
-        (err, token) => {
-          if (err) throw err
-
-          const statusCode = body.success ? 200 : 400
-          body.data = Object.assign({}, body.data)
-
-          body.token = token
-
-          reply.code(statusCode).send(body)
-        }
+        null
       )
+
+      const statusCode = body.success ? 200 : 400
+      body.data = Object.assign({}, body.data)
+
+      return reply.code(statusCode).send(body)
     }
   )
 }
