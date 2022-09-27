@@ -11,10 +11,10 @@ export default async function (fastify) {
     },
     async (req, reply) => {
       try {
-        const res = await fetch(`https://sms.${req.query.city}.nis.edu.kz/`)
-        if (!res.ok) throw new Error()
-
-        await reply.send({ alive: true })
+        const res = await fetch(`https://sms.${req.query.city}.nis.edu.kz/`, {
+          redirect: "manual",
+        })
+        await reply.send({ alive: res.status < 400 })
       } catch {
         await reply.send({ alive: false })
       }
