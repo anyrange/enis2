@@ -17,10 +17,13 @@ export default async function (fastify) {
       const timeoutId = setTimeout(() => controller.abort(), 15 * SECOND)
 
       try {
-        const res = await fetch(`https://sms.${req.query.city}.nis.edu.kz/`, {
-          redirect: "manual",
-          signal: controller.signal,
-        })
+        const res = await fetch(
+          `https://sms.${req.query.city}.nis.edu.kz/root`,
+          {
+            redirect: "manual",
+            signal: controller.signal,
+          }
+        )
 
         clearTimeout(timeoutId)
 
