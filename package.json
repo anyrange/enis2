@@ -2,17 +2,14 @@
   "name": "enis2",
   "version": "1.0.0",
   "description": "Convenient, fast, adaptive client for e-journal used in NIS",
+  "license": "MIT",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
-    "dev": "pnpm --stream -r run dev",
     "build": "pnpm --filter web run build",
-    "start": "pnpm --stream -r start",
+    "dev": "pnpm --stream -r run dev",
+    "format": "prettier --write .",
+    "preinstall": "npx only-allow pnpm",
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix .",
-    "format": "prettier --write ."
-  },
-  "packageManager": "pnpm@7.9.0",
-  "engines": {
-    "node": ">=16.14.0"
+    "start": "pnpm --stream -r start"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"
@@ -21,9 +18,17 @@
     "*.{js,vue}": "npm run lint",
     "*": "npm run format"
   },
-  "license": "MIT",
   "devDependencies": {
+    "@vue/eslint-config-prettier": "^7.0.0",
+    "eslint": "^8.26.0",
+    "eslint-plugin-vue": "^9.6.0",
     "lint-staged": "^13.0.3",
-    "simple-git-hooks": "^2.8.0"
+    "prettier": "^2.7.1",
+    "simple-git-hooks": "^2.8.1",
+    "vue-eslint-parser": "^9.1.0"
+  },
+  "packageManager": "pnpm@7.9.0",
+  "engines": {
+    "node": ">=16.14.0"
   }
 }
