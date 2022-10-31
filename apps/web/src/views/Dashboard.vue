@@ -28,7 +28,7 @@
     <Carousel
       class="w-full mx-4 my-3.5 z-20"
       :items-to-show="3"
-      v-model="actualYearIndex"
+      v-model="yearIndex"
     >
       <Slide v-for="(year, index) in yearsStore.years" :key="index">
         <button
@@ -184,6 +184,7 @@ const { settings } = storeToRefs(settingsStore)
 const actualYearIndex = yearsStore.years.indexOf(
   (item) => item.label === yearsStore.actualYearName
 )
+const yearIndex = ref(actualYearIndex - 2)
 
 const isGrades = computed(() => settings.value.tab === "grades")
 const isEmptyContent = computed(() =>
