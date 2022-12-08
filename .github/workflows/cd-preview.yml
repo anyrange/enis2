@@ -6,10 +6,10 @@ on:
 
 jobs:
   deploy:
-    name: Deploy server on render.com
     runs-on: ubuntu-latest
     steps:
-      - uses: johnbeynon/render-deploy-action
+      - name: Deploy server on render.com
+        uses: johnbeynon/render-deploy-action
         with:
           service-id: ${{ secrets.RENDER_SERVICE_ID }}
           api-key: ${{ secrets.RENDER_API_KEY }}
