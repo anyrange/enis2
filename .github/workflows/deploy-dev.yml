@@ -30,4 +30,4 @@ jobs:
             git checkout $REF
             git status
             npx pnpm install --filter api --store=node_modules/.pnpm-store
-            npx pm2 restart enis2-dev -silent
+            npx pm2 restart enis2-dev
