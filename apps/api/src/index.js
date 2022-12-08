@@ -9,7 +9,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const app = fastify({ trustProxy: true })
 
 app.register(import("@fastify/cors"), {
-  origin: URL_WHITELIST.split(","),
+  origin: PROD ? URL_WHITELIST.split(",") : "*",
   credentials: true,
 })
 
