@@ -14,7 +14,7 @@ jobs:
       - name: Deploy dev server on VPS
         uses: appleboy/ssh-action@master
         with:
-          envs: REF
+          envs: REF,REF_NAME
           host: ${{secrets.HOST}}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
