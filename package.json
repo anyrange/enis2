@@ -11,20 +11,11 @@
     "prettier": "prettier --check .",
     "lint": "eslint . --ext .js,.vue --ignore-path .gitignore"
   },
-  "simple-git-hooks": {
-    "pre-commit": "npx lint-staged"
-  },
-  "lint-staged": {
-    "*.{js,vue}": "npm run lint",
-    "*": "npm run format"
-  },
   "devDependencies": {
     "@vue/eslint-config-prettier": "^7.0.0",
     "eslint": "^8.26.0",
     "eslint-plugin-vue": "^9.6.0",
-    "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
-    "simple-git-hooks": "^2.8.1",
     "vue-eslint-parser": "^9.1.0"
   },
   "packageManager": "pnpm@7.9.0",
