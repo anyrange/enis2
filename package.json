@@ -4,7 +4,6 @@
   "description": "Convenient, fast, adaptive client for e-journal used in NIS",
   "license": "MIT",
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
     "start": "pnpm --stream -r start",
     "dev": "pnpm --stream -r run dev",
     "build": "pnpm --filter web run build",
