@@ -27,5 +27,5 @@ jobs:
             echo $HEAD_REF
             git checkout $HEAD_REF
             git status
-            npx pnpm install --filter api --store=node_modules/.pnpm-store
+            npx pnpm install --silent --filter api --store=node_modules/.pnpm-store
             # npx pm2 restart enis2-server-preview –silent
