@@ -1,14 +1,16 @@
-name: Deploy Server
+name: CD
 
 on:
-  push:
-    branches: [main]
+  pull_request:
+    branches:
+      - main
+      - production
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy enis2 server at VPS
+      - name: Deploy server at VPS
         uses: appleboy/ssh-action@master
         with:
           host: ${{secrets.HOST}}
