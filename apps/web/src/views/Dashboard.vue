@@ -236,9 +236,11 @@ const getData = async ({ force = false, includeTabs = false }) => {
     await fetchData({ force, includeTabs })
   } catch (error) {
     const isUnauthorized = error.response.status === 401
-    const message = error.response.data.message
+
     const handleError = () => {
-      isUnauthorized ? endSession() : showError(message)
+      isUnauthorized
+        ? endSession()
+        : showError("Произошла ошибка, попробуйте войти в СУШ")
     }
     if (settings.value.rememberMe) {
       try {
