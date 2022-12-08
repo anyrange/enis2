@@ -23,4 +23,4 @@ jobs:
             git fetch
             git reset --hard origin/main
             npx pnpm install --filter api --store=node_modules/.pnpm-store
-            npx pm2 restart enis2 –silent
+            npx pm2 restart enis2 -silent
