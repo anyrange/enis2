@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "Simple API to bypass the CORS policy",
   "license": "MIT",
   "author": "thaseyor",
