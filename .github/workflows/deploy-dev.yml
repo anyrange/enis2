@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  HEAD_REF: ${{ github.head_ref }}
+  REF: ${{ github.ref }}
 
 jobs:
   deploy:
@@ -17,7 +17,7 @@ jobs:
       - name: Deploy dev server on VPS
         uses: appleboy/ssh-action@master
         with:
-          envs: HEAD_REF
+          envs: REF
           host: ${{secrets.HOST}}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -26,8 +26,8 @@ jobs:
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
             cd apps/enis2-dev
-            echo $HEAD_REF
-            git checkout $HEAD_REF
+            echo $REF
+            git checkout $REF
             git status
             npx pnpm install --filter api --store=node_modules/.pnpm-store
             npx pm2 restart enis2-dev –silent
