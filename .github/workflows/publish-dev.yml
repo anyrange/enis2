@@ -1,9 +1,4 @@
-name: CD Preview
-
-on:
-  pull_request:
-    branches:
-      - main
+name: Publish dev server
 
 env:
   HEAD_REF: ${{ github.head_ref }}
@@ -12,7 +7,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy server preview on VPS
+      - name: Deploy dev server on VPS
         uses: appleboy/ssh-action@master
         with:
           envs: HEAD_REF
@@ -23,9 +18,9 @@ jobs:
           script: |
             export NVM_DIR=~/.nvm
             source ~/.nvm/nvm.sh
-            cd apps/enis2-server-preview
+            cd apps/enis2-dev
             echo $HEAD_REF
             git checkout $HEAD_REF
             git status
-            npx pnpm install --silent --filter api --store=node_modules/.pnpm-store
-            # npx pm2 restart enis2-server-preview –silent
+            npx pnpm install --filter api --store=node_modules/.pnpm-store
+            npx pm2 restart enis2-dev –silent

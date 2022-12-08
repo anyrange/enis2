@@ -1,4 +1,4 @@
-name: CD Production
+name: CD
 
 on:
   pull_request:
