@@ -47,3 +47,5 @@ app.listen({ port: PORT, host: "0.0.0.0" }, (err) => {
   if (err) return console.log(err)
   console.info(`App is alive on port ${PORT}`)
 })
+
+console.log("11111")
