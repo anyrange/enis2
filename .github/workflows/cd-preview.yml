@@ -9,8 +9,18 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy server on render.com
-        uses: johnbeynon/render-deploy-action@v0.0.8
+      - name: Deploy server preview on VPS
+        uses: appleboy/ssh-action@master
         with:
-          service-id: ${{ secrets.RENDER_SERVICE_ID }}
-          api-key: ${{ secrets.RENDER_API_KEY }}
+          host: ${{secrets.HOST}}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            export NVM_DIR=~/.nvm
+            source ~/.nvm/nvm.sh
+            cd apps/enis2
+            git fetch
+            git reset --hard origin/main
+            npx pnpm install --filter api --store=node_modules/.pnpm-store
+            npx pm2 restart enis2
