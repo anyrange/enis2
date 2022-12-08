@@ -1,5 +1,12 @@
 name: Publish dev server
 
+on:
+  push:
+    branches:
+      - master
+
+  workflow_dispatch:
+
 env:
   HEAD_REF: ${{ github.head_ref }}
 
