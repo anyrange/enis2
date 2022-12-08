@@ -4,12 +4,12 @@
   "description": "Convenient, fast, adaptive client for e-journal used in NIS",
   "license": "MIT",
   "scripts": {
-    "build": "pnpm --filter web run build",
-    "dev": "pnpm --stream -r run dev",
-    "format": "prettier --write .",
     "preinstall": "npx only-allow pnpm",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix .",
-    "start": "pnpm --stream -r start"
+    "start": "pnpm --stream -r start",
+    "dev": "pnpm --stream -r run dev",
+    "build": "pnpm --filter web run build",
+    "prettier": "prettier --check .",
+    "lint": "eslint . --ext .js,.vue --ignore-path .gitignore"
   },
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"
