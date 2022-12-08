@@ -8,7 +8,7 @@ dotenv.config({ path: resolve(__dirname, "../../../../.env") })
 
 export const IPINFO_TOKEN = process.env.IPINFO_TOKEN
 
-export const PROD = process.env.NODE_ENV === "production"
+export const IS_DEV = process.env.NODE_ENV === "development"
 
 export const PORT = process.env.PORT || 4000
 

@@ -2,18 +2,18 @@ import { fileURLToPath } from "url"
 import { dirname, join } from "path"
 import fastify from "fastify"
 import autoload from "@fastify/autoload"
-import { PROD, PORT, URL_WHITELIST, SECRET } from "./config/index.js"
+import { IS_DEV, PORT, URL_WHITELIST, SECRET } from "./config/index.js"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const app = fastify({ trustProxy: true })
 
 app.register(import("@fastify/cors"), {
-  origin: URL_WHITELIST.split(","),
+  origin: IS_DEV ? "*" : URL_WHITELIST.split(","),
   credentials: true,
 })
 
-if (!PROD) {
+if (IS_DEV) {
   app.register(import("@fastify/swagger"), {
     routePrefix: "/docs",
     swagger: {

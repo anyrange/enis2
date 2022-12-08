@@ -1,16 +1,14 @@
-name: CD
+name: CD Production
 
 on:
   pull_request:
-    branches:
-      - main
-      - production
+    branches: [production]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy server at VPS
+      - name: Deploy server on VPS
         uses: appleboy/ssh-action@master
         with:
           host: ${{secrets.HOST}}
