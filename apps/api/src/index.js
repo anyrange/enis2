@@ -43,6 +43,8 @@ app.register(autoload, {
 
 app.register(import("@fastify/jwt"), { secret: SECRET })
 
+console.log("A")
+
 app.listen({ port: PORT, host: "0.0.0.0" }, (err) => {
   if (err) return console.log(err)
   console.info(`App is alive on port ${PORT}`)
