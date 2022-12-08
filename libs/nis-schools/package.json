@@ -1,6 +1,6 @@
 {
   "name": "nis-schools",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "List of NIS schools",
   "type": "module",
   "main": "src/index.js",
