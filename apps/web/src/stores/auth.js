@@ -47,7 +47,7 @@ export default defineStore("auth", () => {
       setToken(error.response.data.token)
       notify.show({
         type: "danger",
-        message: error.response.data.message,
+        message: "Произошла ошибка, попробуйте войти в СУШ",
       })
       return Promise.reject(error)
     }
