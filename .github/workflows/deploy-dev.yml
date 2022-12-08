@@ -1,14 +1,11 @@
 name: Deploy dev server
 
 on:
-  push:
-    branches:
-      - master
-
   workflow_dispatch:
 
 env:
   REF: ${{ github.ref }}
+  REF_NAME: ${{ github.ref_name }}
 
 jobs:
   deploy:
@@ -27,7 +24,9 @@ jobs:
             source ~/.nvm/nvm.sh
             cd apps/enis2-dev
             echo $REF
-            git checkout $REF
+            echo $REF_NAME
+            git fetch
+            git checkout $REF_NAME
             git status
             npx pnpm install --filter api --store=node_modules/.pnpm-store
             npx pm2 restart enis2-dev
