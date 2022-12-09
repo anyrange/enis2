@@ -5,6 +5,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: overlay;
   @apply text-black dark:text-white antialiased;
   @apply bg-gray-100 dark:bg-secondary-darkest;
 }
