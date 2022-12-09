@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import { onMounted, onBeforeUnmount, inject, watch } from "vue"
+import { onMounted, onBeforeUnmount, watch } from "vue"
 import { useScrollLock } from "@vueuse/core"
 import Icon from "./Icon.vue"
 
@@ -55,8 +55,7 @@ const props = defineProps({
 
 const emit = defineEmits(["close"])
 
-const wrapper = inject("wrapper")
-const isLocked = useScrollLock(wrapper)
+const isLocked = useScrollLock(document.body)
 
 watch(
   () => props.show,
