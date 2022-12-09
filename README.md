@@ -25,8 +25,7 @@ This project requires [Node.js](https://nodejs.org/en/download/current/) 16+ and
 Fork this repository, clone it and run:
 
 ```bash
-pnpm i
-npx simple-git-hooks
+pnpm install
 ```
 
 Available scripts
@@ -35,8 +34,6 @@ Available scripts
 pnpm dev # run project in development mode
 pnpm build # build client
 pnpm start # start in production mode
-pnpm format # format code with prettier
-pnpm lint # check code with eslint
 ```
 
 ### Environment variables
