@@ -1,23 +1,17 @@
 <template>
-  <div
-    ref="wrapper"
-    class="w-screen h-screen m-auto overflow-scroll"
-    style="overflow: overlay"
-  >
-    <LoadingOverlay
-      :active="loaderStore.overlay.active"
-      :blocking="loaderStore.overlay.blocking"
-    />
-    <Modal :show="showAvailabilityModal" @close="showAvailabilityModal = false">
-      <AvailabilityContainer />
-    </Modal>
-    <component :is="authStore.authenticated ? Dashboard : Login" />
-    <Notifications />
-  </div>
+  <LoadingOverlay
+    :active="loaderStore.overlay.active"
+    :blocking="loaderStore.overlay.blocking"
+  />
+  <Modal :show="showAvailabilityModal" @close="showAvailabilityModal = false">
+    <AvailabilityContainer />
+  </Modal>
+  <component :is="authStore.authenticated ? Dashboard : Login" />
+  <Notifications />
 </template>
 
 <script setup>
-import { computed, watch, ref, provide, defineAsyncComponent } from "vue"
+import { computed, watch, defineAsyncComponent } from "vue"
 import { storeToRefs } from "pinia"
 import useLoaderStore from "./stores/loader"
 import useSettingsStore from "./stores/settings"
@@ -29,10 +23,6 @@ import AvailabilityContainer from "./components/layout/modal-containers/Availabi
 import Notifications from "./components/base/notifications/Notifications.vue"
 const Dashboard = defineAsyncComponent(() => import("./views/Dashboard.vue"))
 const Login = defineAsyncComponent(() => import("./views/Login.vue"))
-
-const wrapper = ref()
-
-provide("wrapper", wrapper)
 
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
