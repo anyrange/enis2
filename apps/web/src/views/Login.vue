@@ -2,7 +2,7 @@
   <div
     class="sm:from-transparent sm:to-transparent bg-gradient-to-r bg-conic-to-l from-sky-400 to-primary"
   >
-    <div class="flex h-[100svh]">
+    <div class="grid place-items-center h-[100svh] h-screen">
       <main
         class="sm:m-auto mt-auto sm:h-auto h-[95%] sm:w-96 w-full grid gap-12 grid-cols-1 h-full h-full rounded-t-xl sm:rounded-md shadow-sm bg-white dark:bg-secondary-darker p-4"
       >
