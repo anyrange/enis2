@@ -2,14 +2,14 @@ import { fileURLToPath } from "url"
 import { dirname, join } from "path"
 import fastify from "fastify"
 import autoload from "@fastify/autoload"
-import { PROD, PORT, URL_WHITELIST, SECRET } from "./config/index.js"
+import { PROD, PORT, SECRET } from "./config/index.js"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const app = fastify({ trustProxy: true })
 
 app.register(import("@fastify/cors"), {
-  origin: PROD ? URL_WHITELIST.split(",") : "*",
+  origin: "*",
   credentials: true,
 })
 
