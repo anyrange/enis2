@@ -9,6 +9,5 @@ export default fp(async function plugin(fastify) {
     title: "City",
     type: "string",
     enum: cityValues,
-    default: "pvl",
   })
 })

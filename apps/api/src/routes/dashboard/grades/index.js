@@ -12,7 +12,6 @@ export default async function (fastify) {
           properties: {
             city: fastify.getSchema("city"),
             yearID: { type: "string" },
-            token: { type: "string" },
           },
         },
         response: {

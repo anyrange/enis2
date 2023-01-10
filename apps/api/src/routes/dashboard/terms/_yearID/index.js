@@ -28,7 +28,7 @@ export default async function (fastify) {
             },
           },
         },
-        tags: ["years"],
+        tags: ["dashboard"],
       },
     },
     async (req, reply) => {
