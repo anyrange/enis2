@@ -1,5 +1,5 @@
 export default async function (fastify) {
-  fastify.get("", { schema: { tags: ["system"] } }, () => {
+  fastify.get("", { schema: { tags: ["miscellaneous"] } }, () => {
     return { message: "I'm alive" }
   })
 }

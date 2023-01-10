@@ -16,7 +16,6 @@ export default async function (fastify) {
               items: { type: "string", minLength: 36, maxLength: 36 },
             },
             city: fastify.getSchema("city"),
-            token: { type: "string" },
           },
         },
         response: {

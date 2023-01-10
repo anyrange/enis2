@@ -41,7 +41,7 @@ export default async function (fastify) {
             },
           },
         },
-        tags: ["terms"],
+        tags: ["dashboard"],
       },
     },
     async (req, reply) => {

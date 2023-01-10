@@ -8,7 +8,7 @@ export default async function (fastify) {
     {
       schema: {
         querystring: fastify.getSchema("domain"),
-        tags: ["system"],
+        tags: ["miscellaneous"],
       },
     },
     async (req, reply) => {
