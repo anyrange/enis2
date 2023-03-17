@@ -1,5 +1,6 @@
 import fp from "fastify-plugin"
 import fetch from "node-fetch"
+import { fakeUserAgent } from "../config/index.js"
 
 const unauthorizedErrorMessages = [
   "Сессия пользователя была завершена, перезагрузите страницу",
@@ -14,7 +15,7 @@ export default fp(async function plugin(fastify) {
   fastify.decorate(
     "api",
     async ({ cookie = "", body = {}, url, method = "GET" }) => {
-      let options = { method, headers: { cookie } }
+      let options = { method, headers: { cookie, "user-agent": fakeUserAgent } }
 
       if (method === "POST") options = Object.assign(options, { body })
 

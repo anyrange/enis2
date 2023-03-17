@@ -18,3 +18,6 @@ export const URL_WHITELIST =
 export const SECRET = process.env.SECRET || "101"
 
 export const CRYPT_KEY = process.env.CRYPT_KEY || "111"
+
+export const fakeUserAgent =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"

@@ -59,7 +59,10 @@ export default defineStore("auth", () => {
   }
   const updateCaptcha = async () => {
     try {
-      captcha.value = await refreshCaptcha()
+      const data = await refreshCaptcha()
+
+      setToken(data.token)
+      captcha.value = data.captcha
     } catch (error) {
       return Promise.reject(error)
     }
