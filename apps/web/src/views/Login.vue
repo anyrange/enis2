@@ -95,6 +95,7 @@
 </template>
 
 <script setup>
+import { watch } from "vue"
 import { storeToRefs } from "pinia"
 import { useForm } from "slimeform"
 import { GH_LINK, TG_LINK, schools } from "../config"
@@ -126,6 +127,13 @@ const { captcha } = storeToRefs(authStore)
 const { settings } = storeToRefs(settingsStore)
 
 settingsStore.predictSchool()
+
+watch(
+  () => settingsStore.settings.school,
+  async () => {
+    await authStore.updateCaptcha()
+  }
+)
 
 const { form, status, onSubmit } = useForm({
   form: () => ({
