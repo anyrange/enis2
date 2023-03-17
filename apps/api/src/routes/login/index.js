@@ -1,7 +1,8 @@
 import { URLSearchParams } from "url"
+import { promisify } from "util"
 import fetch from "node-fetch"
 import { encrypt, decrypt } from "../../utils/crypto.js"
-import { promisify } from "util"
+import { fakeUserAgent } from "../../config/index.js"
 
 const getDecryptedPassword = (password) => {
   return password?.content ? decrypt(password) : password
@@ -56,7 +57,7 @@ export default async function (fastify) {
       const password =
         req.body.password || getDecryptedPassword(account?.password)
 
-      if (!login || !password)
+      if (!(login && password))
         return reply
           .code(401)
           .send({ message: "Neither token nor credentials were provided" })
@@ -70,7 +71,10 @@ export default async function (fastify) {
         `https://sms.${req.query.city}.nis.edu.kz/root/Account/LogOn`,
         {
           method: "POST",
-          headers: { cookie },
+          headers: {
+            cookie,
+            "user-agent": fakeUserAgent,
+          },
           body: params,
         }
       )

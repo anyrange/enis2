@@ -1,11 +1,8 @@
 <template>
-  <div
-    class="sm:from-transparent sm:to-transparent bg-gradient-to-r bg-conic-to-l from-sky-400 to-primary"
-  >
+  <div class="sm:from-transparent sm:to-transparent bg-gradient-to-r bg-conic-to-l from-sky-400 to-primary">
     <div class="grid place-items-center h-[100svh] h-screen">
       <main
-        class="sm:m-auto mt-auto sm:h-auto h-[95%] sm:w-96 w-full grid gap-12 grid-cols-1 h-full h-full rounded-t-xl sm:rounded-md shadow-sm bg-white dark:bg-secondary-darker p-4"
-      >
+        class="sm:m-auto mt-auto sm:h-auto h-[95%] sm:w-96 w-full grid gap-12 grid-cols-1 h-full h-full rounded-t-xl sm:rounded-md shadow-sm bg-white dark:bg-secondary-darker p-4">
         <div class="grid gap-6 grid-cols-1 self-center">
           <header class="flex flex-col space-y-4 items-start">
             <Logo class="w-16 h-16 flex-none" />
@@ -16,63 +13,28 @@
               </h2>
             </div>
           </header>
-          <form
-            class="grid gap-4 grid-cols-1 !m-0"
-            @submit.prevent="onSubmit(submit)"
-          >
-            <Input
-              v-model="form.login"
-              type="number"
-              autocomplete="username"
-              autofocus
-              label="Ваш ИИН"
-              mask="############"
-              :valid="!status.login.isError"
-            />
-            <Input
-              v-model="form.password"
-              type="password"
-              autocomplete="current-password"
-              autofocus
-              label="Ваш пароль"
-              :valid="!status.password.isError"
-            />
-            <transition name="fade">
-              <div
-                v-if="captcha"
-                class="flex flex-col sm:flex-row justify-between gap-2"
-              >
-                <Image
-                  class="object-contain w-44 h-12 cursor-pointer select-none duration-150 hover:opacity-50"
-                  alt="captcha"
-                  :src="`data:image/png;base64,${captcha}`"
-                  @click="authStore.updateCaptcha"
-                />
-                <div>
-                  <Input
-                    v-model="form.captchaInput"
-                    type="text"
-                    label="Каптча"
-                  />
-                </div>
-              </div>
-            </transition>
-            <Select
-              v-model="settings.school"
-              :loading="
-                loaderStore.isLoading && loaderStore.loadingEndpoint === 'CITY'
-              "
-              :options="schools"
-              required
-            >
+          <form class="grid gap-4 grid-cols-1 !m-0" @submit.prevent="onSubmit(submit)">
+            <Select v-model="settings.school" :loading="
+              loaderStore.isLoading && loaderStore.loadingEndpoint === 'CITY'
+            " :options="schools" required>
               <template #default>Выберите школу</template>
               <template #loading>Поиск школы...</template>
             </Select>
-            <Checkbox
-              label="Запомнить меня"
-              id="rememberMe"
-              v-model="settings.rememberMe"
-            />
+            <div v-if="settings.school"> <Input v-model="form.login" type="number" autocomplete="username" autofocus
+                label="Ваш ИИН" mask="############" :valid="!status.login.isError" />
+              <Input v-model="form.password" type="password" autocomplete="current-password" autofocus label="Ваш пароль"
+                :valid="!status.password.isError" />
+              <transition name="fade">
+                <div v-if="captcha" class="flex flex-col sm:flex-row justify-between gap-2">
+                  <Image class="object-contain w-44 h-12 cursor-pointer select-none duration-150 hover:opacity-50"
+                    alt="captcha" :src="`data:image/png;base64,${captcha}`" @click="authStore.updateCaptcha" />
+                  <div>
+                    <Input v-model="form.captchaInput" type="text" label="Каптча" />
+                  </div>
+                </div>
+              </transition>
+            </div>
+            <Checkbox label="Запомнить меня" id="rememberMe" v-model="settings.rememberMe" />
             <Button type="submit" rounded w-full color="primary">
               Войти
             </Button>
@@ -95,6 +57,7 @@
 </template>
 
 <script setup>
+import { onMounted } from "vue"
 import { storeToRefs } from "pinia"
 import { useForm } from "slimeform"
 import { GH_LINK, TG_LINK, schools } from "../config"
@@ -139,6 +102,8 @@ const { form, status, onSubmit } = useForm({
   },
 })
 
+
+onMounted(async () => { await authStore.updateCaptcha() })
 const submit = async () => {
   try {
     await authStore.login({
