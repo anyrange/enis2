@@ -95,7 +95,7 @@
 </template>
 
 <script setup>
-import { watch, onMounted } from "vue"
+import { watch } from "vue"
 import { storeToRefs } from "pinia"
 import { useForm } from "slimeform"
 import { GH_LINK, TG_LINK, schools } from "../config"
@@ -121,7 +121,7 @@ const randomEmoji = getRandomItem([...emojis])
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
 const settingsStore = useSettingsStore()
-const { checkAvailability } = useHealthStore()
+const healthStore = useHealthStore()
 
 const { captcha } = storeToRefs(authStore)
 const { settings } = storeToRefs(settingsStore)
@@ -131,7 +131,11 @@ settingsStore.predictSchool()
 watch(
   () => settingsStore.settings.school,
   async () => {
-    await authStore.updateCaptcha()
+    const alive = await healthStore.checkAvailability()
+    if (alive) await authStore.updateCaptcha()
+  },
+  {
+    immediate: true,
   }
 )
 
@@ -159,13 +163,7 @@ const submit = async () => {
       captcha.value = error.response.data.data.base64img
       form.captchaInput = ""
     }
-    await checkAvailability()
+    await healthStore.checkAvailability()
   }
 }
-
-onMounted(() => {
-  if (settingsStore.settings.school) {
-    authStore.updateCaptcha()
-  }
-})
 </script>

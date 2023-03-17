@@ -9,6 +9,8 @@ export default defineStore("health", () => {
     try {
       const { alive } = await checkHealth()
       !alive && (showAvailabilityModal.value = true)
+
+      return Promise.resolve(alive)
     } catch (error) {
       return Promise.reject(error)
     }
