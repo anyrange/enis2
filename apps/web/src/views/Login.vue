@@ -95,7 +95,7 @@
 </template>
 
 <script setup>
-import { watch } from "vue"
+import { watch, onMounted } from "vue"
 import { storeToRefs } from "pinia"
 import { useForm } from "slimeform"
 import { GH_LINK, TG_LINK, schools } from "../config"
@@ -162,4 +162,10 @@ const submit = async () => {
     await checkAvailability()
   }
 }
+
+onMounted(() => {
+  if (settingsStore.settings.school) {
+    authStore.updateCaptcha()
+  }
+})
 </script>
