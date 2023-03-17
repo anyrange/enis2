@@ -54,6 +54,8 @@ api.interceptors.response.use(
     return response.data
   },
   (error) => {
+    if (!error.response) return Promise.reject(error)
+
     error.response.data.message ??
       (error.response.data.message = DEFAULT_ERROR_MESSAGE)
 
