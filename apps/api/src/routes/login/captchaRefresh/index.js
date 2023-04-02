@@ -34,7 +34,7 @@ export default async function (fastify) {
         }
       ).then(async (res) => fastify.cookieParse(res))
 
-      const cookies = fastify.mergeCookies(cookie, initialCityCookie)
+      const cookies = fastify.mergeCookies(initialCityCookie, cookie)
       const response = await fetch(
         `https://sms.${req.query.city}.nis.edu.kz/root/Account/RefreshCaptcha`,
         { headers: { cookie: cookies } }
