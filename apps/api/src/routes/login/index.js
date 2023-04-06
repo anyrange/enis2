@@ -65,7 +65,9 @@ export default async function (fastify) {
       const params = new URLSearchParams()
       params.append("login", login)
       params.append("password", password)
-      if (captchaInput) params.append("captchaInput", captchaInput)
+      params.append("captchaInput", captchaInput || "")
+      params.append("twoFactorAuthCode", "")
+      params.append("application2FACode", "")
 
       const res = await fetch(
         `https://sms.${req.query.city}.nis.edu.kz/root/Account/LogOn`,
@@ -78,14 +80,12 @@ export default async function (fastify) {
           body: params,
         }
       )
-
       const body = await res.json()
 
       const newCookie = fastify.cookieParse(res)
       const cookies = fastify.mergeCookies(cookie, newCookie)
 
       const promiseJWT = promisify(fastify.jwt.sign)
-
       body.token = await promiseJWT(
         {
           cookies,
