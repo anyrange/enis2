@@ -132,7 +132,7 @@ watch(
   () => settingsStore.settings.school,
   async () => {
     const alive = await healthStore.checkAvailability()
-    if (alive) await authStore.updateCaptcha()
+    console.log(alive)
   },
   {
     immediate: true,
