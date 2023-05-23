@@ -10,10 +10,10 @@ approximate history
 
 | app   | repo                                          | available at                                                                                                                                 | period            |
 | :---- | :-------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------- | :---------------- |
-| enis  | [src](https://github.com/superhooman/enis)    | -                                                                                                                                            | Dec 17' - Apr 19' |
-| eNIS  | [src](https://github.com/kekland/enis-app.v3) | [Google Play](https://play.google.com/store/apps/details?id=com.kekland.enis)                                                                | Oct 18' - Apr 20' |
-| enis2 | [src](https://github.com/anyrange/enis2)      | [web / PWA](https://enis2.space/)                                                                                                            | May 21' - live    |
-| NISx  | -                                             | [Google Play](https://play.google.com/store/apps/details?id=com.release.nisx) / [App Store](https://apps.apple.com/us/app/nisx/id1621943978) | Apr 22' - live    |
+| enis  | [src](https://github.com/superhooman/enis)    | -                                                                                                                                            | Dec 2017 - Apr 2019 |
+| eNIS  | [src](https://github.com/kekland/enis-app.v3) | [Google Play](https://play.google.com/store/apps/details?id=com.kekland.enis)                                                                | Oct 2018 - Apr 2020 |
+| enis2 | [src](https://github.com/anyrange/enis2)      | [web / PWA](https://enis2.space/)                                                                                                            | May 2021 - Present    |
+| NISx  | -                                             | [Google Play](https://play.google.com/store/apps/details?id=com.release.nisx) / [App Store](https://apps.apple.com/us/app/nisx/id1621943978) | Apr 2022 - Apr 2023    |
 
 ## Known Issues
 
