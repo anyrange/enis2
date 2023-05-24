@@ -50,7 +50,12 @@ export default async function (fastify) {
     },
     async (req, reply) => {
       const { captchaInput } = req.body
-      const { cookies: cookie, account } = req
+      const { cookies: userCookies, account } = req
+
+      const mergedCookies = fastify.mergeCookies(
+        userCookies,
+        "lang=ru-RU; path=/"
+      )
 
       const login = req.body.login || account?.login
 
@@ -74,7 +79,7 @@ export default async function (fastify) {
         {
           method: "POST",
           headers: {
-            cookie,
+            cookie: mergedCookies,
             "user-agent": fakeUserAgent,
           },
           body: params,
@@ -82,8 +87,8 @@ export default async function (fastify) {
       )
       const body = await res.json()
 
-      const newCookie = fastify.cookieParse(res)
-      const cookies = fastify.mergeCookies(cookie, newCookie)
+      const updatedCookies = fastify.cookieParse(res)
+      const cookies = fastify.mergeCookies(mergedCookies, updatedCookies)
 
       const promiseJWT = promisify(fastify.jwt.sign)
       body.token = await promiseJWT(
