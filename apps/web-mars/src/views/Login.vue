@@ -10,7 +10,7 @@
           <header class="flex flex-col space-y-4 items-start">
             <Logo class="w-16 h-16 flex-none" />
             <div>
-              <h1 class="text-3xl font-semibold">enis</h1>
+              <h1 class="text-3xl font-semibold">enis2</h1>
               <h2 class="text-base font-light">
                 {{ randomEmoji }} Удобный, быстрый, адаптивный
               </h2>
@@ -62,7 +62,7 @@
               :loading="
                 loaderStore.isLoading && loaderStore.loadingEndpoint === 'CITY'
               "
-              :options="schools"
+              :options="SCHOOLS"
               required
             >
               <template #default>Выберите школу</template>
@@ -98,7 +98,7 @@
 import { watch } from "vue"
 import { storeToRefs } from "pinia"
 import { useForm } from "slimeform"
-import { GH_LINK, TG_LINK, schools } from "../config"
+import { GH_LINK, TG_LINK, SCHOOLS } from "../config"
 import { isRequired, getRandomItem } from "../utils"
 import useLoaderStore from "../stores/loader"
 import useSettingsStore from "../stores/settings"

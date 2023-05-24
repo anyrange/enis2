@@ -1,4 +1,4 @@
-import schools from "nis-schools"
+import { SCHOOLS } from "@enis2/shared"
 
 const isDev = import.meta.env.DEV
 const isMock = isDev && false
@@ -87,7 +87,7 @@ export {
   SERVER_URL,
   DEFAULT_ERROR_MESSAGE,
   ENDPOINTS,
-  schools,
+  SCHOOLS,
   DA_LINK,
   TG_LINK,
   GH_LINK,

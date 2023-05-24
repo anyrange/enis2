@@ -99,4 +99,4 @@ export default [
     label: "Туркестан ХБН",
     city: "Turkistan",
   },
-]
+] as const

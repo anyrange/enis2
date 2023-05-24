@@ -3,8 +3,8 @@
   NODE_VERSION = "16"
 
 [build]
-  publish = "apps/web/dist"
-  command = "npx pnpm install --store=node_modules/.pnpm-store && npx pnpm build"
+  command = "npx pnpm install --store=node_modules/.pnpm-store && npm run build"
+  publish = "apps/web-mars/dist"
 
 [[redirects]]
   from = "/*"

@@ -1,6 +1,0 @@
-*.lock
-node_modules
-pnpm-lock.yaml
-pnpm-workspace.yaml
-dist
-build

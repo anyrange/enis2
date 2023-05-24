@@ -2,7 +2,7 @@ import { computed } from "vue"
 import { useStorage } from "@vueuse/core"
 import { defineStore } from "pinia"
 import { getCity } from "../api"
-import { DEFAULT_RANGES, schools } from "../config"
+import { DEFAULT_RANGES, SCHOOLS } from "../config"
 
 export default defineStore("settings", () => {
   const initialState = {
@@ -39,7 +39,7 @@ export default defineStore("settings", () => {
     if (settings.value.school) return
     try {
       const { city, region } = await getCity()
-      const predictedSchool = schools.find((item) => {
+      const predictedSchool = SCHOOLS.find((item) => {
         return (
           item.city === city ||
           city.includes(item.city) ||

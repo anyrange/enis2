@@ -1,5 +1,5 @@
 import { URLSearchParams } from "url"
-import currentQuarter from "../../../../utils/currentQuarter.js"
+import { getCurrentQuarter } from "@enis2/shared"
 
 export default async function (fastify) {
   fastify.get(
@@ -44,7 +44,7 @@ export default async function (fastify) {
         cookie,
       })
 
-      periods.data[currentQuarter() - 1].isActual = true
+      periods.data[getCurrentQuarter() - 1].isActual = true
       await reply.send(periods.data)
     }
   )
