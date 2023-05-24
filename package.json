@@ -4,9 +4,9 @@
   "description": "Convenient, fast, adaptive client for e-journal used in NIS",
   "license": "MIT",
   "scripts": {
-    "start": "pnpm --stream -r start",
+    "start": "pnpm -r start",
     "dev": "stale-dep && pnpm --stream -r run dev",
-    "build": "stale-dep && pnpm --stream -r run build",
+    "build": "stale-dep && pnpm -r run build",
     "prettier": "prettier --check .",
     "lint": "eslint . --ext .js,.vue --ignore-path .gitignore",
     "postinstall": "npx only-allow pnpm && stale-dep -u && pnpm --filter shared run build"
