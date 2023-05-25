@@ -2,7 +2,7 @@ import { fileURLToPath } from "url"
 import { dirname, join } from "path"
 import fastify from "fastify"
 import autoload from "@fastify/autoload"
-import { PORT, SECRET } from "./config/index.js"
+import { PORT, JWT_SECRET } from "./config/index.js"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
@@ -40,7 +40,7 @@ app.register(autoload, {
   routeParams: true,
 })
 
-app.register(import("@fastify/jwt"), { secret: SECRET })
+app.register(import("@fastify/jwt"), { secret: JWT_SECRET })
 
 app.listen({ port: PORT, host: "0.0.0.0" }, (err) => {
   if (err) return console.log(err)

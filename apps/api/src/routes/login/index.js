@@ -2,7 +2,7 @@ import { URLSearchParams } from "url"
 import { promisify } from "util"
 import fetch from "node-fetch"
 import { encrypt, decrypt } from "../../utils/crypto.js"
-import { fakeUserAgent } from "../../config/index.js"
+import { FAKE_USER_AGENT } from "../../config/index.js"
 
 const getDecryptedPassword = (password) => {
   return password?.content ? decrypt(password) : password
@@ -80,7 +80,7 @@ export default async function (fastify) {
           method: "POST",
           headers: {
             cookie: mergedCookies,
-            "user-agent": fakeUserAgent,
+            "user-agent": FAKE_USER_AGENT,
           },
           body: params,
         }

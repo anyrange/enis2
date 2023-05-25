@@ -3,7 +3,9 @@ import { SCHOOLS } from "@enis2/shared"
 const isDev = import.meta.env.DEV
 const isMock = isDev && false
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:4000"
+const SERVER_URL = import.meta.env.VITE_SERVER_URL
+
+if (!SERVER_URL) throw new Error("VITE_SERVER_URL is not defined")
 
 const DEFAULT_ERROR_MESSAGE = "Что-то пошло не так"
 
