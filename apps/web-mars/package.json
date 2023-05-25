@@ -9,6 +9,9 @@
     "start": "vite preview",
     "build": "cross-env NODE_ENV=development vite build"
   },
+  "prettier": {
+    "semi": false
+  },
   "dependencies": {
     "@enis2/shared": "workspace:^0.0.1",
     "@vueuse/core": "^9.3.1",
