@@ -1,4 +1,5 @@
 import fetch from "node-fetch"
+import { FAKE_USER_AGENT } from "../../../config/index.js"
 
 export default async function (fastify) {
   fastify.get(
@@ -92,6 +93,7 @@ export default async function (fastify) {
 
       await fetch(url, {
         headers: { cookie },
+        "user-agent": FAKE_USER_AGENT,
       })
 
       const grades = await fastify.api({
