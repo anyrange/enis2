@@ -104,7 +104,7 @@ export default async function (fastify) {
         method: "POST",
         body: params,
         cookie: newCookies,
-        url: `${baseUrl}/ReportCardByStudent/GetData?_dc=${Date.now()}`,
+        url: `${baseUrl}/ReportCardByStudent/GetData`,
       })
 
       const array = grades.data.filter(
