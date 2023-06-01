@@ -62,6 +62,9 @@ export default fp(async function plugin(fastify) {
       }
 
       json.statusCode = response.status
+
+      json.cookie = fastify.cookieParse(response)
+
       return json
     }
   )
