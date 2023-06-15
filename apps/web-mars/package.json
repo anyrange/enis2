@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "start": "vite preview",
-    "build": "cross-env NODE_ENV=development vite build"
+    "build": "cross-env NODE_ENV=development vite build && mv dist ../../web-build"
   },
   "prettier": {
     "semi": false

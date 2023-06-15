@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "turbo run start",
-    "build": "rimraf web-build stale-dep && turbo run build && mv apps/web-mars/dist web-build",
+    "build": "rimraf web-build stale-dep && turbo run build",
     "dev": "stale-dep && turbo run dev",
     "postinstall": "npx only-allow yarn && stale-dep -u && npm run build -- --filter @enis2/shared"
   },
