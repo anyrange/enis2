@@ -1,20 +1,24 @@
 {
   "name": "enis2",
-  "version": "0.0.0",
-  "description": "Convenient, fast, adaptive client for e-journal used in NIS",
+  "private": true,
+  "description": "convenient, fast, adaptive client for e-journal used in NIS",
   "license": "MIT",
   "scripts": {
-    "start": "pnpm -r start",
-    "dev": "stale-dep && pnpm --stream -r run dev",
-    "build": "stale-dep && pnpm -r run build",
-    "postinstall": "npx only-allow pnpm && stale-dep -u && pnpm --filter shared run build"
+    "start": "turbo run start",
+    "build": "stale-dep && turbo run build",
+    "dev": "stale-dep && turbo run dev",
+    "postinstall": "npx only-allow yarn && stale-dep -u && npm run build -- --filter @enis2/shared"
   },
-  "packageManager": "pnpm@8.5.1",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "engines": {
     "node": ">=16.14.0"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "stale-dep": "^0.6.0"
+    "stale-dep": "^0.6.0",
+    "turbo": "^1.10.3"
   }
 }

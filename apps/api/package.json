@@ -13,7 +13,7 @@
     "semi": false
   },
   "dependencies": {
-    "@enis2/shared": "workspace:^0.0.1",
+    "@enis2/shared": "*",
     "@fastify/autoload": "^5.4.1",
     "@fastify/compress": "6.1.0",
     "@fastify/cors": "^8.1.0",

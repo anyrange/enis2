@@ -13,7 +13,7 @@
     "semi": false
   },
   "dependencies": {
-    "@enis2/shared": "workspace:^0.0.1",
+    "@enis2/shared": "*",
     "@vueuse/core": "^9.3.1",
     "axios": "^0.27.2",
     "maska": "^1.5.0",

@@ -21,7 +21,7 @@ As it is described [here](https://github.com/superhooman/enis-proxy), NIS doesn'
 
 ## Getting Started
 
-This project requires [Node.js](https://nodejs.org/en/download/current/) 16+ and [pnpm](https://pnpm.io/)
+This project requires [Node.js](https://nodejs.org/en/download/current/) 16+ and [yarn](https://yarnpkg.com/)
 
 ### Copy env template file
 
@@ -32,13 +32,13 @@ cp apps/api/.env.development apps/api/.env
 ### Install
 
 ```bash
-pnpm install
+yarn install
 ```
 
 ### Start
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 ## API documentation

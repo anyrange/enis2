@@ -4,6 +4,11 @@ node_modules
 dist
 build
 
+.turbo
+*.log
+*.local
+.cache
+
 # local env files
 .env.local
 .env.*.local
