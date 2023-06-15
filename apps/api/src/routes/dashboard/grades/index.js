@@ -1,4 +1,5 @@
 import fetch from "node-fetch"
+import { FAKE_USER_AGENT } from "../../../config/index.js"
 
 export default async function (fastify) {
   fastify.get(
@@ -83,21 +84,26 @@ export default async function (fastify) {
       params.append("isEditable", true)
       params.append("group", { property: "ComponentId", direction: "ASC" })
 
-      const { data: url } = await fastify.api({
+      const { data: url, cookie: resCookie } = await fastify.api({
         method: "POST",
         body: params,
         cookie,
         url: `${baseUrl}/reportcard/GetUrl`,
       })
 
+      const newCookies = fastify.mergeCookies(cookie, resCookie)
+
       await fetch(url, {
-        headers: { cookie },
+        headers: {
+          cookie: newCookies,
+          "user-agent": FAKE_USER_AGENT,
+        },
       })
 
       const grades = await fastify.api({
         method: "POST",
         body: params,
-        cookie,
+        cookie: newCookies,
         url: `${baseUrl}/ReportCardByStudent/GetData`,
       })
 

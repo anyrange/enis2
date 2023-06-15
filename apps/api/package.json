@@ -1,7 +1,7 @@
 {
   "name": "api",
   "version": "0.0.0",
-  "description": "Simple API to bypass the CORS policy",
+  "description": "simple API to bypass the CORS policy",
   "license": "MIT",
   "author": "thaseyor",
   "type": "module",
@@ -9,7 +9,11 @@
     "dev": "nodemon src/index.js",
     "start": "node src/index.js"
   },
+  "prettier": {
+    "semi": false
+  },
   "dependencies": {
+    "@enis2/shared": "*",
     "@fastify/autoload": "^5.4.1",
     "@fastify/compress": "6.1.0",
     "@fastify/cors": "^8.1.0",
@@ -18,10 +22,11 @@
     "dotenv": "^16.0.3",
     "fastify": "^4.9.2",
     "fastify-plugin": "^4.3.0",
-    "nis-schools": "workspace:*",
     "node-fetch": "^3.2.10"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "eslint": "^8.39.0",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.8.8"
   }
 }

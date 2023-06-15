@@ -1,23 +1,22 @@
-import { fileURLToPath } from "url"
-import { dirname, resolve } from "path"
 import dotenv from "dotenv"
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
+dotenv.config()
 
-dotenv.config({ path: resolve(__dirname, "../../../../.env") })
+const { IPINFO_TOKEN, PORT = 4000, JWT_SECRET, CRYPT_KEY } = process.env
 
-export const IPINFO_TOKEN = process.env.IPINFO_TOKEN
+if (!JWT_SECRET) {
+  throw new Error("JWT_SECRET is missing")
+}
 
-export const PROD = process.env.NODE_ENV === "production"
+if (!CRYPT_KEY) {
+  throw new Error("CRYPT_KEY is missing")
+}
 
-export const PORT = process.env.PORT || 4000
+if (!IPINFO_TOKEN) {
+  console.warn("IPINFO_TOKEN is missing")
+}
 
-export const URL_WHITELIST =
-  process.env.URL_WHITELIST || "http://localhost:3000,http://localhost:8080"
-
-export const SECRET = process.env.SECRET || "101"
-
-export const CRYPT_KEY = process.env.CRYPT_KEY || "111"
-
-export const fakeUserAgent =
+const FAKE_USER_AGENT =
   "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36"
+
+export { PORT, JWT_SECRET, CRYPT_KEY, FAKE_USER_AGENT, IPINFO_TOKEN }

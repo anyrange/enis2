@@ -1,11 +1,10 @@
+/* eslint-env node */
+require("@rushstack/eslint-patch/modern-module-resolution")
+
 module.exports = {
   root: true,
-  env: {
-    node: true,
-    "vue/setup-compiler-macros": true,
-  },
   extends: [
-    "plugin:vue/vue3-strongly-recommended",
+    "plugin:vue/vue3-essential",
     "eslint:recommended",
     "@vue/eslint-config-prettier",
   ],
@@ -13,6 +12,6 @@ module.exports = {
     "vue/multi-word-component-names": "off",
   },
   parserOptions: {
-    ecmaVersion: 2022,
+    ecmaVersion: "latest",
   },
 }

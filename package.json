@@ -1,24 +1,26 @@
 {
   "name": "enis2",
-  "version": "0.0.0",
-  "description": "Convenient, fast, adaptive client for e-journal used in NIS",
+  "private": true,
+  "description": "convenient, fast, adaptive client for e-journal used in NIS",
   "license": "MIT",
   "scripts": {
-    "start": "pnpm --stream -r start",
-    "dev": "pnpm --stream -r run dev",
-    "build": "pnpm --filter web run build",
-    "prettier": "prettier --check .",
-    "lint": "eslint . --ext .js,.vue --ignore-path .gitignore"
+    "start": "dotenv -- turbo run start",
+    "build": "rimraf web-build && stale-dep && dotenv -- turbo run build",
+    "dev": "stale-dep && dotenv -- turbo run dev",
+    "postinstall": "npx only-allow yarn && stale-dep -u && yarn build --filter @enis2/shared"
   },
-  "devDependencies": {
-    "@vue/eslint-config-prettier": "^7.0.0",
-    "eslint": "^8.26.0",
-    "eslint-plugin-vue": "^9.6.0",
-    "prettier": "^2.7.1",
-    "vue-eslint-parser": "^9.1.0"
-  },
-  "packageManager": "pnpm@7.9.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "engines": {
     "node": ">=16.14.0"
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "dotenv-cli": "^7.2.1",
+    "rimraf": "^5.0.1",
+    "stale-dep": "^0.6.0",
+    "turbo": "^1.10.3"
   }
 }

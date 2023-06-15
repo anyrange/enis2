@@ -1,0 +1,31 @@
+{
+  "name": "@enis2/shared",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./dist/shared.umd.cjs",
+  "module": "./dist/shared.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/shared.js",
+      "require": "./dist/shared.umd.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsc && vite build"
+  },
+  "files": [
+    "dist"
+  ],
+  "prettier": {
+    "semi": false
+  },
+  "devDependencies": {
+    "@types/node": "^18.16.8",
+    "prettier": "^2.8.8",
+    "typescript": "^5.0.2",
+    "vite": "^4.3.2",
+    "vite-plugin-dts": "^2.3.0"
+  }
+}
