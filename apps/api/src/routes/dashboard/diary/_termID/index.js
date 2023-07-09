@@ -68,7 +68,22 @@ export default async function (fastify) {
         cookie,
       })
 
-      params.append("klassId", klasses.data[0].Id)
+      const realKlass =
+        klasses.data.length === 1
+          ? klasses.data[0]
+          : klasses.data.find((cur, id) => {
+              if (id === 0) return false
+
+              return klasses.data[id - 1].Id === cur.Id
+            })
+
+      if (!realKlass) {
+        const err = new Error("Класс ученика не найден")
+        err.code = 404
+        throw err
+      }
+
+      params.append("klassId", realKlass.Id)
 
       const student = await fastify.api({
         url: `${baseUrl}/JceDiary/GetStudents`,
