@@ -26,7 +26,7 @@ This project requires [Node.js](https://nodejs.org/en/download/current/) 16+ and
 ### Copy env template file
 
 ```bash
-cp apps/api/.env.development apps/api/.env
+cp .env.development .env
 ```
 
 ### Install

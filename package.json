@@ -4,10 +4,10 @@
   "description": "convenient, fast, adaptive client for e-journal used in NIS",
   "license": "MIT",
   "scripts": {
-    "start": "turbo run start",
-    "build": "rimraf web-build && stale-dep && turbo run build",
-    "dev": "stale-dep && turbo run dev",
-    "postinstall": "npx only-allow yarn && stale-dep -u && npm run build -- --filter @enis2/shared"
+    "start": "dotenv -- turbo run start",
+    "build": "rimraf web-build && stale-dep && dotenv -- turbo run build",
+    "dev": "stale-dep && dotenv -- turbo run dev",
+    "postinstall": "npx only-allow yarn && stale-dep -u && yarn build --filter @enis2/shared"
   },
   "workspaces": [
     "apps/*",
@@ -18,6 +18,7 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
+    "dotenv-cli": "^7.2.1",
     "rimraf": "^5.0.1",
     "stale-dep": "^0.6.0",
     "turbo": "^1.10.3"

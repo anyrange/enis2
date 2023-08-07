@@ -1,4 +1,4 @@
-export default [
+const SCHOOLS = [
   {
     value: "akt",
     label: "Актау ХБН",
@@ -100,3 +100,5 @@ export default [
     city: "Turkistan",
   },
 ] as const
+
+export { SCHOOLS }
