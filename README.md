@@ -6,14 +6,7 @@ One of many _enis_ implementations.
 
 > _enis_ is a common name references unofficial client for an electronic school journal used in NIS schools.
 
-approximate history
-
-| app   | repo                                          | available at                                                                                                                                 | period              |
-| :---- | :-------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------- | :------------------ |
-| enis  | [src](https://github.com/superhooman/enis)    | -                                                                                                                                            | Dec 2017 - Apr 2019 |
-| eNIS  | [src](https://github.com/kekland/enis-app.v3) | [Google Play](https://play.google.com/store/apps/details?id=com.kekland.enis)                                                                | Oct 2018 - Apr 2020 |
-| enis2 | [src](https://github.com/anyrange/enis2)      | [web / PWA](https://enis2.space/)                                                                                                            | May 2021 - Present  |
-| NISx  | -                                             | [Google Play](https://play.google.com/store/apps/details?id=com.release.nisx) / [App Store](https://apps.apple.com/us/app/nisx/id1621943978) | Apr 2022 - Apr 2023 |
+[approximate history](https://lean-shadow-c79.notion.site/enis2-docs-3a033e48f5c94eb7aa153bd3c103d729?pvs=4)
 
 ## Known Issues
 
