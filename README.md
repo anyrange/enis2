@@ -6,7 +6,7 @@ One of many _enis_ implementations.
 
 > _enis_ is a common name references unofficial client for an electronic school journal used in NIS schools.
 
-[approximate history](https://lean-shadow-c79.notion.site/enis2-docs-3a033e48f5c94eb7aa153bd3c103d729?pvs=4)
+[approximate history](https://wsehl.notion.site/wsehl/enis2-docs-3a033e48f5c94eb7aa153bd3c103d729)
 
 ## Known Issues
 
