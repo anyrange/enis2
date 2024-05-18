@@ -1,6 +1,6 @@
 import { ref, reactive, computed } from "vue"
 import { defineStore } from "pinia"
-import { getSubject } from "../api"
+import { getDiary } from "../api"
 import { getPercent } from "../utils"
 
 export default defineStore("subject", () => {
@@ -33,7 +33,7 @@ export default defineStore("subject", () => {
   const fetchSubject = async (subj) => {
     subject.originalSubject = subj
     try {
-      const [SAU, SAT] = await getSubject(subj.JournalId, subj.Evaluations)
+      const [SAU, SAT] = [[], []] //await getSubject(subj.JournalId, subj.Evaluations)
       const sections = { SAU, SAT }
       subject.originalSections = sections
       subject.customSections = JSON.parse(JSON.stringify(sections))

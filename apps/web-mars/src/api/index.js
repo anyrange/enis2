@@ -1,36 +1,47 @@
 import axios from "axios"
 import { nanoid } from "nanoid"
-import { ENDPOINTS, DEFAULT_ERROR_MESSAGE, isMock } from "../config"
+import { v4 as uuid } from "uuid"
+import { MOCK_DEVICE_INFO, PROXY_URL, DEFAULT_ERROR_MESSAGE } from "../config"
 import useLoaderStore from "../stores/loader"
 import useAuthStore from "../stores/auth"
-import useSettingsStore from "../stores/settings"
+import { parseJwt } from "../utils"
 
 const api = axios.create({
   timeout: 1000 * 30, // 30 seconds
 })
 
-const findEndpoint = (url) => {
-  return Object.keys(ENDPOINTS).find((key) => {
-    const value = ENDPOINTS[key].endpoint
-    return url.includes(isMock ? value.mock : value.real)
-  })
-}
-
 api.interceptors.request.use(
   (config) => {
     const authStore = useAuthStore()
     const loaderStore = useLoaderStore()
-    const settingsStore = useSettingsStore()
 
-    const { school: city } = settingsStore.settings
     const { token } = authStore
 
-    const endpoint = findEndpoint(config.url)
+    const url = new URL(config.url)
+
+    const endpoint = url.pathname
     const id = nanoid()
 
-    config.headers.Authorization = `Bearer ${token}`
-    config.params = { ...config.params, city }
+    config.headers.Authorization = token
+    config.headers["Forward-to"] = url.host
+    config.params = { ...config.params }
     config.id = id
+    config.url = `${PROXY_URL}${endpoint}`
+
+    if (token && config.data) {
+      const userInfo = JSON.parse(parseJwt(token).UserInfo)
+      const city = userInfo.Email.split("@")[1].split(".")[0]
+
+      config.headers["Forward-to"] = config.headers["Forward-to"].replace(
+        "city",
+        city
+      )
+      config.data = {
+        ...config.data,
+        token,
+        studentId: userInfo.PersonGid,
+      }
+    }
 
     loaderStore.loadingQueue.push({ key: endpoint, id })
 
@@ -45,7 +56,6 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => {
     const id = response.config.id
-
     const loaderStore = useLoaderStore()
     loaderStore.loadingQueue = loaderStore.loadingQueue.filter((item) => {
       return item.id !== id
@@ -54,18 +64,20 @@ api.interceptors.response.use(
     return response.data
   },
   (error) => {
-    if (!error.response) return Promise.reject(error)
-
-    error.response.data.message ??
-      (error.response.data.message = DEFAULT_ERROR_MESSAGE)
-
-    const id = error.response.config.id
-    const endpoint = findEndpoint(error.response.config.url)
+    const id = error.config.id
 
     const loaderStore = useLoaderStore()
+
     loaderStore.loadingQueue = loaderStore.loadingQueue.filter((item) => {
       return item.id !== id
     })
+
+    if (!error.response) return Promise.reject(error)
+
+    error.response.data ?? (error.response.data = DEFAULT_ERROR_MESSAGE)
+
+    const endpoint = new URL(error.config.url).pathname
+
     loaderStore.errors.push({
       key: endpoint,
       message: error.response.data.message,
@@ -75,45 +87,40 @@ api.interceptors.response.use(
   }
 )
 
-const createEndpoint = (name) => {
-  const item = ENDPOINTS[name].endpoint
-  return isMock ? item.mock : item.real
-}
-
-export const checkHealth = () => {
-  return api.get(createEndpoint("HEALTH_SMS"))
-}
-
-export const getCity = () => {
-  return api.get(createEndpoint("CITY"), { timeout: 1500 })
-}
-
 export const login = (credentials = {}) => {
-  return api.post(createEndpoint("LOGIN"), credentials)
-}
-
-export const refreshCaptcha = () => {
-  return api.get(createEndpoint("REFRESH_CAPTCHA"))
-}
-
-export const getYears = () => {
-  return api.get(createEndpoint("YEARS"))
-}
-
-export const getTerms = (yearId) => {
-  return api.get(createEndpoint("TERMS") + yearId)
-}
-
-export const getDiary = (termId) => {
-  return api.get(createEndpoint("DIARY") + termId)
-}
-
-export const getSubject = (journalId, evaluations) => {
-  return api.get(createEndpoint("SUBJECT"), {
-    params: { journalId, evaluations },
+  return api.post("https://identity.micros.nis.edu.kz/v1/Users/Authenticate", {
+    ...credentials,
+    action: "v1/Users/Authenticate",
+    deviceInfo: MOCK_DEVICE_INFO,
+    operationId: uuid(),
   })
 }
 
-export const getGrades = (yearID) => {
-  return api.get(createEndpoint("GRADES"), { params: { yearID } })
+export const refreshTokens = (refreshToken) => {
+  return api.post("https://identity.micros.nis.edu.kz/v1/Users/ReissueTokens", {
+    action: "v1/Users/ReissueTokens",
+    operationId: uuid(),
+    deviceInfo: MOCK_DEVICE_INFO,
+    refreshToken,
+  })
+}
+
+export const getGrades = () => {
+  return api.post(
+    "https://reportcard.micros.nis.edu.kz/v1/ReportCard/GetAllReportCardsAsync",
+    {
+      action: "v1/ReportCard/GetAllReportCardsAsync",
+      operationId: uuid(),
+    }
+  )
+}
+
+export const getDiary = () => {
+  return api.post(
+    "https://sms.city.nis.edu.kz/jce/Api//Api/GetSubjectsAndPeriods",
+    {
+      action: "Api/GetSubjectsAndPeriods",
+      operationId: uuid(),
+    }
+  )
 }

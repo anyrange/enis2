@@ -35,7 +35,7 @@ export default async function (fastify) {
       const cookie = req.cookies
 
       const params = new URLSearchParams()
-      params.append("schoolYearId", req.params.yearID)
+      params.append("`schoolYearId`", req.params.yearID)
 
       const periods = await fastify.api({
         method: "POST",

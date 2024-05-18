@@ -2,10 +2,12 @@
   <div class="item">
     <div class="item-top">
       <span class="item-top-subject">
-        {{ subject.SubjectName }}
+        {{ subject.subject.name.ru }}
       </span>
       <div v-if="subject.Exam !== 'none'" class="item-top-box">
-        <span class="item-top-box-mark">{{ formatScore(subject.Exam) }}</span>
+        <span class="item-top-box-mark">{{
+          formatScore(subject.resultMark)
+        }}</span>
         <span class="item-top-box-label">Экзамен</span>
       </div>
       <div class="item-top-box">
@@ -14,29 +16,29 @@
       </div>
     </div>
     <div class="item-bottom">
-      <template v-if="subject.FirstHalfYear === 'none'">
+      <template v-if="!subject.firstHalfYearMark">
         <div class="item-bottom-box">
           <span class="item-bottom-box-label">I</span>
           <span class="item-bottom-box-mark">
-            {{ formatScore(subject.FirstPeriod) }}
+            {{ formatScore(subject.firstPeriod) }}
           </span>
         </div>
         <div class="item-bottom-box">
           <span class="item-bottom-box-label">II</span>
           <span class="item-bottom-box-mark">
-            {{ formatScore(subject.SecondPeriod) }}
+            {{ formatScore(subject.secondPeriod) }}
           </span>
         </div>
         <div class="item-bottom-box">
           <span class="item-bottom-box-label">III</span>
           <span class="item-bottom-box-mark">
-            {{ formatScore(subject.ThirdPeriod) }}
+            {{ formatScore(subject.thirdPeriod) }}
           </span>
         </div>
         <div class="item-bottom-box">
           <span class="item-bottom-box-label">IV</span>
           <span class="item-bottom-box-mark">
-            {{ formatScore(subject.ForthPeriod) }}
+            {{ formatScore(subject.fourthPeriod) }}
           </span>
         </div>
       </template>
@@ -44,20 +46,20 @@
         <div class="item-bottom-box">
           <span class="item-bottom-box-label">I и II</span>
           <span class="item-bottom-box-mark">
-            {{ formatScore(subject.FirstHalfYear) }}
+            {{ formatScore(subject.firstHalfYearMark) }}
           </span>
         </div>
         <div class="item-bottom-box">
           <span class="item-bottom-box-label">III и IV</span>
           <span class="item-bottom-box-mark">
-            {{ formatScore(subject.SecondHalfYear) }}
+            {{ formatScore(subject.secondHalfYearMark) }}
           </span>
         </div>
       </template>
       <div class="item-bottom-box">
         <span class="item-bottom-box-label">Годовая</span>
         <span class="item-bottom-box-mark">
-          {{ formatScore(subject.Year) }}
+          {{ formatScore(subject.yearMark) }}
         </span>
       </div>
     </div>
@@ -73,15 +75,17 @@ defineProps({
 })
 
 const formatScore = (score) => {
-  switch (score) {
-    case "true":
+  const scoreValue = score && score.ru
+  switch (scoreValue) {
+    case "зачет":
       return "Зачёт"
-    case "false":
+    case "незачет":
       return "Незачёт"
-    case "none":
+    case null:
+    case undefined:
       return "-"
     default:
-      return score
+      return Number(scoreValue)
   }
 }
 </script>

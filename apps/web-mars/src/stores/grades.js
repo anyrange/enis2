@@ -1,62 +1,88 @@
 import { computed } from "vue"
 import { useStorage } from "@vueuse/core"
-import { defineStore } from "pinia"
+import { defineStore, storeToRefs } from "pinia"
 import { getGrades } from "../api"
-import { findIndex, findItem } from "../utils"
 import useSettingsStore from "./settings.js"
-import useYearsStore from "./years.js"
 
 export default defineStore("grades", () => {
-  const yearsStore = useYearsStore()
   const settingsStore = useSettingsStore()
-
+  const { settings } = storeToRefs(settingsStore)
+  
   const gradesData = useStorage("gradesData", [])
 
-  const grades = computed(() => {
-    const matchedGrades = findItem(gradesData.value, {
-      yearName: settingsStore.settings.year,
-    })
-    return matchedGrades ? matchedGrades.grades : []
+  const filteredGrades = computed(() => {
+    const rawGrades = gradesData.value || []
+    return rawGrades.filter(({ reportCard }) => reportCard.length)
   })
 
-  const currentGrade = computed(() => {
-    return findIndex(gradesData.value, {
-      yearName: settingsStore.settings.year,
-    })
+  const years = computed(() => {
+    return filteredGrades.value
+      .map(({ schoolYear }) => ({ id: schoolYear.id, label: schoolYear.name.ru }))
+  })
+
+  const currentGrades = computed(() => {
+    const chosenYear = filteredGrades.value
+      .find(({ schoolYear }) => schoolYear.id === settings.value.year)
+
+    return chosenYear ? chosenYear.reportCard : []
   })
 
   const clearGrades = () => {
     gradesData.value = []
   }
 
+  const yearlyMarks = computed(() => {
+    return currentGrades.value
+      .reduce((terms, subject) => {
+        const label = subject.subject.name.ru
+        
+        const pushIf = (index, mark) => {
+          mark && terms[index].push({ label, mark: mark.ru})
+        }
+
+        pushIf(0, subject.firstPeriod)
+        pushIf(1, subject.secondPeriod)
+        pushIf(2, subject.thirdPeriod)
+        pushIf(3, subject.fourthPeriod)
+
+        pushIf(1, subject.firstHalfYearMark)
+        pushIf(3, subject.secondHalfYearMark)
+        
+        pushIf(4, subject.yearMark)
+
+        return terms
+      }, [[], [], [], [], []]);
+  })
+  
   const fetchGrades = async (force = false) => {
-    const yearId = yearsStore.currentYearId
-    const yearName = settingsStore.settings.year
-
-    const { index, exists } = findIndex(gradesData.value, { yearName })
-
-    if (exists && !force) return
+    if (gradesData.value && !force) return
 
     try {
-      const data = await getGrades(yearId)
-      if (exists) {
-        gradesData.value[index].grades = data
-      } else {
-        const gradeObject = {
-          grades: data,
-          yearName: yearName,
+      gradesData.value = await getGrades()
+
+      if(!settings.value.year)
+        settings.value.year = filteredGrades.value.find(({ schoolYear }) => schoolYear.isCurrent)?.schoolYear.id
+          || filteredGrades.value[filteredGrades.value.length - 1].schoolYear.id
+
+      if (!settings.value.tab) {
+        const lastInfoTab = yearlyMarks.value.map(arr => !!arr.length).lastIndexOf(true)
+
+        if (lastInfoTab === 4) {
+          settings.value.tab = 'grades'
+        } else {
+          settings.value.tab = lastInfoTab !== -1 ? `${lastInfoTab}` : "0"
         }
-        gradesData.value = [...gradesData.value, gradeObject]
       }
     } catch (error) {
       return Promise.reject(error)
     }
   }
 
+
   return {
     gradesData,
-    grades,
-    currentGrade,
+    years,
+    currentGrades,
     fetchGrades,
     clearGrades,
   }

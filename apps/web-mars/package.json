@@ -21,6 +21,7 @@
     "nanoid": "^4.0.0",
     "pinia": "^2.0.23",
     "slimeform": "^0.6.1",
+    "uuid": "^9.0.1",
     "v-wave": "^1.5.0",
     "vue": "^3.2.41",
     "vue-scroll-picker": "^1.1.3",

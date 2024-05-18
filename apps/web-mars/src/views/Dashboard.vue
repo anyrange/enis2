@@ -12,9 +12,9 @@
     <Tabs v-model="settings.tab">
       <div class="dashboard-container">
         <Tab
-          v-for="({ Id, Name }, index) in termsStore.terms"
-          :key="`${index}-${Id}`"
-          :name="Name"
+          v-for="(prikol, index) in diaryStore.diary"
+          :key="index"
+          :name="`${index}`"
         >
           {{ GREEK_NUMERALS[index + 1] }}
         </Tab>
@@ -24,19 +24,19 @@
       </div>
     </Tabs>
   </nav>
-  <nav class="dashboard-container" v-if="yearsStore.years && settings.year">
+  <nav class="dashboard-container" v-if="years && settings.year">
     <Carousel
       class="w-full mx-4 my-3.5 z-20"
       :items-to-show="3"
       v-model="yearIndex"
     >
-      <Slide v-for="(year, index) in yearsStore.years" :key="index">
+      <Slide v-for="(year, index) in years" :key="index">
         <button
           class="text-secondary-lighter font-medium default-focus appearance-none"
           :class="{
-            '!text-primary': settings.year === year.label,
+            '!text-primary': settings.year === year.id,
           }"
-          @click="settings.year = year.label"
+          @click="settings.year = year.id"
         >
           {{ year.label }}
         </button>
@@ -61,15 +61,15 @@
       </div>
       <template v-if="isGrades">
         <SubjectGrades
-          v-for="item in gradesStore.grades"
+          v-for="item in gradesStore.currentGrades"
           :key="item"
           :subject="item"
         />
       </template>
       <template v-else>
         <SubjectDiary
-          v-for="(item, index) in diaryStore.diary"
-          :key="item.Name || index"
+          v-for="(item, index) in diaryStore.currentDiary"
+          :key="item.label || index"
           :subject="item"
           @click="openSubjectModal(item)"
         />
@@ -122,18 +122,14 @@
 <script setup>
 import { ref, computed, watch } from "vue"
 import { Carousel, Slide, Navigation } from "vue3-carousel"
-import { watchOnce } from "@vueuse/core"
 import { storeToRefs } from "pinia"
 import { notify } from "../services/notify.js"
 import { getRandomItem } from "../utils"
 import useLoaderStore from "../stores/loader"
 import useSubjectStore from "../stores/subject"
 import useSettingsStore from "../stores/settings"
-import useYearsStore from "../stores/years"
 import useAuthStore from "../stores/auth"
-import useHealthStore from "../stores/health"
 import useDiaryStore from "../stores/diary"
-import useTermsStore from "../stores/terms"
 import useGradesStore from "../stores/grades"
 import Button from "../components/base/Button.vue"
 import Icon from "../components/base/Icon.vue"
@@ -172,23 +168,19 @@ const showSettingsModal = ref(false)
 const loaderStore = useLoaderStore()
 const subjectStore = useSubjectStore()
 const settingsStore = useSettingsStore()
-const yearsStore = useYearsStore()
-const termsStore = useTermsStore()
 const diaryStore = useDiaryStore()
 const gradesStore = useGradesStore()
-const { checkAvailability } = useHealthStore()
-const { login, logout } = useAuthStore()
+
+const { years } = gradesStore
+const { refreshSession, logout } = useAuthStore()
 
 const { settings } = storeToRefs(settingsStore)
 
-const actualYearIndex = yearsStore.years.indexOf(
-  (item) => item.label === yearsStore.actualYearName
-)
-const yearIndex = ref(actualYearIndex - 2)
-
 const isGrades = computed(() => settings.value.tab === "grades")
 const isEmptyContent = computed(() =>
-  isGrades.value ? !gradesStore.grades.length : !diaryStore.diary.length
+  isGrades.value
+    ? !gradesStore.currentGrades.length
+    : !diaryStore.currentDiary.length
 )
 
 const showError = (message) => {
@@ -203,57 +195,31 @@ const endSession = (message = "Сессия завершена") => {
   showError(message)
 }
 
-const fetchTabs = async (force) => {
-  try {
-    await yearsStore.fetchYears(force)
-    await termsStore.fetchTerms(force)
-  } catch (error) {
-    return Promise.reject(error)
-  }
-}
+const actualYearIndex = years.findIndex((item) => {
+  return item.id === settings.value.year
+})
+const yearIndex = ref(actualYearIndex)
 
-const fetchContent = async (force) => {
+const getData = async ({ force = false }) => {
   try {
-    isGrades.value
-      ? await gradesStore.fetchGrades(force)
-      : await diaryStore.fetchDiary(force)
+    await gradesStore.fetchGrades(force)
   } catch (error) {
-    return Promise.reject(error)
-  }
-}
-
-const fetchData = async ({ force = false, includeTabs = false }) => {
-  try {
-    includeTabs && (await fetchTabs(force))
-    await fetchContent(force)
-  } catch (error) {
-    return Promise.reject(error)
-  }
-}
-
-const getData = async ({ force = false, includeTabs = false }) => {
-  try {
-    await fetchData({ force, includeTabs })
-  } catch (error) {
-    const isUnauthorized = error.response.status === 401
-
+    const isUnauthorized = error.response && error.response.status === 401
     const handleError = () => {
       isUnauthorized
         ? endSession()
         : showError("Произошла ошибка, попробуйте войти в СУШ")
     }
-    if (settings.value.rememberMe) {
+    if (settings.value.rememberMe && isUnauthorized) {
       try {
-        await login({})
-        await fetchData({ force: true, includeTabs: true })
-        return
+        await refreshSession()
+        await gradesStore.fetchGrades(true)
       } catch {
         handleError()
       }
     } else {
       handleError()
     }
-    await checkAvailability()
   }
 }
 
@@ -269,7 +235,7 @@ const openSubjectModal = async (selectedSubject) => {
   try {
     await subjectStore.fetchSubject(selectedSubject)
   } catch (error) {
-    await getData({ includeTabs: true, force: true })
+    await getData({ force: true })
     const lastSubject = diaryStore.diary.find((s) => {
       return s.Name === selectedSubject.Name
     })
@@ -278,16 +244,14 @@ const openSubjectModal = async (selectedSubject) => {
 }
 
 watch(
-  [() => settings.value.year, () => settings.value.tab],
-  async ([newY, newT], [oldY, oldT]) => {
-    const changedYear = oldY && newY && newY !== oldY
-    const changedTab = oldT && newT && newT !== oldT
+  () => settings.value.year,
+  async (newY, oldY) => {
+    const changedYear = newY !== oldY
 
     if (changedYear) {
-      return getData({ includeTabs: true })
-    }
-    if (changedTab) {
-      return getData({ includeTabs: false })
+      try {
+        await diaryStore.fetchDiary(true)
+      } catch (_) {}
     }
   },
   {
@@ -295,15 +259,5 @@ watch(
   }
 )
 
-// force-fetch if initial tab is 'grades' was changed to 'diary' or vice versa
-watchOnce(
-  () => settings.value.tab,
-  (newTab, oldTab) => {
-    if (newTab === "grades" || oldTab === "grades") {
-      return getData({ includeTabs: true, force: true })
-    }
-  }
-)
-
-getData({ includeTabs: true, force: true })
+getData({ force: true })
 </script>

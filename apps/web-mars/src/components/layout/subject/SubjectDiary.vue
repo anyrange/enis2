@@ -8,7 +8,7 @@
           ? 'default-focus cursor-pointer subject-diary-hoverable'
           : 'outline-none cursor-default select-text',
       ],
-      { 'opacity-50 pointer-events-none	': !subject.Evaluations.length },
+      { 'opacity-50 pointer-events-none	': false },
     ]"
     @click="emit('click')"
     @keyup.enter="emit('click')"
