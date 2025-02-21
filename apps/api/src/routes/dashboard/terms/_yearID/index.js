@@ -44,8 +44,14 @@ export default async function (fastify) {
         cookie,
       })
 
-      periods.data[getCurrentQuarter() - 1].isActual = true
-      await reply.send(periods.data)
+      const sortedPeriods = periods.data.sort((a, b) => {
+        if (a.Name < b.Name) return -1;
+        if (a.Name > b.Name) return 1;
+        return 0;
+      });
+
+      sortedPeriods[getCurrentQuarter() - 1].isActual = true;
+      await reply.send(sortedPeriods);
     }
   )
 }
