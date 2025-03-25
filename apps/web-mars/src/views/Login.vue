@@ -114,7 +114,7 @@ import ThemeToggler from "../components/layout/ThemeToggler.vue"
 import Logo from "../components/base/app/Logo.vue"
 
 const emojis =
-  "🤔🤐🙃🤤🧐👴😭💩🍕⚡🆗🤙🗿🎪👻🎃🌍👌👊💪👺🙈🙉🙊🐰🐔🐍😡🔥🤡🌈💛💙💜💚💓"
+  "🤔🤐🙃🤤🧐👴😭💩🍕⚡🆗🤙🗿🎪👻🎃🌍👌👊💪👺🙈🙉🙊🐰🐔🐍😡🔥🤡🌈💛💙💜💚💓💥🕶️🔮🦄🚀💎ඞ"
 
 const randomEmoji = getRandomItem([...emojis])
 
@@ -157,13 +157,15 @@ const submit = async () => {
       login: form.login,
       password: form.password,
       captchaInput: form.captchaInput,
-    })
+    });
+
+    window.open("https://forms.office.com/r/jSG55Ww1Nb", "_blank");
   } catch (error) {
     if (error.response?.data?.data?.base64img) {
-      captcha.value = error.response.data.data.base64img
-      form.captchaInput = ""
+      captcha.value = error.response.data.data.base64img;
+      form.captchaInput = "";
     }
-    await healthStore.checkAvailability()
+    await healthStore.checkAvailability();
   }
-}
+};
 </script>
